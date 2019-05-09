@@ -46,11 +46,8 @@ Play.prototype = {
 		this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
 
 		// Set up the player
-		this.player = game.add.sprite(100, 400, 'granny');
-		this.player.anchor.setTo(0.5);
-		game.physics.arcade.enable(this.player);
-		this.player.body.collideWorldBounds = true;
-		this.player.body.gravity.y = 800;
+		this.player = new Granny(game, 100, 400);
+    	game.add.existing(this.player);
 
 		// Add controls
 		this.cursors = game.input.keyboard.createCursorKeys();
@@ -60,26 +57,6 @@ Play.prototype = {
 		if(this.player.x > game.width - 100){
 			this.state.start('GameOver');
 		}
-
-		// Player movement
-		if(this.cursors.left.isDown){ // move left
-			this.player.body.velocity.x = -250;
-		}
-		else if(this.cursors.right.isDown){ // move right
-			this.player.body.velocity.x = 250;
-			this.player.animations.play('right');
-		}
-		else{ // idle
-			this.player.body.velocity.x = 0;
-			this.player.animations.stop();
-			this.player.frame = 4;
-		}
-
-		// Player jumping. She can fly right now but w/e
-		if (this.cursors.up.isDown){
-			this.player.body.velocity.y = -500;
-		}
-
 	}
 }
 
