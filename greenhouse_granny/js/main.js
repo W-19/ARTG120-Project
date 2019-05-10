@@ -63,48 +63,43 @@ Play.prototype = {
 			this.state.start('GameOver');
 		}
 
+		//Checking to see if player overlaps with plant
 		game.physics.arcade.overlap(this.player, this.plant, enemyContact, null, this);
 
+		//If player is out of health game ends
 		if (this.player.health == 0) {
 			game.state.start('GameOver');
 		}
 
+		//Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
 		if (this.plant.x - this.player.x < 200 && this.plant.x - this.player.x > 0 && this.player.y == this.plant.y) {
 			this.plant.body.velocity.x = 0;
-			console.log("infront");
 		}
 		else if (this.player.x - this.plant.x < 200 && this.player.x - this.plant.x > 0 && this.player.y == this.plant.y) {
-			console.log("behind");
 			this.plant.body.velocity.x = 0;
 		}
 		else {
-			console.log("go f yourself");
 			if (this.plant.isMovingLeft == true) {
-				console.log("moving left");
 				this.plant.body.velocity.x = -50;
 			}
 			if (this.plant.isMovingLeft == false) {
-				console.log("moving right");
 				this.plant.body.velocity.x = 50;
 			}
 		}
 		if (this.plant.x < 20) {
-			console.log("switch to right");
 			this.plant.body.velocity.x = 50;
 			this.plant.isMovingLeft = false;
 		}
 		if (this.plant.x > 580) {
-			console.log("switch to left");
 			this.plant.body.velocity.x = -50;
 			this.plant.isMovingLeft = true;
 		}
-		console.log(this.plant.body.velocity.x);
 	} 
 }
 
- function enemyContact (player) {
-       
- 		--this.player.health;
+//On contact with enemy player loses health
+function enemyContact (player) {
+       --this.player.health;
     }
 
 var GameOver = function(game){};
