@@ -50,15 +50,62 @@ Play.prototype = {
 		// Set up the player
 		this.player = new Granny(game, 100, 400);
     	game.add.existing(this.player);
+    	game.camera.follow(this.player);
+
+    	// Set up the enemy
+		this.plant = new Enemy(game, 350, 400);
+    	game.add.existing(this.plant);
+    	this.plant.isMovingLeft = true;
 	},
 	update: function(){
 		// For now you just lose the game if you walk too far to the right
 		if(this.player.x > game.width - 100){
 			this.state.start('GameOver');
 		}
-	}
+
+		game.physics.arcade.overlap(this.player, this.plant, enemyContact, null, this);
+
+		if (this.player.health == 0) {
+			game.state.start('GameOver');
+		}
+
+		if (this.plant.x - this.player.x < 200 && this.plant.x - this.player.x > 0 && this.player.y == this.plant.y) {
+			this.plant.body.velocity.x = 0;
+			console.log("infront");
+		}
+		else if (this.player.x - this.plant.x < 200 && this.player.x - this.plant.x > 0 && this.player.y == this.plant.y) {
+			console.log("behind");
+			this.plant.body.velocity.x = 0;
+		}
+		else {
+			console.log("go f yourself");
+			if (this.plant.isMovingLeft == true) {
+				console.log("moving left");
+				this.plant.body.velocity.x = -50;
+			}
+			if (this.plant.isMovingLeft == false) {
+				console.log("moving right");
+				this.plant.body.velocity.x = 50;
+			}
+		}
+		if (this.plant.x < 20) {
+			console.log("switch to right");
+			this.plant.body.velocity.x = 50;
+			this.plant.isMovingLeft = false;
+		}
+		if (this.plant.x > 580) {
+			console.log("switch to left");
+			this.plant.body.velocity.x = -50;
+			this.plant.isMovingLeft = true;
+		}
+		console.log(this.plant.body.velocity.x);
+	} 
 }
 
+ function enemyContact (player) {
+       
+ 		--this.player.health;
+    }
 
 var GameOver = function(game){};
 GameOver.prototype = {
