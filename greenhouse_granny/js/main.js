@@ -36,6 +36,7 @@ Play.prototype = {
 		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet
 		game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
+		this.platforms = game.add.group();
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
