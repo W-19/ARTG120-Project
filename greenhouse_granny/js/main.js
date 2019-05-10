@@ -11,7 +11,7 @@ var config = {
 	multiTexture: true
 }
 var game = new Phaser.Game(config);
-
+var bulletTime = 0;
 // Define states
 var MainMenu = function(game){};
 MainMenu.prototype = {
@@ -51,11 +51,15 @@ Play.prototype = {
 		this.player = new Granny(game, 100, 400);
     	game.add.existing(this.player);
     	game.camera.follow(this.player);
+    	this.player.health = 5;
 
     	// Set up the enemy
 		this.plant = new Enemy(game, 350, 400);
     	game.add.existing(this.plant);
     	this.plant.isMovingLeft = true;
+
+    	plantBullet = game.add.group();
+    	plantBullet.enableBody = true;
 	},
 	update: function(){
 		// For now you just lose the game if you walk too far to the right
@@ -74,9 +78,17 @@ Play.prototype = {
 		//Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
 		if (this.plant.x - this.player.x < 200 && this.plant.x - this.player.x > 0 && this.player.y == this.plant.y) {
 			this.plant.body.velocity.x = 0;
+			if (game.time.now > bulletTime) {
+				enemyShoot(this.plant.x, this.plant.y, 0);
+				bulletTime = game.time.now + 250;
+			}
 		}
 		else if (this.player.x - this.plant.x < 200 && this.player.x - this.plant.x > 0 && this.player.y == this.plant.y) {
 			this.plant.body.velocity.x = 0;
+			if (game.time.now > bulletTime) {
+				enemyShoot(this.plant.x, this.plant.y, 1);
+				bulletTime = game.time.now + 250;
+			}
 		}
 		else {
 			if (this.plant.isMovingLeft == true) {
@@ -94,11 +106,31 @@ Play.prototype = {
 			this.plant.body.velocity.x = -50;
 			this.plant.isMovingLeft = true;
 		}
+
+		//Check to see if player and bullet overlap
+		game.physics.arcade.overlap(this.player, plantBullet, bulletContact, null, this);
 	} 
 }
 
 //On contact with enemy player loses health
-function enemyContact (player) {
+function enemyContact () {
+       --this.player.health;
+    }
+
+//Function for making enemy shoot projectile in a given direction
+function enemyShoot (x,y,direction) {
+       this.bullet = plantBullet.create(x, y - 25, "granny");
+       if (direction == 0) {
+       	this.bullet.body.velocity.x = -200;
+       }
+       if (direction == 1) {
+       	this.bullet.body.velocity.x = 200;
+       }
+    }
+
+//Function for when a plant projectile contacts player
+function bulletContact (player, bullet) {
+		bullet.kill();
        --this.player.health;
     }
 
