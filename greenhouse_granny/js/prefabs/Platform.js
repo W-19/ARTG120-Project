@@ -10,6 +10,6 @@ Platform = function(game, x, y) {
 	
 }
 
-//Creating a prototype for granny
+//Creating a prototype for the platform
 Platform.prototype = Object.create(Phaser.Sprite.prototype);
 Platform.prototype.constructor = Platform;
