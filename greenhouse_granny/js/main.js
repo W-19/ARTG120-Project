@@ -48,9 +48,6 @@ Play.prototype = {
 		// Set up the player
 		this.player = new Granny(game, 100, 400);
     	game.add.existing(this.player);
-
-		// Add controls
-		this.cursors = game.input.keyboard.createCursorKeys();
 	},
 	update: function(){
 		// For now you just lose the game if you walk too far to the right

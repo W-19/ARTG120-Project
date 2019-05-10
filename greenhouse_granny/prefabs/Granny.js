@@ -28,21 +28,19 @@ Granny.prototype.update = function() {
 	this.body.velocity.x = 0;
 
 	if (rightkey.isDown) {
-		this.body.velocity.x = 300;
+		this.body.velocity.x = 400;
 		//play move right animation
 	}
-
 	else if (leftkey.isDown) {
-		this.body.velocity.x = -300;
+		this.body.velocity.x = -400;
 		//play move left animation
 	}
-
-	else if (upkey.isDown) {
-		this.body.velocity.y = -350;
-		//play jumping animation
+	else{
+		//play idle animation if on ground
 	}
 
-	else  {
-		//play idle animation
+	if (upkey.isDown) {
+		this.body.velocity.y = -350;
+		//play jumping animation
 	}
 }
