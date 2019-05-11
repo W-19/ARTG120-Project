@@ -53,9 +53,11 @@ Play.prototype = {
 		game.camera.follow(this.player);
 		this.player.health = 5;
 
-		shovel = this.player.addChild(game.make.sprite(1,-5,'shovel'));
+		//Creating a shovel weapon as a child of player
+		shovel = this.player.addChild(game.make.sprite(1, -5, 'shovel'));
 		shovel.scale.setTo(0.08);
-		shovel.angle = -75;
+		shovel.angle = -210;
+		//Something weird is happening when I try to access the shovels body, potentially due to it being a child sprite
 		shovel.enableBody = true;
 		shovelCooldown = 0;
 
@@ -68,7 +70,7 @@ Play.prototype = {
 		this.enemyProjectiles.enableBody = true;
 
 		// Set up the enemy
-		this.plant = new Enemy(game, 350, 400, this.player, this.enemyProjectiles);
+		this.plant = new Enemy(game, 475, 550, this.player, this.enemyProjectiles);
 		game.add.existing(this.plant);
 		this.plant.health = 3;
 
@@ -89,26 +91,37 @@ Play.prototype = {
 		if (this.player.health == 0) {
 			game.state.start('GameOver');
 		}
-
+		//Creating Q key input
 		var qkey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 
+		//If q is pressed down and shovel is ready to use, granny attacks with her shovel
 		if (qkey.isDown && shovelCooldown == 0) {
-			shovel.angle = -45;
+			shovel.angle = -240;
 			shovelCooldown = 25;
-			if (this.plant.x - this.player.x < 100 && this.plant.x - this.player.x > 0) {
+			//Same sort of logic that is in the enemy prefab for detecting when player is in range,
+			//but now acting as a weapon hitbox detector of sorts
+			if (this.plant.x - this.player.x < 100 && this.plant.x - this.player.x > 0 && this.plant.y - 60 <= this.player.y) {
 				this.plant.x += 50;
+				--this.plant.health;
+			}
+			if (this.player.x - this.plant.x < 100 && this.player.x - this.plant.x > 0 && this.plant.y - 60 <= this.player.y) {
+				this.plant.x -= 50;
 				--this.plant.health;
 			}
 		}
 		if (shovelCooldown > 0) {
 			--shovelCooldown;
 		}
+		//When shovel is ready to be used again for an attack, reset shovel angle
 		if (shovelCooldown == 0) {
-			shovel.angle = -75;
+			shovel.angle = -210;
 		}
 
+		//If the plant enemy is at zero health it gets removed from game
 		if (this.plant.health == 0) {
 			this.plant.destroy();
+			//For now killing the enemy will also trigger the game over state
+			game.state.start('GameOver');
 		}
 	} 
 }

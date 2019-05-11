@@ -16,9 +16,9 @@ Enemy = function(game, x, y, player, enemyProjectiles) {
 	this.player = player;
 	this.enemyProjectiles = enemyProjectiles;
 	this.facing = 'left';
-	Enemy.BULLET_COOLDOWN_BASE = 10;
+	Enemy.BULLET_COOLDOWN_BASE = 45;
 	this.bulletCooldown = 0;
-	Enemy.AGGRO_RANGE = 200;
+	Enemy.AGGRO_RANGE = 500;
 }
 
 //Creating a prototype for enemy
