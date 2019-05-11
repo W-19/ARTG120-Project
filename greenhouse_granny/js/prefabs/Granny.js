@@ -10,7 +10,6 @@ Granny = function(game, x, y) {
 	this.scale.setTo(1, 1);
 	this.body.gravity.y = 800;
 	var health;
-	
 }
 
 //Creating a prototype for granny

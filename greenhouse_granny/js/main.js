@@ -20,7 +20,7 @@ MainMenu.prototype = {
 		game.add.text(16, 16, "Welcome to Greenhouse Granny v0.0.0.0.1", { fontSize: '32px', fill: '#000' })
 		game.add.text(16, 100,
 				"Eventually the main menu screen will look fancier than this.\n" +
-				"Press space to start and use the arrow keys to move the granny.",
+				"Press space to start, use the arrow keys to move the granny, Q to attack.",
 				{ fontSize: '16px', fill: '#000' });
 	},
 	update: function(){
@@ -36,6 +36,7 @@ Play.prototype = {
 		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet
 		game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
+		game.load.image('shovel', 'assets/img/shovel.png');
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
@@ -52,6 +53,12 @@ Play.prototype = {
 		game.camera.follow(this.player);
 		this.player.health = 5;
 
+		shovel = this.player.addChild(game.make.sprite(1,-5,'shovel'));
+		shovel.scale.setTo(0.08);
+		shovel.angle = -75;
+		shovel.enableBody = true;
+		shovelCooldown = 0;
+
 		// A group that holds all the platforms. It isn't used right now.
 		this.platforms = game.add.group();
 		this.platforms.enableBody = true;
@@ -63,9 +70,10 @@ Play.prototype = {
 		// Set up the enemy
 		this.plant = new Enemy(game, 350, 400, this.player, this.enemyProjectiles);
 		game.add.existing(this.plant);
+		this.plant.health = 3;
 
 		//Adding text to keep score at the top left of screen
-    	healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
 	},
 	update: function(){
 
@@ -75,11 +83,32 @@ Play.prototype = {
 		//Check to see if player and bullet overlap
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, bulletContact, null, this);
 
-		healthBar.text = "Health: " + this.player.health;
+		this.healthBar.text = "Health: " + this.player.health;
 
 		//If player is out of health game ends
 		if (this.player.health == 0) {
 			game.state.start('GameOver');
+		}
+
+		var qkey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+
+		if (qkey.isDown && shovelCooldown == 0) {
+			shovel.angle = -45;
+			shovelCooldown = 25;
+			if (this.plant.x - this.player.x < 100 && this.plant.x - this.player.x > 0) {
+				this.plant.x += 50;
+				--this.plant.health;
+			}
+		}
+		if (shovelCooldown > 0) {
+			--shovelCooldown;
+		}
+		if (shovelCooldown == 0) {
+			shovel.angle = -75;
+		}
+
+		if (this.plant.health == 0) {
+			this.plant.destroy();
 		}
 	} 
 }
