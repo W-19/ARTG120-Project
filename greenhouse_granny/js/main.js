@@ -63,14 +63,19 @@ Play.prototype = {
 		// Set up the enemy
 		this.plant = new Enemy(game, 350, 400, this.player, this.enemyProjectiles);
 		game.add.existing(this.plant);
+
+		//Adding text to keep score at the top left of screen
+    	healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
 	},
 	update: function(){
 
 		//Checking to see if player overlaps with plant
-		game.physics.arcade.overlap(this.player, this.plant, enemyContact, null, this);
+		game.physics.arcade.collide(this.player, this.plant, enemyContact, null, this);
 
 		//Check to see if player and bullet overlap
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, bulletContact, null, this);
+
+		healthBar.text = "Health: " + this.player.health;
 
 		//If player is out of health game ends
 		if (this.player.health == 0) {
