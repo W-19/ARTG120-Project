@@ -30,13 +30,19 @@ MainMenu.prototype = {
 	}
 }
 
-var Play = function(game){};
+var Play = function(game){
+	this.ALPHA = .2;
+};
 Play.prototype = {
 	preload: function(){
 		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet
-		game.load.image('background', 'assets/img/pixel background.png');
+		//game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', 'assets/img/shovel.png');
+
+		//Load in tilemap and spritesheet
+		game.load.tilemap('level', 'assets/tilemaps/tempTileMap.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet.png', 64, 64);
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
@@ -45,7 +51,14 @@ Play.prototype = {
 		// Add audio to the game
 
 		// Draw the background
-		this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
+		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
+		game.stage.setBackgroundColor('#87CEEB');
+
+		//Tilemap creation
+		this.map = game.add.tilemap('level');
+		this.map.addTilesetImage('TempTileSet', 'tilesheet');
+		this.mapLayer = this.map.createLayer('Tile Layer 1');
+		this.mapLayer.resizeWorld();
 
 		// Set up the player
 		this.player = new Granny(game, 100, 400);
@@ -65,6 +78,120 @@ Play.prototype = {
 		this.platforms = game.add.group();
 		this.platforms.enableBody = true;
 
+		//Collison platforms for tilemap *Temp solution*
+		var ground = this.platforms.create(85, 730, 'platform');
+		ground.alpha = this.ALPHA;
+		ground.anchor.set(.5, .5);
+		ground.body.immovable = true;
+		ground.scale.x = 2.75;
+
+		//Side wall falling from starting platform
+		ground = this.platforms.create(640, 780, 'platform');
+		ground.alpha = this.ALPHA;
+		ground.body.immovable = true;
+		ground.scale.y = 50;
+		ground.scale.x = .15;
+		//ground.angle += 90;
+
+		//ground below starting platform
+		ground = this.platforms.create(500, 1860, 'platform');
+		ground.alpha = this.ALPHA;
+		ground.body.immovable = true;
+
+		//Stairs to go down to bottom
+		ground = this.platforms.create(900, 1935, 'platform');
+		ground.anchor.set(.5);
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = .25;
+
+		ground = this.platforms.create(950, 1975, 'platform');
+		ground.anchor.set(.5);
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = .25;
+
+		//Bottom
+		ground = this.platforms.create(900, 1985, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 10;
+
+		//stairs to go up hill
+		ground = this.platforms.create(2535, 1955, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 3.5;
+
+		ground = this.platforms.create(2575, 1920, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 3.3;
+
+		ground = this.platforms.create(2615, 1870, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 3.1;
+
+		ground = this.platforms.create(2650, 1830, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 2.9;
+
+		ground = this.platforms.create(2685, 1790, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 2.75;
+
+		ground = this.platforms.create(2735, 1745, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 2.5;
+
+		ground = this.platforms.create(2535, 1955, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 2.3;
+
+		//top of hill
+		ground = this.platforms.create(2755, 1730, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.x = 2.4;
+
+		//wall after hill
+		ground = this.platforms.create(4610, 1200, 'platform');
+		ground.anchor.x = 0;
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.y = 16;
+		ground.scale.x = .25;
+
+		//Floating this.platforms
+		ground = this.platforms.create(1027, 325, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.y = 1;
+		ground.scale.x = 1.1;
+
+		ground = this.platforms.create(1730, 645, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.y = 1;
+		ground.scale.x = 1.1;	
+
+		ground = this.platforms.create(2436, 325, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.y = 1;
+		ground.scale.x = 1.1;	
+
+		ground = this.platforms.create(3140, 645, 'platform');
+		ground.alpha = this.ALPHA; 
+		ground.body.immovable = true;
+		ground.scale.y = 1;
+		ground.scale.x = 1.1;
+
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
@@ -78,6 +205,12 @@ Play.prototype = {
     	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
 	},
 	update: function(){
+
+		//Check to see if player collides with platforms
+		game.physics.arcade.collide(this.player, this.platforms);
+
+		//Check to see if Enemies collides with platforms\
+		game.physics.arcade.collide(this.plant, this.platforms);
 
 		//Checking to see if player overlaps with plant
 		game.physics.arcade.collide(this.player, this.plant, enemyContact, null, this);
@@ -158,4 +291,3 @@ game.state.add("MainMenu", MainMenu);
 game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
 game.state.start("MainMenu");
-
