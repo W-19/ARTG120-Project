@@ -28,6 +28,7 @@ Granny.prototype.update = function() {
 	var rightkey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	var leftkey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	var upkey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+	var onTheGround = this.body.touching.down;
 	
 	//Basic movement handling if statements
 	this.body.velocity.x = 0;
@@ -63,17 +64,16 @@ Granny.prototype.update = function() {
 	}
 	if (upkey.isDown && this.doubleJumpReady == true) {
 		if (this.jumps == 1) {
-			console.log("J3");
 			this.body.velocity.y = -350;
 			this.doubleJumpReady = false;
 			//play jumping animation
 			--this.jumps;
 		}
 	}
-	//This if statement is specific to the players y positional value when on the ground
-	//Will need to be changed once platforms are added
-	if (this.y == 568) {
+	//If player is touching ground, reset jumping variables
+	if (onTheGround) {
 		this.isJumping = false;
+		this.doubleJumpReady = false;
 		this.jumps = 2;
 	}
 
