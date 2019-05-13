@@ -203,6 +203,8 @@ Play.prototype = {
 
 		//Adding text to keep score at the top left of screen
     	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar.fixedToCamera = true;
+    	this.healthBar.cameraOffset.setTo(16, 16);
 	},
 	update: function(){
 
