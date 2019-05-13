@@ -47,6 +47,7 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = this.facing == 'left' ? -50 : 50;
 	}
 
+	// Define when the plant turns around
 	if (this.x < 20) {
 		this.facing = 'right';
 	}

@@ -11,6 +11,7 @@ var config = {
 	multiTexture: true
 }
 var game = new Phaser.Game(config);
+var currentTrack; // allows us to stop the game audio when we enter the GameOver state
 
 // Define states
 var MainMenu = function(game){};
@@ -35,7 +36,8 @@ var Play = function(game){
 };
 Play.prototype = {
 	preload: function(){
-		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet
+		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet/texture atlas
+		// an old background that we should get rid of soon
 		//game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', 'assets/img/shovel.png');
@@ -43,12 +45,18 @@ Play.prototype = {
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/tempTileMap.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet.png', 64, 64);
+
+		game.load.audio('track01', 'assets/audio/Track 1.ogg');
+		//game.load.audio('track02', 'Track 02.ogg'); // unused rn
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		// Add audio to the game
+		this.track01 = game.add.audio('track01');
+		//load track 2 when we need it
+		currentTrack = this.track01;
 
 		// Draw the background
 		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
@@ -74,123 +82,90 @@ Play.prototype = {
 		shovel.enableBody = true;
 		shovelCooldown = 0;
 
-		// A group that holds all the platforms. It isn't used right now.
+		// A group that holds all the platforms. It's a wonky workaround for now.
 		this.platforms = game.add.group();
 		this.platforms.enableBody = true;
 
 		//Collison platforms for tilemap *Temp solution*
 		var ground = this.platforms.create(85, 730, 'platform');
-		ground.alpha = this.ALPHA;
 		ground.anchor.set(.5, .5);
-		ground.body.immovable = true;
 		ground.scale.x = 2.75;
 
 		//Side wall falling from starting platform
 		ground = this.platforms.create(640, 780, 'platform');
-		ground.alpha = this.ALPHA;
-		ground.body.immovable = true;
 		ground.scale.y = 50;
 		ground.scale.x = .15;
 		//ground.angle += 90;
 
 		//ground below starting platform
 		ground = this.platforms.create(500, 1860, 'platform');
-		ground.alpha = this.ALPHA;
-		ground.body.immovable = true;
 
 		//Stairs to go down to bottom
 		ground = this.platforms.create(900, 1935, 'platform');
 		ground.anchor.set(.5);
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = .25;
 
 		ground = this.platforms.create(950, 1975, 'platform');
 		ground.anchor.set(.5);
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = .25;
 
 		//Bottom
 		ground = this.platforms.create(900, 1985, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 10;
 
 		//stairs to go up hill
 		ground = this.platforms.create(2535, 1955, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 3.5;
 
 		ground = this.platforms.create(2575, 1920, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 3.3;
 
 		ground = this.platforms.create(2615, 1870, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 3.1;
 
 		ground = this.platforms.create(2650, 1830, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 2.9;
 
 		ground = this.platforms.create(2685, 1790, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 2.75;
 
 		ground = this.platforms.create(2735, 1745, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 2.5;
 
 		ground = this.platforms.create(2535, 1955, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 2.3;
 
 		//top of hill
 		ground = this.platforms.create(2755, 1730, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.x = 2.4;
 
 		//wall after hill
 		ground = this.platforms.create(4610, 1200, 'platform');
 		ground.anchor.x = 0;
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.y = 16;
 		ground.scale.x = .25;
 
 		//Floating this.platforms
-		ground = this.platforms.create(1027, 325, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
+		ground = this.platforms.create(1027, 325, 'platform'); 
 		ground.scale.y = 1;
 		ground.scale.x = 1.1;
 
 		ground = this.platforms.create(1730, 645, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.y = 1;
 		ground.scale.x = 1.1;	
 
 		ground = this.platforms.create(2436, 325, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.y = 1;
 		ground.scale.x = 1.1;	
 
 		ground = this.platforms.create(3140, 645, 'platform');
-		ground.alpha = this.ALPHA; 
-		ground.body.immovable = true;
 		ground.scale.y = 1;
 		ground.scale.x = 1.1;
+
+		this.platforms.forEach(function(platform){
+			platform.body.immovable = true;
+			platform.alpha = this.ALPHA;		
+		}, this, true);
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
@@ -206,6 +181,7 @@ Play.prototype = {
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(16, 16);
 	},
+
 	update: function(){
 
 		//Check to see if player collides with platforms
@@ -220,12 +196,18 @@ Play.prototype = {
 		//Check to see if player and bullet overlap
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, bulletContact, null, this);
 
-		this.healthBar.text = "Health: " + this.player.health;
+		//this.healthBar.text = "Health: " + this.player.health;
 
 		//If player is out of health game ends
 		if (this.player.health == 0) {
 			game.state.start('GameOver');
 		}
+
+		// Loop the audio
+		if(!currentTrack.isPlaying){
+			currentTrack.play();
+		}
+
 		//Creating Q key input
 		var qkey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 
@@ -252,13 +234,16 @@ Play.prototype = {
 			shovel.angle = -210;
 		}
 
+		
 		//If the plant enemy is at zero health it gets removed from game
 		if (this.plant.health == 0) {
 			this.plant.destroy();
 			//For now killing the enemy will also trigger the game over state
 			game.state.start('GameOver');
 		}
-	} 
+		
+	}
+
 }
 
 //On contact with enemy player loses health
@@ -280,6 +265,9 @@ GameOver.prototype = {
 	create: function(){
 		// background color already set in MainMenu
 		game.add.text(16, 16, "Game over\nScore: " + "[placeholder]" + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		if(currentTrack.isPlaying){
+			currentTrack.stop();
+		}
 	},
 	update: function(){
 		if(game.input.keyboard.isDown(Phaser.Keyboard.R)){
