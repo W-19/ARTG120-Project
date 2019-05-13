@@ -31,7 +31,7 @@ MainMenu.prototype = {
 }
 
 var Play = function(game){
-	this.ALPHA = .2;
+	this.ALPHA = .0;
 };
 Play.prototype = {
 	preload: function(){
