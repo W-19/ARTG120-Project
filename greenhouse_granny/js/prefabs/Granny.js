@@ -14,6 +14,7 @@ Granny = function(game, x, y) {
 	this.isJumping = false;
 	this.doubleJumpReady = false;
 	this.jumps = 2;
+	this.jumpHeight = 650;
 	this.anchorScale = this.scale.x;
 }
 
@@ -52,7 +53,7 @@ Granny.prototype.update = function() {
     //Double jumping logic
 	if (upkey.isDown && this.isJumping == false) {
 		if (this.jumps == 2) {
-			this.body.velocity.y = -350;
+			this.body.velocity.y = -this.jumpHeight;
 			this.isJumping = true;
 			//play jumping animation
 			--this.jumps;
@@ -64,7 +65,7 @@ Granny.prototype.update = function() {
 	}
 	if (upkey.isDown && this.doubleJumpReady == true) {
 		if (this.jumps == 1) {
-			this.body.velocity.y = -350;
+			this.body.velocity.y = -this.jumpHeight;
 			this.doubleJumpReady = false;
 			//play jumping animation
 			--this.jumps;
