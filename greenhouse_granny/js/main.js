@@ -1,6 +1,7 @@
 /*
  * This is the main file for the Greenhouse Granny game.
  * Developers: Simon Katzer, Jack Cuneo, Matthew Tolentino, Trystan Nguyen
+ * Our repo is here: https://github.com/W-19/ARTG120-Project/tree/master/greenhouse_granny 
  */
 
 // Set up game
