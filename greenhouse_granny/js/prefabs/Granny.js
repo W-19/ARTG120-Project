@@ -10,7 +10,7 @@ Granny = function(game, x, y) {
 	this.facing = 'left';
 	this.scale.setTo(1, 1);
 	this.body.gravity.y = 800;
-	var health;
+
 	this.isJumping = false;
 	this.doubleJumpReady = false;
 	this.jumps = 2;
