@@ -1,5 +1,6 @@
 /*
  * This is the main file for the Greenhouse Granny game.
+ * Developers: Simon Katzer, Jack Cuneo, Matthew Tolentino, Trystan Nguyen
  */
 
 // Set up game
