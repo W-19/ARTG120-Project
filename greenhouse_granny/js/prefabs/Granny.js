@@ -11,11 +11,16 @@ Granny = function(game, x, y) {
 	this.scale.setTo(1, 1);
 	this.body.gravity.y = 800;
 
-	this.isJumping = false;
-	this.doubleJumpReady = false;
-	this.jumps = 2;
-	this.jumpHeight = 650;
+	this.onGround = false;
+	Granny.MAX_AIR_JUMPS = 1;
+	Granny.MOVE_SPEED = 400;
+	Granny.JUMP_HEIGHT = 650;
+	this.airJumps = 1;
 	this.anchorScale = this.scale.x;
+
+	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 }
 
 //Creating a prototype for granny
@@ -24,58 +29,35 @@ Granny.prototype.constructor = Granny;
 
 //Update funtion for granny
 Granny.prototype.update = function() {
-
-	//Creating a variable for the right key
-	var rightkey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-	var leftkey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-	var upkey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-	var onTheGround = this.body.touching.down;
+	this.onGround = this.body.touching.down;
 	
 	//Basic movement handling if statements
-	this.body.velocity.x = 0;
-
-	if (rightkey.isDown) {
+	if (this.keyRight.isDown) {
 		this.facing = "right";
 		this.scale.x = -this.anchorScale;
-		this.body.velocity.x = 400;
+		this.body.velocity.x = Granny.MOVE_SPEED;
 		//play move right animation
 	}
-	else if (leftkey.isDown) {
+	else if (this.keyLeft.isDown) {
 		this.facing = 'left';
 		this.scale.x = this.anchorScale;
-		this.body.velocity.x = -400;
+		this.body.velocity.x = -Granny.MOVE_SPEED;
 		//play move left animation
 	}
 	else{
+		this.body.velocity.x = 0;
 		//play idle animation if on ground
 	}
 
     //Double jumping logic
-	if (upkey.isDown && this.isJumping == false) {
-		if (this.jumps == 2) {
-			this.body.velocity.y = -this.jumpHeight;
-			this.isJumping = true;
-			//play jumping animation
-			--this.jumps;
+    if(this.onGround){
+    	this.airJumps = Granny.MAX_AIR_JUMPS;
+    }
+	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
+		this.body.velocity.y = -Granny.JUMP_HEIGHT;
+		if(!this.onGround){
+			this.airJumps--;
 		}
-	}
-	if (upkey.isUp && this.isJumping == true) {
-			this.doubleJumpReady = true;
-			//play jumping animation
-	}
-	if (upkey.isDown && this.doubleJumpReady == true) {
-		if (this.jumps == 1) {
-			this.body.velocity.y = -this.jumpHeight;
-			this.doubleJumpReady = false;
-			//play jumping animation
-			--this.jumps;
-		}
-	}
-	//If player is touching ground, reset jumping variables
-	if (onTheGround) {
-		this.isJumping = false;
-		this.doubleJumpReady = false;
-		this.jumps = 2;
 	}
 
 }
