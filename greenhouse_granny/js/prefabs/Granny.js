@@ -4,11 +4,11 @@ Granny = function(game, x, y) {
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
 	//Setting some attributes for granny
-	this.anchor.set(0.5);
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
 	this.facing = 'left';
-	this.scale.setTo(1, 1);
+	this.scale.setTo(0.5, 0.5);
+	this.anchor.set(0.5);
 	this.body.gravity.y = 800;
 
 	this.onGround = false;
@@ -33,14 +33,14 @@ Granny.prototype.update = function() {
 	
 	//Basic movement handling if statements
 	if (this.keyRight.isDown) {
-		this.facing = "right";
-		this.scale.x = -this.anchorScale;
+		this.facing = 'right';
+		this.scale.x = this.anchorScale;
 		this.body.velocity.x = Granny.MOVE_SPEED;
 		//play move right animation
 	}
 	else if (this.keyLeft.isDown) {
 		this.facing = 'left';
-		this.scale.x = this.anchorScale;
+		this.scale.x = -this.anchorScale;
 		this.body.velocity.x = -Granny.MOVE_SPEED;
 		//play move left animation
 	}

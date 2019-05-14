@@ -2,13 +2,13 @@
 // its projectiles will be created in
 Enemy = function(game, x, y, player, enemyProjectiles) {
 
-	Phaser.Sprite.call(this, game, x, y, 'granny');
+	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
 
 	//Setting some attributes for the enemy
 	this.anchor.set(0.5);
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
-	this.scale.setTo(1, 1);
+	this.scale.setTo(-0.5, 0.5);
 	this.body.gravity.y = 800;
 	this.body.velocity.x = -50;
 	
@@ -37,7 +37,8 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = 0;
 		// Shoot her
 		if (this.bulletCooldown == 0) {
-			bullet = this.enemyProjectiles.create(this.x, this.y-25, "granny");
+			bullet = this.enemyProjectiles.create(this.x, this.y-10, 'seed projectile');
+			bullet.anchor.set(0.5);
 			bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 			this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
 		}
@@ -48,11 +49,13 @@ Enemy.prototype.update = function() {
 	}
 
 	// Define when the plant turns around
-	if (this.x < 20) {
+	if (this.x < 100) {
 		this.facing = 'right';
+		this.scale.x = 0.5;
 	}
 	else if (this.x > 580) {
 		this.facing = 'left';
+		this.scale.x = -0.5;
 	}
 	
 }

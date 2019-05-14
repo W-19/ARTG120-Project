@@ -15,11 +15,12 @@ var game = new Phaser.Game(config);
 var currentTrack; // allows us to stop the game audio when we enter the GameOver state
 
 // Define states
+
 var MainMenu = function(game){};
 MainMenu.prototype = {
 	create: function(){
 		game.stage.backgroundColor = "#AFAFAF";
-		game.add.text(16, 16, "Welcome to Greenhouse Granny v0.0.0.0.1", { fontSize: '32px', fill: '#000' })
+		game.add.text(16, 16, "Welcome to Greenhouse Granny v0.1", { fontSize: '32px', fill: '#000' })
 		game.add.text(16, 100,
 				"Eventually the main menu screen will look fancier than this.\n" +
 				"Press space to start, use the arrow keys to move the granny, Q to attack.",
@@ -33,15 +34,17 @@ MainMenu.prototype = {
 }
 
 var Play = function(game){
-	this.ALPHA = .0;
+	this.ALPHA = 0.0;
 };
 Play.prototype = {
 	preload: function(){
-		game.load.image('granny', 'assets/img/60 second granny.png'); // replace with spritesheet/texture atlas
+		game.load.image('granny', 'assets/img/Gardener.png'); // replace with spritesheet/texture atlas
 		// an old background that we should get rid of soon
 		//game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', 'assets/img/shovel.png');
+		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
+		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/tempTileMap.json', null, Phaser.Tilemap.TILED_JSON);
@@ -77,8 +80,8 @@ Play.prototype = {
 
 		//Creating a shovel weapon as a child of player
 		shovel = this.player.addChild(game.make.sprite(1, -5, 'shovel'));
-		shovel.scale.setTo(0.08);
-		shovel.angle = -210;
+		shovel.scale.setTo(0.14);
+		shovel.angle = -90;
 		//Something weird is happening when I try to access the shovels body, potentially due to it being a child sprite
 		shovel.enableBody = true;
 		shovelCooldown = 0;
@@ -212,7 +215,7 @@ Play.prototype = {
 
 		//If q is pressed down and shovel is ready to use, granny attacks with her shovel
 		if (qkey.isDown && shovelCooldown == 0) {
-			shovel.angle = -240;
+			shovel.angle = -50;
 			shovelCooldown = 25;
 			//Same sort of logic that is in the enemy prefab for detecting when player is in range,
 			//but now acting as a weapon hitbox detector of sorts
@@ -230,7 +233,7 @@ Play.prototype = {
 		}
 		//When shovel is ready to be used again for an attack, reset shovel angle
 		if (shovelCooldown == 0) {
-			shovel.angle = -210;
+			shovel.angle = -90;
 		}
 
 		// ------------ THIS'LL PROBABLY GET MOVED INTO THE PREFAB EVENTUALLY -------------
@@ -239,7 +242,7 @@ Play.prototype = {
 		if (this.plant.health == 0) {
 			this.plant.destroy();
 			//For now killing the enemy will also trigger the game over state
-			game.state.start('GameOver');
+			game.state.start('GameOver', true, false, 1); // 1 means you win
 		}
 		
 	},
@@ -247,7 +250,7 @@ Play.prototype = {
 	takeDamage: function(amount){
 		this.player.health -= amount;
 		if (this.player.health == 0) {
-			game.state.start('GameOver');
+			game.state.start('GameOver', true, false, 0); // 0 means you lose
 		}
 		this.healthBar.text = "Health: " + this.player.health;
 	},
@@ -268,7 +271,7 @@ GameOver.prototype = {
 	},
 	create: function(){
 		// background color already set in MainMenu
-		game.add.text(16, 16, "Game over\nScore: " + "[placeholder]" + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		game.add.text(16, 16, "Game over\nScore: " + this.score + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}
