@@ -11,8 +11,8 @@ Enemy = function(game, x, y, player, enemyProjectiles) {
 	this.scale.setTo(1, 1);
 	this.body.gravity.y = 800;
 	this.body.velocity.x = -50;
-	var health;
-
+	
+	this.health = 3;
 	this.player = player;
 	this.enemyProjectiles = enemyProjectiles;
 	this.facing = 'left';

@@ -11,6 +11,7 @@ var config = {
 	multiTexture: true
 }
 var game = new Phaser.Game(config);
+
 var currentTrack; // allows us to stop the game audio when we enter the GameOver state
 
 // Define states
@@ -81,6 +82,11 @@ Play.prototype = {
 		//Something weird is happening when I try to access the shovels body, potentially due to it being a child sprite
 		shovel.enableBody = true;
 		shovelCooldown = 0;
+
+		//Adding text to keep score at the top left of screen
+    	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar.fixedToCamera = true;
+    	this.healthBar.cameraOffset.setTo(16, 16);
 
 		// A group that holds all the platforms. It's a wonky workaround for now.
 		this.platforms = game.add.group();
@@ -174,39 +180,32 @@ Play.prototype = {
 		// Set up the enemy
 		this.plant = new Enemy(game, 475, 550, this.player, this.enemyProjectiles);
 		game.add.existing(this.plant);
-		this.plant.health = 3;
-
-		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
-    	this.healthBar.fixedToCamera = true;
-    	this.healthBar.cameraOffset.setTo(16, 16);
+    	
 	},
 
 	update: function(){
+		// ---------------------------------- COLLISIONS ----------------------------------
+		// Keep in mind that collide repels the objects, while overlap does not
 
-		//Check to see if player collides with platforms
+		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.platforms);
-
-		//Check to see if Enemies collides with platforms\
 		game.physics.arcade.collide(this.plant, this.platforms);
+		// probably check for enemyProjectiles too, but we can implement that later on
 
-		//Checking to see if player overlaps with plant
-		game.physics.arcade.collide(this.player, this.plant, enemyContact, null, this);
-
-		//Check to see if player and bullet overlap
-		game.physics.arcade.overlap(this.player, this.enemyProjectiles, bulletContact, null, this);
-
-		//this.healthBar.text = "Health: " + this.player.health;
-
-		//If player is out of health game ends
-		if (this.player.health == 0) {
-			game.state.start('GameOver');
+		// The various collisions which cause the player to take damage
+		if(game.physics.arcade.collide(this.player, this.plant)){
+			this.takeDamage(1);
 		}
+		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
+
+		// ------------------------------------ AUDIO -------------------------------------
 
 		// Loop the audio
 		if(!currentTrack.isPlaying){
 			currentTrack.play();
 		}
+
+		// ------------------------------ INPUT & ATTACKING -------------------------------
 
 		//Creating Q key input
 		var qkey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
@@ -234,6 +233,7 @@ Play.prototype = {
 			shovel.angle = -210;
 		}
 
+		// ------------ THIS'LL PROBABLY GET MOVED INTO THE PREFAB EVENTUALLY -------------
 		
 		//If the plant enemy is at zero health it gets removed from game
 		if (this.plant.health == 0) {
@@ -242,20 +242,24 @@ Play.prototype = {
 			game.state.start('GameOver');
 		}
 		
+	},
+
+	takeDamage: function(amount){
+		this.player.health -= amount;
+		if (this.player.health == 0) {
+			game.state.start('GameOver');
+		}
+		this.healthBar.text = "Health: " + this.player.health;
+	},
+
+	//Function for when a plant projectile contacts player
+	bulletContact: function(player, bullet) {
+		bullet.kill();
+		this.takeDamage(1);
 	}
 
 }
 
-//On contact with enemy player loses health
-function enemyContact () {
-   --this.player.health;
-}
-
-//Function for when a plant projectile contacts player
-function bulletContact (player, bullet) {
-	bullet.kill();
-	--this.player.health;
-}
 
 var GameOver = function(game){};
 GameOver.prototype = {
