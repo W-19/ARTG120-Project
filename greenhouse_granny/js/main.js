@@ -25,7 +25,7 @@ MainMenu.prototype = {
 		game.add.text(16, 16, "Welcome to Greenhouse Granny v0.1", { fontSize: '32px', fill: '#000' })
 		game.add.text(16, 100,
 				"Eventually the main menu screen will look fancier than this.\n" +
-				"Press space to start, use the arrow keys to move the granny, Q to attack.",
+				"Press space to start, use the arrow keys to move the granny, Q to attack, hold space to block.",
 				{ fontSize: '16px', fill: '#000' });
 	},
 	update: function(){
@@ -115,8 +115,8 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
-		if(game.physics.arcade.collide(this.player, this.enemies)){
-			this.takeDamage(1);
+		if(game.physics.arcade.collide(this.player, this.enemies)) {
+				this.takeDamage(1);
 		}
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
 
@@ -137,6 +137,8 @@ Play.prototype = {
 	},
 
 	takeDamage: function(amount){
+		if (this.player.isBlocking == true && this.player.isTrueBlocking == true) amount = 0;
+		else if (this.player.isBlocking == true) amount /= 2;
 		this.player.health -= amount;
 		if (this.player.health == 0) {
 			game.state.start('GameOver', true, false, 0); // 0 means you lose

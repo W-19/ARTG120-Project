@@ -12,7 +12,9 @@ Granny = function(game, x, y, enemies) {
 	this.anchorScale = this.scale.x;
 	this.body.gravity.y = 1000;
 	this.health = 10;
-
+	this.isBlocking = false;
+	this.isTrueBlocking = false;
+	this.trueBlockCounter = 0;
 	this.onGround = false;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.MOVE_SPEED = 400;
@@ -27,6 +29,7 @@ Granny = function(game, x, y, enemies) {
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 }
 
 //Creating a prototype for granny
@@ -47,9 +50,7 @@ Granny.prototype.update = function() {
 	}
 	else this.attackCooldown--;
 
-
-
-	// -------------------------------- MOVEMENT & JUMPING --------------------------------
+	// -------------------------------- MOVEMENT, JUMPING, and BLOCKING --------------------------------
 
 	this.onGround = this.body.blocked.down;
 	
@@ -80,6 +81,24 @@ Granny.prototype.update = function() {
 		if(!this.onGround){
 			this.airJumps--;
 		}
+	}
+
+	//Blocking logic
+	if (this.trueBlockCounter > 0) --this.trueBlockCounter;
+	if (this.trueBlockCounter == 0) this.isTrueBlocking = false;
+	if (this.keyBlock.isDown) {
+		this.isBlocking = true;
+		if (this.trueBlockCounter == 0 && this.trueBlockReady == true) {
+			this.trueBlockCounter = 25;
+			this.trueBlockReady = false;
+			this.isTrueBlocking = true;
+		}
+	}
+	else {
+		this.isBlocking = false;
+		this.trueBlockReady = true;
+		this.trueBlockCounter = 0;
+		this.isTrueBlocking = false;
 	}
 }
 
