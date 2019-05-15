@@ -21,6 +21,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 	Enemy.AGGRO_RANGE = 500;
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
+	this.hitStunDuration = 0;
 }
 
 //Creating a prototype for enemy
@@ -31,33 +32,47 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = function() {
 
 	if(this.bulletCooldown > 0) this.bulletCooldown--;
+	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
-	// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-	if( this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.player.y == this.y ||
-		this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.player.y == this.y
-	){
-		this.body.velocity.x = 0;
-		// Shoot her
-		if (this.bulletCooldown == 0) {
-			bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
-			bullet.anchor.set(0.5);
-			bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
-			this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
+	// Attacking & patrolling
+	if(this.hitStunDuration == 0){
+		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
+		if( this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.player.y == this.y ||
+			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.player.y == this.y
+		){
+			this.body.velocity.x = 0;
+			// Shoot her
+			if (this.bulletCooldown == 0) {
+				bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
+				bullet.anchor.set(0.5);
+				bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
+				this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
+			}
+		}
+		// If the player's not in range, keep patrolling
+		else {
+			this.body.velocity.x = this.facing == 'left' ? -50 : 50;
+		}
+
+		// Define when the plant turns around
+		if (this.x < this.leftxFlag) {
+			this.facing = 'right';
+			this.scale.x = 0.5;
+		}
+		else if (this.x > this.rightxFlag) {
+			this.facing = 'left';
+			this.scale.x = -0.5;
 		}
 	}
-	// If the player's not in range, keep patrolling
-	else {
-		this.body.velocity.x = this.facing == 'left' ? -50 : 50;
-	}
-
-	// Define when the plant turns around
-	if (this.x < this.leftxFlag) {
-		this.facing = 'right';
-		this.scale.x = 0.5;
-	}
-	else if (this.x > this.rightxFlag) {
-		this.facing = 'left';
-		this.scale.x = -0.5;
-	}
 	
+}
+
+Enemy.prototype.takeDamage = function(amount){
+	this.health -= amount;
+	if(this.health <= 0) this.destroy(); // maybe replace with kill?
+	else{
+		this.body.velocity.y -= 150;
+		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
+		this.hitStunDuration = 30;
+	}
 }

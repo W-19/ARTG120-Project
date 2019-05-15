@@ -107,8 +107,7 @@ Play.prototype = {
 
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
-		 console.log(this.player.x);
-		 console.log(this.player.y);
+
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
