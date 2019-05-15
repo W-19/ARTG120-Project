@@ -111,9 +111,7 @@ Play.prototype = {
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
-		if (game.physics.arcade.collide(this.enemyProjectiles, this.mapLayer)) {
-			//bullet.kill();
-		}
+		game.physics.arcade.collide(this.enemyProjectiles, this.mapLayer, this.bulletContactTerrain, null, this);
 		// probably check for enemyProjectiles too, but we can implement that later on
 
 		// The various collisions which cause the player to take damage
@@ -153,10 +151,13 @@ Play.prototype = {
 	bulletContact: function(player, bullet) {
 		bullet.kill();
 		this.takeDamage(1);
+	},
+
+	bulletContactTerrain: function(bullet, player) {
+		bullet.kill();
 	}
 
 }
-
 
 var GameOver = function(game){};
 GameOver.prototype = {
