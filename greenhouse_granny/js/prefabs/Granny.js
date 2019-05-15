@@ -51,7 +51,7 @@ Granny.prototype.update = function() {
 
 	// -------------------------------- MOVEMENT & JUMPING --------------------------------
 
-	this.onGround = this.body.touching.down;
+	this.onGround = this.body.blocked.down;
 	
 	//Basic movement handling if statements
 	if (this.keyRight.isDown) {
