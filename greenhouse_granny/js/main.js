@@ -83,7 +83,7 @@ Play.prototype = {
 		game.camera.follow(this.player);
 
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health, { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: '32px', fill: '#ffffff' });
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(16, 16);
 
@@ -111,12 +111,15 @@ Play.prototype = {
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
+		if (game.physics.arcade.collide(this.enemyProjectiles, this.mapLayer)) {
+			//bullet.kill();
+		}
 		// probably check for enemyProjectiles too, but we can implement that later on
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
 		if(game.physics.arcade.collide(this.player, this.enemies)) {
-				this.takeDamage(1);
+			this.takeDamage(1);
 		}
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
 
@@ -143,7 +146,7 @@ Play.prototype = {
 		if (this.player.health == 0) {
 			game.state.start('GameOver', true, false, 0); // 0 means you lose
 		}
-		this.healthBar.text = "Health: " + this.player.health;
+		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
 	},
 
 	//Function for when a plant projectile contacts player
