@@ -1,5 +1,5 @@
 //Creating Granny function
-Granny = function(game, x, y) {
+Granny = function(game, x, y, enemies) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -9,18 +9,24 @@ Granny = function(game, x, y) {
 	this.facing = 'left';
 	this.scale.setTo(0.5, 0.5);
 	this.anchor.set(0.5);
-	this.body.gravity.y = 800;
+	this.anchorScale = this.scale.x;
+	this.body.gravity.y = 1000;
+	this.health = 10;
 
 	this.onGround = false;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
 	this.airJumps = 1;
-	this.anchorScale = this.scale.x;
+	this.currentWeapon = null; // the variable from the weapons file
+	this.currentWeaponObj = null; // the actual object associated with said variable
+	this.attackCooldown = 0; // she can't attack unless it's 0
+	this.enemies = enemies;
 
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 }
 
 //Creating a prototype for granny
@@ -29,6 +35,22 @@ Granny.prototype.constructor = Granny;
 
 //Update funtion for granny
 Granny.prototype.update = function() {
+
+	// ------------------------------------ ATTACKING -------------------------------------
+
+	this.currentWeapon.update(this, this.currentWeaponObj);
+
+	if(this.attackCooldown == 0){
+		if(this.keyAttack.isDown){
+			this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
+		}
+	}
+	else this.attackCooldown--;
+
+
+
+	// -------------------------------- MOVEMENT & JUMPING --------------------------------
+
 	this.onGround = this.body.touching.down;
 	
 	//Basic movement handling if statements
@@ -59,5 +81,14 @@ Granny.prototype.update = function() {
 			this.airJumps--;
 		}
 	}
+}
+
+Granny.prototype.switchWeapon = function(weapon){
+	this.removeChildren();
+	this.currentWeapon = weapon;
+	this.currentWeaponObj = this.addChild(game.make.sprite(1, -5, weapon.name));
+	this.currentWeaponObj.scale.setTo(weapon.scale);
+	this.currentWeaponObj.angle = weapon.defaultAngle;
+	this.currentWeaponObj.enableBody = true;
 
 }

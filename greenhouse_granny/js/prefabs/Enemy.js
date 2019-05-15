@@ -9,7 +9,7 @@ Enemy = function(game, x, y, player, enemyProjectiles) {
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
 	this.scale.setTo(-0.5, 0.5);
-	this.body.gravity.y = 800;
+	this.body.gravity.y = 1000;
 	this.body.velocity.x = -50;
 	
 	this.health = 3;
@@ -37,7 +37,7 @@ Enemy.prototype.update = function() {
 		this.body.velocity.x = 0;
 		// Shoot her
 		if (this.bulletCooldown == 0) {
-			bullet = this.enemyProjectiles.create(this.x, this.y-10, 'seed projectile');
+			bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
 			bullet.anchor.set(0.5);
 			bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 			this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
@@ -53,7 +53,7 @@ Enemy.prototype.update = function() {
 		this.facing = 'right';
 		this.scale.x = 0.5;
 	}
-	else if (this.x > 580) {
+	else if (this.x > 620) {
 		this.facing = 'left';
 		this.scale.x = -0.5;
 	}

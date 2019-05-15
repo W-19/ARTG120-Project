@@ -44,7 +44,7 @@ Play.prototype = {
 		// an old background that we should get rid of soon
 		//game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
-		game.load.image('shovel', 'assets/img/shovel.png');
+		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 
@@ -74,22 +74,17 @@ Play.prototype = {
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
 
+		// A group which holds all the enemies (but not their projectiles!). We'll populate it later
+		this.enemies = game.add.group();
+
 		// Set up the player
-		this.player = new Granny(game, 100, 400);
+		this.player = new Granny(game, 100, 400, this.enemies);
+		this.player.switchWeapon(shovel);
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
-		this.player.health = 5;
-
-		//Creating a shovel weapon as a child of player
-		shovel = this.player.addChild(game.make.sprite(1, -5, 'shovel'));
-		shovel.scale.setTo(0.14);
-		shovel.angle = -90;
-		//Something weird is happening when I try to access the shovels body, potentially due to it being a child sprite
-		shovel.enableBody = true;
-		shovelCooldown = 0;
 
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: 5', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health, { fontSize: '32px', fill: '#ffffff' });
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(16, 16);
 
@@ -182,23 +177,24 @@ Play.prototype = {
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
 
-		// Set up the enemy
-		this.plant = new Enemy(game, 475, 550, this.player, this.enemyProjectiles);
-		game.add.existing(this.plant);
+		// Set up the enemies
+		this.enemies.add(new Enemy(game, 475, 550, this.player, this.enemyProjectiles));
     	
 	},
 
 	update: function(){
+
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
 
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.platforms);
-		game.physics.arcade.collide(this.plant, this.platforms);
+		game.physics.arcade.collide(this.enemies, this.platforms);
 		// probably check for enemyProjectiles too, but we can implement that later on
 
 		// The various collisions which cause the player to take damage
-		if(game.physics.arcade.collide(this.player, this.plant)){
+		// this logic should probably be moved into the enemy prefab eventually
+		if(game.physics.arcade.collide(this.player, this.enemies)){
 			this.takeDamage(1);
 		}
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
@@ -210,40 +206,10 @@ Play.prototype = {
 			currentTrack.play();
 		}
 
-		// ------------------------------ INPUT & ATTACKING -------------------------------
-
-		//Creating Q key input
-		var qkey = game.input.keyboard.addKey(Phaser.Keyboard.Q);
-
-		//If q is pressed down and shovel is ready to use, granny attacks with her shovel
-		if (qkey.isDown && shovelCooldown == 0) {
-			shovel.angle = -50;
-			shovelCooldown = 25;
-			//Same sort of logic that is in the enemy prefab for detecting when player is in range,
-			//but now acting as a weapon hitbox detector of sorts
-			if (this.plant.x - this.player.x < 100 && this.plant.x - this.player.x > 0 && this.plant.y - 60 <= this.player.y) {
-				this.plant.x += 50;
-				--this.plant.health;
-			}
-			if (this.player.x - this.plant.x < 100 && this.player.x - this.plant.x > 0 && this.plant.y - 60 <= this.player.y) {
-				this.plant.x -= 50;
-				--this.plant.health;
-			}
-		}
-		if (shovelCooldown > 0) {
-			--shovelCooldown;
-		}
-		//When shovel is ready to be used again for an attack, reset shovel angle
-		if (shovelCooldown == 0) {
-			shovel.angle = -90;
-		}
-
-		// ------------ THIS'LL PROBABLY GET MOVED INTO THE PREFAB EVENTUALLY -------------
+		// ------------------------------- STATES & SUCH ----------------------------------
 		
-		//If the plant enemy is at zero health it gets removed from game
-		if (this.plant.health == 0) {
-			this.plant.destroy();
-			//For now killing the enemy will also trigger the game over state
+		// If all the enemies are dead, trigger the game over state
+		if (this.enemies.count == 0) {
 			game.state.start('GameOver', true, false, 1); // 1 means you win
 		}
 		
