@@ -92,15 +92,23 @@ Play.prototype = {
 		this.enemyProjectiles.enableBody = true;
 
 		// Set up the enemies
-		this.enemies.add(new Enemy(game, 500, 1700, this.player, this.enemyProjectiles));
-    	
+		this.enemies.add(new Enemy(game, 1050, 1700, this.player, this.enemyProjectiles, 545, 1050));
+		this.enemies.add(new Enemy(game, 1464, 1500, this.player, this.enemyProjectiles, 1290, 1464));
+		this.enemies.add(new Enemy(game, 2016, 1700, this.player, this.enemyProjectiles, 1761, 2014));
+		this.enemies.add(new Enemy(game, 1695, 1240, this.player, this.enemyProjectiles, 1477, 1695));
+		this.enemies.add(new Enemy(game, 1145, 1180, this.player, this.enemyProjectiles, 993, 1145));
+		this.enemies.add(new Enemy(game, 762, 855, this.player, this.enemyProjectiles, 417, 762));
+		this.enemies.add(new Enemy(game, 351, 190, this.player, this.enemyProjectiles, 212, 351));
+		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015));
+		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015));
 	},
 
 	update: function(){
 
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
-
+		 console.log(this.player.x);
+		 console.log(this.player.y);
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);

@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-Enemy = function(game, x, y, player, enemyProjectiles) {
+Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 
 	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
 
@@ -19,6 +19,8 @@ Enemy = function(game, x, y, player, enemyProjectiles) {
 	Enemy.BULLET_COOLDOWN_BASE = 45;
 	this.bulletCooldown = 0;
 	Enemy.AGGRO_RANGE = 500;
+	this.leftxFlag = leftxFlag;
+	this.rightxFlag = rightxFlag;
 }
 
 //Creating a prototype for enemy
@@ -49,11 +51,11 @@ Enemy.prototype.update = function() {
 	}
 
 	// Define when the plant turns around
-	if (this.x < 100) {
+	if (this.x < this.leftxFlag) {
 		this.facing = 'right';
 		this.scale.x = 0.5;
 	}
-	else if (this.x > 620) {
+	else if (this.x > this.rightxFlag) {
 		this.facing = 'left';
 		this.scale.x = -0.5;
 	}
