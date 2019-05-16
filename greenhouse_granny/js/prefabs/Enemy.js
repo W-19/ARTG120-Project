@@ -37,8 +37,8 @@ Enemy.prototype.update = function() {
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if( this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.player.y == this.y ||
-			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.player.y == this.y
+		if( this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
+			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		){
 			this.body.velocity.x = 0;
 			// Shoot her
