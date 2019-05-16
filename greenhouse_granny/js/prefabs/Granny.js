@@ -101,12 +101,22 @@ Granny.prototype.update = function() {
 }
 
 Granny.prototype.takeDamage = function(amount, source){
-	this.health -= (this.blockTime <= 0 ? amount : (this.blockTime < 25 ? 0 : amount/2));
+	if(this.blockTime <= 0){ // no block
+		this.health -= amount;
+		this.tint = 0xff4444; // flash red
+	}
+	else if(this.blockTime > 25){ // partial block
+		this.health -= amount/2;
+		this.tint = 0xffbbbb;
+	}
+	else{ // full block
+		return;
+	}
+
 	if(this.health <= 0) game.state.start('GameOver', true, false, 0);
-	// she gets knocked away
+	// apply knockback
 	this.body.velocity.x = (300 + (200 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
 	this.body.velocity.y = -80 - (20 * amount); // vertical knockback is always positive for now
-	this.tint = 0xff4444; // flash red
 }
 
 Granny.prototype.switchWeapon = function(weapon){
