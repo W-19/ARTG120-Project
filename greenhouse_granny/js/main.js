@@ -142,16 +142,6 @@ Play.prototype = {
 		
 	},
 
-	takeDamage: function(amount){
-		if (this.player.isBlocking == true && this.player.isTrueBlocking == true) amount = 0;
-		else if (this.player.isBlocking == true) amount /= 2;
-		this.player.health -= amount;
-		if (this.player.health == 0) {
-			game.state.start('GameOver', true, false, 0); // 0 means you lose
-		}
-		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
-	},
-
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
 		this.player.takeDamage(1, bullet);
