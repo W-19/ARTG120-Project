@@ -103,7 +103,7 @@ Granny.prototype.update = function() {
 Granny.prototype.takeDamage = function(amount, source){
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
-		this.tint = 0xff4444; // flash red
+		this.tint = 0xff4444;
 	}
 	else if(this.blockTime > 25){ // partial block
 		this.health -= amount/2;
