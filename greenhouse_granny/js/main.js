@@ -142,7 +142,6 @@ Play.prototype = {
 		
 	},
 
-<<<<<<< HEAD
 	takeDamage: function(amount){
 		if (this.player.isBlocking == true && this.player.isTrueBlocking == true) amount = 0;
 		else if (this.player.isBlocking == true) amount /= 2;
@@ -153,20 +152,14 @@ Play.prototype = {
 		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
 	},
 
-=======
->>>>>>> SK
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
 		this.player.takeDamage(1, bullet);
 		bullet.kill();
-<<<<<<< HEAD
-		this.takeDamage(1);
 	},
 
-	bulletContactTerrain: function(bullet, player) {
+	bulletContactTerrain: function(bullet, terrain) {
 		bullet.kill();
-=======
->>>>>>> SK
 	}
 
 }
