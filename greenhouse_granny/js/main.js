@@ -115,10 +115,13 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
-		if(game.physics.arcade.collide(this.player, this.enemies)) {
-				this.takeDamage(1);
-		}
+		game.physics.arcade.collide(this.player, this.enemies, function(player, enemy){
+			player.takeDamage(1, enemy);
+		});
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
+
+		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
+		this.healthBar.text = "Health: " + this.player.health;
 
 		// ------------------------------------ AUDIO -------------------------------------
 
@@ -136,20 +139,10 @@ Play.prototype = {
 		
 	},
 
-	takeDamage: function(amount){
-		if (this.player.isBlocking == true && this.player.isTrueBlocking == true) amount = 0;
-		else if (this.player.isBlocking == true) amount /= 2;
-		this.player.health -= amount;
-		if (this.player.health == 0) {
-			game.state.start('GameOver', true, false, 0); // 0 means you lose
-		}
-		this.healthBar.text = "Health: " + this.player.health;
-	},
-
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
+		this.player.takeDamage(1, bullet);
 		bullet.kill();
-		this.takeDamage(1);
 	}
 
 }

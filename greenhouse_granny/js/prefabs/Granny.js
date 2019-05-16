@@ -12,11 +12,10 @@ Granny = function(game, x, y, enemies) {
 	this.anchorScale = this.scale.x;
 	this.body.gravity.y = 1000;
 	this.health = 10;
-	this.isBlocking = false;
-	this.isTrueBlocking = false;
-	this.trueBlockCounter = 0;
+	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
 	Granny.MAX_AIR_JUMPS = 1;
+	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
 	this.airJumps = 1;
@@ -50,7 +49,7 @@ Granny.prototype.update = function() {
 	}
 	else this.attackCooldown--;
 
-	// -------------------------------- MOVEMENT, JUMPING, and BLOCKING --------------------------------
+	// -------------------------------- MOVEMENT &  JUMPING--------------------------------
 
 	this.onGround = this.body.blocked.down;
 	
@@ -58,17 +57,25 @@ Granny.prototype.update = function() {
 	if (this.keyRight.isDown) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
-		this.body.velocity.x = Granny.MOVE_SPEED;
+		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
 	else if (this.keyLeft.isDown) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
-		this.body.velocity.x = -Granny.MOVE_SPEED;
+		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
 		//play move left animation
 	}
-	else{
-		this.body.velocity.x = 0;
+	else{ // decelerate
+		if(this.body.velocity.x < -Granny.ACCELERATION_SPEED){
+			this.body.velocity.x += Granny.ACCELERATION_SPEED;
+		}
+		else if(this.body.velocity.x > Granny.ACCELERATION_SPEED){
+			this.body.velocity.x -= Granny.ACCELERATION_SPEED;
+		}
+		else{
+			this.body.velocity.x = 0;
+		}
 		//play idle animation if on ground
 	}
 
@@ -83,23 +90,23 @@ Granny.prototype.update = function() {
 		}
 	}
 
-	//Blocking logic
-	if (this.trueBlockCounter > 0) --this.trueBlockCounter;
-	if (this.trueBlockCounter == 0) this.isTrueBlocking = false;
-	if (this.keyBlock.isDown) {
-		this.isBlocking = true;
-		if (this.trueBlockCounter == 0 && this.trueBlockReady == true) {
-			this.trueBlockCounter = 25;
-			this.trueBlockReady = false;
-			this.isTrueBlocking = true;
-		}
-	}
-	else {
-		this.isBlocking = false;
-		this.trueBlockReady = true;
-		this.trueBlockCounter = 0;
-		this.isTrueBlocking = false;
-	}
+	// ----------------------------------- BLOCKING ---------------------------------------
+
+	if (this.keyBlock.isDown) this.blockTime++;
+	else if (this.blockTime > 0) this.blockTime = -50; // blocking has a 50-tick cooldown
+
+	// --------------------------------- MISCELLANEOUS -------------------------------------
+
+	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
+}
+
+Granny.prototype.takeDamage = function(amount, source){
+	this.health -= (this.blockTime <= 0 ? amount : (this.blockTime < 25 ? 0 : amount/2));
+	if(this.health <= 0) game.state.start('GameOver', true, false, 0);
+	// she gets knocked away
+	this.body.velocity.x = (300 + (200 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
+	this.body.velocity.y = -80 - (20 * amount); // vertical knockback is always positive for now
+	this.tint = 0xff4444; // flash red
 }
 
 Granny.prototype.switchWeapon = function(weapon){
