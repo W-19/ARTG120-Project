@@ -124,7 +124,7 @@ Play.prototype = {
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
 
 		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
-		this.healthBar.text = "Health: " + this.player.health;
+		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
 
 		// ------------------------------------ AUDIO -------------------------------------
 
