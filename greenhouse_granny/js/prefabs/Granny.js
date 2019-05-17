@@ -1,3 +1,9 @@
+// used by immuneTo
+function EnemyCountdown(enemyObj, ticksRemaining){
+	this.enemyObj = enemyObj;
+	this.ticksRemaining = ticksRemaining;
+}
+
 //Creating Granny function
 Granny = function(game, x, y, enemies) {
 
@@ -11,6 +17,7 @@ Granny = function(game, x, y, enemies) {
 	this.anchor.set(0.5);
 	this.anchorScale = this.scale.x;
 	this.body.gravity.y = 1000;
+
 	this.health = 10;
 	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
@@ -23,6 +30,7 @@ Granny = function(game, x, y, enemies) {
 	this.currentWeaponObj = null; // the actual object associated with said variable
 	this.attackCooldown = 0; // she can't attack unless it's 0
 	this.enemies = enemies;
+	this.immuneTo = []; // holds all the enemies that recently damaged the player and the number of ticks until they can do so again
 
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -98,9 +106,22 @@ Granny.prototype.update = function() {
 	// --------------------------------- MISCELLANEOUS -------------------------------------
 
 	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
+	// update the list of enemies that recently damaged the player
+	for(var i = 0; i < this.immuneTo.length; i++){
+		if(this.immuneTo[i].ticksRemaining == 0){
+			this.immuneTo.splice(i, 1); // delete the element
+		}
+		else{
+			this.immuneTo[i].ticksRemaining--;
+		}
+	}
 }
 
 Granny.prototype.takeDamage = function(amount, source){
+	// If we were recently damaged by this enemy, we take no damage; otherwise, add it to the list
+	if(this.immuneTo.some(elem => elem.enemyObj == source)) return;
+	else this.immuneTo.push(new EnemyCountdown(source, 30)); // We'll be immune to this object for 30 ticks
+
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
 		this.tint = 0xff4444;
@@ -115,8 +136,8 @@ Granny.prototype.takeDamage = function(amount, source){
 
 	if(this.health <= 0) game.state.start('GameOver', true, false, 0);
 	// apply knockback
-	this.body.velocity.x = (300 + (200 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
-	this.body.velocity.y = -80 - (20 * amount); // vertical knockback is always positive for now
+	this.body.velocity.x = (480 + (20 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
+	this.body.velocity.y = -80 + ((80 * amount) * -Math.sin(game.physics.arcade.angleBetween(this, source))); // vertical knockback is always positive for now
 }
 
 Granny.prototype.switchWeapon = function(weapon){

@@ -11,6 +11,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 	this.scale.setTo(-0.5, 0.5);
 	this.body.gravity.y = 1000;
 	this.body.velocity.x = -50;
+	this.body.immovable = true;
 	
 	this.health = 3;
 	this.player = player;
