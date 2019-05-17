@@ -53,9 +53,7 @@ MainMenu.prototype = {
 		this.choose = game.add.sprite(60, 300, 'select');
 	},
 	update: function(){
-
-		console.log(this.select);
-
+		
 		//Show what player wants to select
 		if(this.select == 1) this.choose.y = 300; 
 		else if(this.select == 2) this.choose.y = 380;
