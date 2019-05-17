@@ -118,7 +118,7 @@ Play.prototype = {
 		// this logic should probably be moved into the enemy prefab eventually
 
 		game.physics.arcade.collide(this.player, this.enemies, function(player, enemy){
-			player.takeDamage(1, enemy);
+			player.takeDamage(3, enemy);
 		});
 
 		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
