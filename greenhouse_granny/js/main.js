@@ -18,19 +18,85 @@ var currentTrack; // allows us to stop the game audio when we enter the GameOver
 
 // Define states
 
-var MainMenu = function(game){};
+var MainMenu = function(game){
+	this.flag = true;
+	this.select = 1;
+};
 MainMenu.prototype = {
+	preload: function(){
+		game.load.image('title', 'assets/img/GreenhouseGrannyTitle.png');
+		game.load.image('select', 'assets/img/Select.png');
+		game.load.image('buttonbackground', 'assets/img/Buttonbackground.png')
+	},
 	create: function(){
-		game.stage.backgroundColor = "#AFAFAF";
-		game.add.text(16, 16, "Welcome to Greenhouse Granny v0.1", { fontSize: '32px', fill: '#000' })
-		game.add.text(16, 100,
-				"Eventually the main menu screen will look fancier than this.\n" +
-				"Press space to start, use the arrow keys to move the granny, Q to attack, hold space to block.",
-				{ fontSize: '16px', fill: '#000' });
+
+		//Set background color
+		game.stage.setBackgroundColor('#87CEEB');
+
+		//Add in title sprite
+		this.title = game.add.sprite(game.width/2, 120, 'title');
+		this.title.anchor.set(.5);
+
+		//Version
+		var title = game.add.text(game.width/2, 220, "v0.1", { fontSize: '32px', fill: '#000' })
+
+		//background and text for play, controls, and credits
+		var back = game.add.sprite(60, 300, 'buttonbackground');
+		game.add.text(125, 315, 'Play', {font: '40px Sabon', fill: '#fffff'});
+
+		back = game.add.sprite(60, 380, 'buttonbackground');
+		game.add.text(90, 395, 'Controls', {font: '40px Sabon', fill: '#fffff'});
+
+		back = game.add.sprite(60, 460, 'buttonbackground');
+		game.add.text(100, 475, 'Credits', {font: '40px Sabon', fill: '#fffff'});
+
+		this.choose = game.add.sprite(60, 300, 'select');
 	},
 	update: function(){
+
+		console.log(this.select);
+
+		//Show what player wants to select
+		if(this.select == 1) this.choose.y = 300; 
+		else if(this.select == 2) this.choose.y = 380;
+		else if(this.select == 3) this.choose.y = 460;
+
+		//Move the selection
+		if(game.input.keyboard.downDuration(Phaser.Keyboard.UP, 1)){
+			if(this.select == 1) this.select = 3;
+			else this.select--;
+		}
+		if(game.input.keyboard.downDuration(Phaser.Keyboard.DOWN, 1)){
+			if(this.select == 3) this.select = 1;
+			else this.select++;
+		}
+		
+		//Title animaiton
+		if(this.title.scale.x >= 1.10) this.flag = false;
+		if(this.title.scale.x < 1) this.flag = true;
+
+		if(this.flag == true){
+			this.title.scale.x += .002;
+		}
+		else if (this.flag == false){
+			this.title.scale.x -= .002;
+		}
+
+
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-			game.state.start("Play");
+			if(this.select == 1) {
+				game.state.start("Play");
+			}
+			else if(this.select == 2){
+				this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
+				this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
+				this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
+
+			}
+			else if(this.select == 3){
+				//Remove controls if they are on screen
+				//Create text saying our names
+			}
 		}
 	}
 }
