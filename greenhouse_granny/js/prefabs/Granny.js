@@ -55,7 +55,12 @@ Granny.prototype.update = function() {
 			this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
 		}
 	}
-	else this.attackCooldown--;
+	else{
+		this.attackCooldown--;
+		if(this.attackCooldown == 0){
+			this.currentWeapon.rearm();
+		}
+	}
 
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------
 
@@ -147,5 +152,4 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.currentWeaponObj.scale.setTo(weapon.scale);
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
-
 }
