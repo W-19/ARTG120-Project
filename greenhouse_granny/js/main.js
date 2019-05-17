@@ -19,8 +19,9 @@ var currentTrack; // allows us to stop the game audio when we enter the GameOver
 // Define states
 
 var MainMenu = function(game){
-	this.flag = true;
-	this.select = 1;
+	this.FLAG = true;
+	this.SELECT = 1;
+	this.SHOW = 1;
 };
 MainMenu.prototype = {
 	preload: function(){
@@ -50,51 +51,58 @@ MainMenu.prototype = {
 		back = game.add.sprite(60, 460, 'buttonbackground');
 		game.add.text(100, 475, 'Credits', {font: '40px Sabon', fill: '#fffff'});
 
+		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use spacebar to select',
+							{font: '30px Sabon', fill: '#fffff'});
+
 		this.choose = game.add.sprite(60, 300, 'select');
 	},
 	update: function(){
-		
+
 		//Show what player wants to select
-		if(this.select == 1) this.choose.y = 300; 
-		else if(this.select == 2) this.choose.y = 380;
-		else if(this.select == 3) this.choose.y = 460;
+		if(this.SELECT == 1) this.choose.y = 300; 
+		else if(this.SELECT == 2) this.choose.y = 380;
+		else if(this.SELECT == 3) this.choose.y = 460;
 
 		//Move the selection
 		if(game.input.keyboard.downDuration(Phaser.Keyboard.UP, 1)){
-			if(this.select == 1) this.select = 3;
-			else this.select--;
+			if(this.SELECT == 1) this.SELECT = 3;
+			else this.SELECT--;
+			this.instructions.destroy();
 		}
 		if(game.input.keyboard.downDuration(Phaser.Keyboard.DOWN, 1)){
-			if(this.select == 3) this.select = 1;
-			else this.select++;
+			if(this.SELECT == 3) this.SELECT = 1;
+			else this.SELECT++;
+			this.instructions.destroy();
 		}
 		
 		//Title animaiton
-		if(this.title.scale.x >= 1.10) this.flag = false;
-		if(this.title.scale.x < 1) this.flag = true;
+		if(this.title.scale.x >= 1.10) this.FLAG = false;
+		if(this.title.scale.x < 1) this.FLAG = true;
 
-		if(this.flag == true){
+		if(this.FLAG == true){
 			this.title.scale.x += .002;
 		}
-		else if (this.flag == false){
+		else if (this.FLAG == false){
 			this.title.scale.x -= .002;
 		}
 
-
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
-			if(this.select == 1) {
-				game.state.start("Play");
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 1){
+			game.state.start('Play');
+		}
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 2){
+			if(this.SHOW == 2){
+				this.blah.destroy();
 			}
-			else if(this.select == 2){
-				this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
-				this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
-				this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
-
+			this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
+			this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
+			this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
+			this.SHOW = 1;	
+		}
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 3){
+			if(this.SHOW == 1){
+				this.controlQ.destroy();
 			}
-			else if(this.select == 3){
-				//Remove controls if they are on screen
-				//Create text saying our names
-			}
+			this.SHOW = 2;
 		}
 	}
 }
