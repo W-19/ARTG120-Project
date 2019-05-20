@@ -25,6 +25,7 @@ Granny = function(game, x, y, enemies) {
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
+	Granny.x = this.body.x;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -45,6 +46,8 @@ Granny.prototype.constructor = Granny;
 
 //Update funtion for granny
 Granny.prototype.update = function() {
+
+	Granny.x = this.body.x;
 
 	// ------------------------------------ ATTACKING -------------------------------------
 

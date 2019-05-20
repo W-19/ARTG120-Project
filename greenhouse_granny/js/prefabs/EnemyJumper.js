@@ -12,7 +12,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 	this.body.gravity.y = 1000;
 	this.body.velocity.x = -20;
 	this.jumpCooldown = 0;
-	this.health = 3;
+	this.health = 2;
 	this.player = player;
 	this.facing = 'left';
 	EnemyJumper.AGGRO_RANGE = 300;
@@ -31,9 +31,7 @@ EnemyJumper.prototype.update = function() {
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 	if(this.jumpCooldown > 0) this.jumpCooldown--;
-    console.log("base: " + this.baseY);
-    console.log("y: " + this.y);
-    console.log("x: " + this.body.velocity.x);
+
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario

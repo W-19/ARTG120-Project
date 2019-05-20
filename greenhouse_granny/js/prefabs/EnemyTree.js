@@ -44,6 +44,7 @@ EnemyTree.prototype.update = function() {
 				this.burstShooting = true;
 				this.burstCooldown = 22;
 			}
+			console.log("here");
 			if (this.burstShooting == true) {
 				if (this.burstCooldown % 11 == 0) {	
 					bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-40, 'seed projectile');
@@ -55,8 +56,16 @@ EnemyTree.prototype.update = function() {
 					this.burstShooting = false;
 				}
 			}
-		}
-	
+		}	
+	}
+
+	if (this.x < Granny.x) {
+		this.facing = 'right';
+		this.scale.x = 1;
+	}
+	else {
+		this.facing = 'left';
+		this.scale.x = -1;
 	}
 }
 
