@@ -47,6 +47,7 @@ Enemy.prototype.update = function() {
 				bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
 				bullet.anchor.set(0.5);
 				bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
+				if (this.facing == 'left') bullet.scale.x = -bullet.scale.x;
 				this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
 			}
 		}
