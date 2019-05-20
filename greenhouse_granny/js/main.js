@@ -173,8 +173,7 @@ Play.prototype = {
 		this.enemies.add(new Enemy(game, 351, 190, this.player, this.enemyProjectiles, 212, 351));
 		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015));
 		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015));
-		this.enemies.add(new EnemyTree(game, 950, 1700, this.player, this.enemyProjectiles));
-		this.enemies.add(new EnemyJumper(game, 1050, 1700, this.player, 545, 1050));
+		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
 	},
 
 	update: function(){
@@ -185,6 +184,7 @@ Play.prototype = {
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
+		game.physics.arcade.collide(EnemyTree.acorns, this.mapLayer);
 		game.physics.arcade.collide(this.enemyProjectiles, this.mapLayer, this.bulletContactTerrain, null, this);
 		// probably check for enemyProjectiles too, but we can implement that later on
 
@@ -192,6 +192,9 @@ Play.prototype = {
 		// this logic should probably be moved into the enemy prefab eventually
 
 		game.physics.arcade.collide(this.player, this.enemies, function(player, enemy){
+			player.takeDamage(3, enemy);
+		});
+		game.physics.arcade.collide(this.player, EnemyTree.acorns, function(player, enemy){
 			player.takeDamage(3, enemy);
 		});
 

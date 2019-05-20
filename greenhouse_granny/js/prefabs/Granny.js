@@ -56,6 +56,7 @@ Granny.prototype.update = function() {
 	if(this.attackCooldown == 0){
 		if(this.keyAttack.isDown){
 			this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
+			this.currentWeapon.attack(game, this, this.currentWeaponObj, EnemyTree.acorns);
 		}
 	}
 	else{

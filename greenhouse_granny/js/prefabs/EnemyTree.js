@@ -8,6 +8,7 @@ EnemyTree = function(game, x, y, player, enemyProjectiles) {
 	this.anchor.set(0.5);
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
+	this.body.immovable = true;
 	this.scale.setTo(-1, 1);
 	this.body.gravity.y = 1000;
 	EnemyTree.BULLET_COOLDOWN_BASE = 300;
@@ -15,10 +16,12 @@ EnemyTree = function(game, x, y, player, enemyProjectiles) {
 	this.facing = 'left';
 	this.bulletCooldown = 0;
 	this.burstCooldown = 0;
+	this.acornCooldown = 0;
 	this.health = 5;
 	this.player = player;
 	EnemyTree.AGGRO_RANGE = 500;
 	this.hitStunDuration = 0;
+	EnemyTree.acorns = game.add.group();
 }
 
 //Creating a prototype for enemy
@@ -30,6 +33,7 @@ EnemyTree.prototype.update = function() {
 
 	if(this.bulletCooldown > 0) this.bulletCooldown--;
 	if(this.burstCooldown > 0) this.burstCooldown--;
+	if(this.acornCooldown > 0) this.acornCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
 	//Attacking
@@ -43,6 +47,10 @@ EnemyTree.prototype.update = function() {
 				this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
 				this.burstShooting = true;
 				this.burstCooldown = 22;
+			}
+			if (this.acornCooldown == 0) {
+				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y, this.player, 545, 1050));
+				this.acornCooldown = 400;
 			}
 			console.log("here");
 			if (this.burstShooting == true) {
