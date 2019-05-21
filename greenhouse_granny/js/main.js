@@ -54,6 +54,22 @@ MainMenu.prototype = {
 		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use spacebar to select',
 							{font: '30px Sabon', fill: '#fffff'});
 
+		//Instructions for player input
+		this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
+		this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
+		this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
+
+		//Make these intructions invisable
+		this.controlQ.alpha = 0;
+		this.controlS.alpha = 0;
+		this.controlA.alpha = 0;
+
+		//Credits for game
+		this.credits = game.add.text(350, 350, "            Made by: \nSimon Katzer, Jack Cuneo, \nMatthew Tolentino, \nand Trystan Nguyen",
+						{font: '30px Sabon', fill: '#fffff'});
+
+		this.credits.alpha = 0;
+
 		this.choose = game.add.sprite(60, 300, 'select');
 	},
 	update: function(){
@@ -91,17 +107,20 @@ MainMenu.prototype = {
 		}
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 2){
 			if(this.SHOW == 2){
-				this.blah.destroy();
+				this.credits.alpha = 0;
 			}
-			this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
-			this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
-			this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
-			this.SHOW = 1;	
+			this.controlQ.alpha = 1;
+			this.controlS.alpha = 1;
+			this.controlA.alpha = 1;
+			this.SHOW = 1;
 		}
 		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 3){
 			if(this.SHOW == 1){
-				this.controlQ.destroy();
+				this.controlQ.alpha = 0;
+				this.controlS.alpha = 0;
+				this.controlA.alpha = 0;
 			}
+			this.credits.alpha = 1;
 			this.SHOW = 2;
 		}
 	}
