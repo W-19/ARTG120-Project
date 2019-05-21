@@ -20,6 +20,10 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
 	this.baseY = y;
+	this.growthCounter = 1000;
+	EnemyJumper.x;
+	EnemyJumper.y;
+	EnemyJumper.growthReady;
 }
 
 //Creating a prototype for enemy
@@ -31,6 +35,15 @@ EnemyJumper.prototype.update = function() {
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 	if(this.jumpCooldown > 0) this.jumpCooldown--;
+	if(this.growthCounter > 0) this.growthCounter--;
+
+	if (this.growthCounter == 0) {
+		this.kill();
+		EnemyJumper.growthReady = true;
+		EnemyJumper.y = this.y;
+		EnemyJumper.x = this.x;
+		this.growthCounter = -1;
+	}
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){

@@ -117,6 +117,7 @@ Play.prototype = {
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
+		game.load.spritesheet('granny walk', 'assets/img/SpriteSheets/GrannyWalk.png');
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/Level1Tilemap.json', null, Phaser.Tilemap.TILED_JSON);
@@ -215,6 +216,10 @@ Play.prototype = {
 		// If all the enemies are dead, trigger the game over state
 		if (this.enemies.count == 0) {
 			game.state.start('GameOver', true, false, 1); // 1 means you win
+		}
+		if (EnemyJumper.growthReady == true) {
+			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
+			EnemyJumper.growthReady = false;
 		}
 		
 	},
