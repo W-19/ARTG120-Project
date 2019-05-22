@@ -38,6 +38,9 @@ Granny = function(game, x, y, enemies) {
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+	this.animations.add('walking', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 20, true);
+	this.frame = 0;
 }
 
 //Creating a prototype for granny
@@ -74,12 +77,14 @@ Granny.prototype.update = function() {
 	if (this.keyRight.isDown) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
+		this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
 	else if (this.keyLeft.isDown) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
+		this.animations.play('walking');
 		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
 		//play move left animation
 	}
@@ -94,6 +99,7 @@ Granny.prototype.update = function() {
 			this.body.velocity.x = 0;
 		}
 		//play idle animation if on ground
+		this.frame = 0;
 	}
 
     //Double jumping logic

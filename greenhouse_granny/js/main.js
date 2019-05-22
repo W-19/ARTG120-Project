@@ -129,14 +129,14 @@ MainMenu.prototype = {
 var Play = function(game){};
 Play.prototype = {
 	preload: function(){
-		game.load.image('granny', 'assets/img/Gardener.png'); // replace with spritesheet/texture atlas
+		//game.load.image('granny', 'assets/img/Gardener.png'); // replace with spritesheet/texture atlas
 		// an old background that we should get rid of soon
 		//game.load.image('background', 'assets/img/pixel background.png');
 		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
-		game.load.spritesheet('granny walk', 'assets/img/SpriteSheets/GrannyWalk.png');
+		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/Level1Tilemap.json', null, Phaser.Tilemap.TILED_JSON);
@@ -178,6 +178,8 @@ Play.prototype = {
     	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: '32px', fill: '#ffffff' });
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(16, 16);
+
+    	this.score = 0;
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
