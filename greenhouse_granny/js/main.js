@@ -56,8 +56,8 @@ MainMenu.prototype = {
 
 		//Instructions for player input
 		this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
-		this.controlS = game.add.text(400, 400, "Press Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
-		this.controlA = game.add.text(400, 450, "Use arrow keys to move", {font: '30px Sabon', fill: '#fffff'});
+		this.controlS = game.add.text(400, 400, "Hold Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
+		this.controlA = game.add.text(400, 450, "Use arrow keys to run and jump", {font: '30px Sabon', fill: '#fffff'});
 
 		//Make these intructions invisable
 		this.controlQ.alpha = 0;
