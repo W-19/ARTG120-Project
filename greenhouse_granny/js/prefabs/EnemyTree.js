@@ -35,12 +35,11 @@ EnemyTree.prototype.update = function() {
 	if(this.burstCooldown > 0) this.burstCooldown--;
 	if(this.acornCooldown > 0) this.acornCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
-
 	//Attacking
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if(this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && this.player.y - this.y >= 30 ||
-			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && this.player.y - this.y >= 30)
+		if(this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && this.player.y - this.y >= 0 ||
+			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && this.player.y - this.y >= 0)
 		{
 			//Attack her
 			if (this.bulletCooldown == 0) {
@@ -50,7 +49,7 @@ EnemyTree.prototype.update = function() {
 			}
 			if (this.acornCooldown == 0) {
 				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y, this.player, 545, 1050));
-				this.acornCooldown = 400;
+				this.acornCooldown = 500;
 			}
 			console.log("here");
 			if (this.burstShooting == true) {

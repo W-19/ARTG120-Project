@@ -196,6 +196,7 @@ Play.prototype = {
 		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015));
 		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015));
 		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
+		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
 	},
 
 	update: function(){
