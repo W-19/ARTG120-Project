@@ -51,7 +51,6 @@ EnemyTree.prototype.update = function() {
 				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y, this.player, 545, 1050));
 				this.acornCooldown = 500;
 			}
-			console.log("here");
 			if (this.burstShooting == true) {
 				if (this.burstCooldown % 11 == 0) {	
 					bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-40, 'seed projectile');
