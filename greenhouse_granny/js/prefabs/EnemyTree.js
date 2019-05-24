@@ -74,6 +74,8 @@ EnemyTree.prototype.update = function() {
 		this.facing = 'left';
 		this.scale.x = -1;
 	}
+
+	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
 }
 
 EnemyTree.prototype.takeDamage = function(amount){
@@ -81,5 +83,6 @@ EnemyTree.prototype.takeDamage = function(amount){
 	if(this.health <= 0) this.destroy(); // maybe replace with kill?
 	else{
 		this.hitStunDuration = 30;
+		this.tint = 0xff4444;
 	}
 }

@@ -80,6 +80,8 @@ EnemyJumper.prototype.update = function() {
 			this.scale.x = -0.25;
 		}
 	}
+
+	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
 	
 }
 
@@ -90,5 +92,6 @@ EnemyJumper.prototype.takeDamage = function(amount){
 		this.body.velocity.y -= 150;
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
 		this.hitStunDuration = 30;
+		this.tint = 0xff4444;
 	}
 }
