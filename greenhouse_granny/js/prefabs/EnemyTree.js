@@ -35,6 +35,7 @@ EnemyTree.prototype.update = function() {
 	if(this.burstCooldown > 0) this.burstCooldown--;
 	if(this.acornCooldown > 0) this.acornCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
+
 	//Attacking
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario

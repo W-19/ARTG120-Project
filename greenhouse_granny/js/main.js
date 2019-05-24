@@ -129,14 +129,13 @@ MainMenu.prototype = {
 var Play = function(game){};
 Play.prototype = {
 	preload: function(){
-		//game.load.image('granny', 'assets/img/Gardener.png'); // replace with spritesheet/texture atlas
-		// an old background that we should get rid of soon
-		//game.load.image('background', 'assets/img/pixel background.png');
+
 		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
+		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/Level1Tilemap.json', null, Phaser.Tilemap.TILED_JSON);
