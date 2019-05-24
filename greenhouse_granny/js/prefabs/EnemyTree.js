@@ -49,7 +49,7 @@ EnemyTree.prototype.update = function() {
 				this.burstCooldown = 22;
 			}
 			if (this.acornCooldown == 0) {
-				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y, this.player, 545, 1050));
+				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050));
 				this.acornCooldown = 500;
 			}
 			if (this.burstShooting == true) {
