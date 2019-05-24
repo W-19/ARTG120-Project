@@ -2,7 +2,7 @@
 // its projectiles will be created in
 EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 
-	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
+	Phaser.Sprite.call(this, game, x, y, 'acorn');
 
 	//Setting some attributes for the enemy
 	this.anchor.set(0.5);
