@@ -9,6 +9,7 @@ EnemyTree = function(game, x, y, player, enemyProjectiles) {
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
 	this.body.immovable = true;
+	this.body.setSize(90, 120, 0, 0);
 	this.scale.setTo(-1, 1);
 	this.body.gravity.y = 1000;
 	EnemyTree.BULLET_COOLDOWN_BASE = 300;

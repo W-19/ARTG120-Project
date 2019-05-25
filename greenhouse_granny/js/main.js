@@ -204,13 +204,15 @@ Play.prototype = {
 		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015));
 		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
 		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
+
+		this.tempEnemy;
+		this.collided = false;
 	},
 
 	update: function(){
 
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
-
 		++moneyCounter;
 
 		// Terrain collisions
@@ -222,15 +224,11 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
+		game.physics.arcade.collide(Granny.hitbox, this.enemies, this.enemyContact, null, this);
 
-		game.physics.arcade.collide(this.player, this.enemies, function(player, enemy){
-			player.takeDamage(3, enemy);
-		});
-		game.physics.arcade.collide(this.player, EnemyTree.acorns, function(player, enemy){
-			player.takeDamage(3, enemy);
-		});
+		game.physics.arcade.collide(Granny.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
 
-		game.physics.arcade.overlap(this.player, this.enemyProjectiles, this.bulletContact, null, this);
+		game.physics.arcade.overlap(Granny.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
 		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
 		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
@@ -253,13 +251,20 @@ Play.prototype = {
 			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
 			EnemyJumper.growthReady = false;
 		}
-		console.log(money);
 	},
 
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
 		this.player.takeDamage(1, bullet);
 		bullet.kill();
+	},
+
+	enemyContact: function(player, enemy) {
+		this.player.takeDamage(3, enemy);
+	},
+
+	enemyAcornContact: function(player, enemy) {
+		this.player.takeDamage(3, enemy);
 	},
 
 	bulletContactTerrain: function(bullet, terrain) {
@@ -274,7 +279,7 @@ GameOver.prototype = {
 		// background color already set in MainMenu
 		money = (moneyCounter / 100) * Granny.score;
 		console.log(moneyCounter);
-		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney Earned: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}

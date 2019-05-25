@@ -27,6 +27,7 @@ Granny = function(game, x, y, enemies) {
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
 	Granny.x = this.body.x;
+	Granny.y = this.body.y;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -49,6 +50,12 @@ Granny = function(game, x, y, enemies) {
 
 	//Variable that keeps track of when to play block animation
 	this.blockPlay;
+
+	Granny.hitbox = game.add.graphics(0,0);
+	Granny.hitbox.beginFill(0xFF0000, 1);
+    Granny.hitbox.drawRect(0, 0, 20, 50);
+    Granny.hitbox.alpha = 0;
+    game.physics.arcade.enable(Granny.hitbox);
 }
 
 //Creating a prototype for granny
@@ -58,10 +65,14 @@ Granny.prototype.constructor = Granny;
 //Update funtion for granny
 Granny.prototype.update = function() {
 
+	//Keeping track of grannys coordinates globally and updating hitbox coordinates as needed;
 	Granny.x = this.body.x;
+	Granny.y = this.body.y;
+	Granny.hitbox.x = Granny.x + 25;
+	Granny.hitbox.y = Granny.y + 20;
 
 	// ------------------------------------ ATTACKING -------------------------------------
-
+	
 	this.currentWeapon.update(this, this.currentWeaponObj);
 
 	if(this.attackCooldown == 0){

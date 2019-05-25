@@ -16,7 +16,7 @@ var shovel = {
 		player.attackCooldown = this.cooldown;
 		
 		enemies.forEachAlive(function(enemy){
-			if (Math.abs(enemy.x-(player.x+(player.facing == 'left' ? -20 : 20))) < 100 && enemy.y-60 <= player.y){
+			if (Math.abs(enemy.x-(player.x+(player.facing == 'left' ? -1 : 1))) < 100 && enemy.y-60 <= player.y){
 				if(this.enemiesDamagedThisAttack.some(e => e === enemy)) return;
 				else this.enemiesDamagedThisAttack.push(enemy);
 				enemy.takeDamage(1);
