@@ -42,7 +42,7 @@ MainMenu.prototype = {
 		this.title.anchor.set(.5);
 
 		//Version
-		var title = game.add.text(game.width/2, 220, "v0.1", { fontSize: '32px', fill: '#000' })
+		var title = game.add.text(game.width/2, 220, "v0.5", { fontSize: '32px', fill: '#000' })
 
 		//background and text for play, controls, and credits
 		var back = game.add.sprite(60, 300, 'buttonbackground');
@@ -186,7 +186,7 @@ Play.prototype = {
     	//Adding text to keep score at the top right of screen
     	this.scoreBar = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: '32px', fill: '#ffffff' });
     	this.scoreBar.fixedToCamera = true;
-    	this.scoreBar.cameraOffset.setTo(650, 16);
+    	this.scoreBar.cameraOffset.setTo(640, 16);
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
@@ -205,8 +205,6 @@ Play.prototype = {
 		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
 		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
 
-		this.tempEnemy;
-		this.collided = false;
 	},
 
 	update: function(){
@@ -242,9 +240,8 @@ Play.prototype = {
 		}
 
 		// ------------------------------- STATES & SUCH ----------------------------------
-		
 		// If all the enemies are dead, trigger the game over state
-		if (this.enemies.count == 0) {
+		if (this.enemies.length == 0) {
 			game.state.start('GameOver', true, false, 1); // 1 means you win
 		}
 		if (EnemyJumper.growthReady == true) {
@@ -277,9 +274,10 @@ var GameOver = function(game){};
 GameOver.prototype = {
 	create: function(){
 		// background color already set in MainMenu
-		money = (moneyCounter / 100) * Granny.score;
+		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
+		money += Math.floor((moneyCounter / 100) * Granny.score);
 		console.log(moneyCounter);
-		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney Earned: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney Earned: $" + tempMoney + "\nTotal: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}

@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
+EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing) {
 
 	Phaser.Sprite.call(this, game, x, y, 'acorn');
 
@@ -14,7 +14,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 	this.jumpCooldown = 0;
 	this.health = 2;
 	this.player = player;
-	this.facing = 'left';
+	this.facing = facing;
 	EnemyJumper.AGGRO_RANGE = 300;
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
@@ -24,6 +24,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 	EnemyJumper.x;
 	EnemyJumper.y;
 	EnemyJumper.growthReady;
+	this.scale.x = (this.facing == 'left' ? -0.25 : 0.25);
 
 	this.animations.add('moving', [0, 1, 2, 3], 7, true);
 	this.animations.play('moving');
