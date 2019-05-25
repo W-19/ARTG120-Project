@@ -24,6 +24,9 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag) {
 	EnemyJumper.x;
 	EnemyJumper.y;
 	EnemyJumper.growthReady;
+
+	this.animations.add('moving', [0, 1, 2, 3], 7, true);
+	this.animations.play('moving');
 }
 
 //Creating a prototype for enemy
@@ -47,7 +50,7 @@ EnemyJumper.prototype.update = function() {
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
-		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
+		// Checking to see if player is in range of acorn to be jumped at, and handling acorn movement in this scenario
 		if( this.facing == 'left' && this.x - this.player.x < EnemyJumper.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < EnemyJumper.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		){
@@ -58,19 +61,21 @@ EnemyJumper.prototype.update = function() {
 				this.jumpCooldown = 250;
 			}
 			else {
-				this.body.velocity.x = this.facing == 'left' ? -20 : 20;
+				this.body.velocity.x = this.facing == 'left' ? -30 : 30;
 			}
 		}
-		// If the player's not in range, keep patrolling
+		// If the acorn is still in the air, keep velocity at jump velocity
 		else {
 			if (this.baseY <= this.y) {
-				this.body.velocity.x = this.facing == 'left' ? -20 : 20;
+				this.animations.play('moving');
+				this.body.velocity.x = this.facing == 'left' ? -30 : 30;
 			}
 			else {
+				this.frame = 0;
 				this.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 			}
 		}
-		// Define when the plant turns around
+		// Define when the acorn turns around
 		if (this.x < this.leftxFlag) {
 			this.facing = 'right';
 			this.scale.x = 0.25;
