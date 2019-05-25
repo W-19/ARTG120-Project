@@ -270,21 +270,80 @@ Play.prototype = {
 
 }
 
-var GameOver = function(game){};
+var GameOver = function(game){
+	this.SELECT = 1;
+};
 GameOver.prototype = {
+	init: function(score){
+		this.score = score;
+	},
+	preload: function(){
+		game.load.image('endscreen', 'assets/img/Endscreen.png');
+		game.load.image('select', 'assets/img/Select.png');
+		game.load.image('hubBackground', 'assets/img/EndscreenHubBackground.png');
+	},
 	create: function(){
-		// background color already set in MainMenu
-		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
-		money += Math.floor((moneyCounter / 100) * Granny.score);
-		console.log(moneyCounter);
-		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney Earned: $" + tempMoney + "\nTotal: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		game.add.sprite(0, 0, 'endscreen');
+		this.hubBack = game.add.sprite(400, -200, 'hubBackground');
+		this.hubBack.anchor.set(.5);
+		this.hubBack.alpha = .95;
+
+		this.select = game.add.sprite(400, 800, 'select');
+		this.select.anchor.set(.5);
+		this.select.alpha = .75;
+
+		//text to upgrade weapon
+		this.upgrade = game.add.text(400, -350, 'Upgrade Weapon', {font: '26px Sabon', fill: '#fffff'});
+		this.upgrade.anchor.set(.5);
+		
+
+		//text to play again
+		this.playAgain = game.add.text(400, -60, 'Play Again', {font: '26px Sabon', fill: '#fffff'});
+		this.playAgain.anchor.set(.5);
+
+		//score
+		this.scoreText = game.add.text(160, -250, 'Score:', {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText2 = game.add.text(190, -200, this.score, {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText2.anchor.set(.5);
+
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}
 	},
 	update: function(){
-		if(game.input.keyboard.isDown(Phaser.Keyboard.R)){
-			game.state.start("Play");
+
+		//hub animation
+		if(this.hubBack.y < game.height/2){
+			this.hubBack.y += 5;
+			this.upgrade.y += 5;
+			this.playAgain.y += 5;
+			this.scoreText.y += 5;
+			this.scoreText2.y += 5;
+		}
+
+		//select controls
+		if(game.input.keyboard.downDuration(Phaser.Keyboard.DOWN, 1)){
+			if(this.SELECT == 1) this.SELECT = 2;
+			else this.SELECT = 1;
+		}
+		else if(game.input.keyboard.downDuration(Phaser.Keyboard.UP, 1)){
+			if(this.SELECT == 1) this.SELECT = 2;
+			else this.SELECT = 1;
+		}
+		if(this.SELECT == 1 && this.hubBack.y >= game.height/2){
+			this.select.y = 150;
+		}
+		else if(this.SELECT == 2 && this.hubBack.y >= game.height/2){
+			this.select.y = 440;
+		}
+
+		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+			if(this.SELECT == 1){
+				//upgrade weapon
+			}
+			else if(this.SELECT == 2){
+				game.state.start("Play");
+			}
 		}
 	}
 }
