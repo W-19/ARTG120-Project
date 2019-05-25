@@ -154,6 +154,7 @@ Play.prototype = {
 
 		// Add audio to the game
 		this.track01 = game.add.audio('track01');
+		this.track01.volume = 0.25;
 		//load track 2 when we need it
 		currentTrack = this.track01;
 
