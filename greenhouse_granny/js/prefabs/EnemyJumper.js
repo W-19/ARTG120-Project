@@ -92,7 +92,10 @@ EnemyJumper.prototype.update = function() {
 
 EnemyJumper.prototype.takeDamage = function(amount){
 	this.health -= amount;
-	if(this.health <= 0) this.destroy(); // maybe replace with kill?
+	if(this.health <= 0) {
+		++Granny.score;
+		this.destroy(); // maybe replace with kill?
+	}
 	else{
 		this.body.velocity.y -= 150;
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);

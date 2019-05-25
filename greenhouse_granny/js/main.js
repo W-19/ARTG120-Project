@@ -180,7 +180,10 @@ Play.prototype = {
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(16, 16);
 
-    	this.score = 0;
+    	//Adding text to keep score at the top right of screen
+    	this.scoreBar = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: '32px', fill: '#ffffff' });
+    	this.scoreBar.fixedToCamera = true;
+    	this.scoreBar.cameraOffset.setTo(650, 16);
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
@@ -226,6 +229,7 @@ Play.prototype = {
 
 		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
 		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+		this.scoreBar.text = "Score: "  + Granny.score;
 
 		// ------------------------------------ AUDIO -------------------------------------
 
@@ -261,12 +265,9 @@ Play.prototype = {
 
 var GameOver = function(game){};
 GameOver.prototype = {
-	init: function(score){
-		this.score = score;
-	},
 	create: function(){
 		// background color already set in MainMenu
-		game.add.text(16, 16, "Game over\nScore: " + this.score + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}

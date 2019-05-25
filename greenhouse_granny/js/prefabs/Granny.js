@@ -21,6 +21,7 @@ Granny = function(game, x, y, enemies) {
 	this.health = 10;
 	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
+	Granny.score = 0;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 400;

@@ -80,7 +80,10 @@ EnemyTree.prototype.update = function() {
 
 EnemyTree.prototype.takeDamage = function(amount){
 	this.health -= amount;
-	if(this.health <= 0) this.destroy(); // maybe replace with kill?
+	if(this.health <= 0) {
+		Granny.score += 5;
+		this.destroy(); // maybe replace with kill?
+	}
 	else{
 		this.hitStunDuration = 30;
 		this.tint = 0xff4444;
