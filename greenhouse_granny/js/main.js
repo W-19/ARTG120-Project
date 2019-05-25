@@ -276,7 +276,6 @@ GameOver.prototype = {
 		// background color already set in MainMenu
 		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
 		money += Math.floor((moneyCounter / 100) * Granny.score);
-		console.log(moneyCounter);
 		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney Earned: $" + tempMoney + "\nTotal: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
