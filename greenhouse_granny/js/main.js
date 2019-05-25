@@ -14,6 +14,9 @@ var config = {
 }
 var game = new Phaser.Game(config);
 
+var money = 0;
+var moneyCounter = 0;
+
 var currentTrack; // allows us to stop the game audio when we enter the GameOver state
 
 // Define states
@@ -134,7 +137,6 @@ Play.prototype = {
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
-		//game.load.image('acorn', 'assets/img/Acorn.png');
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 		game.load.spritesheet('acorn', 'assets/img/SpriteSheets/Acorn_SpriteSheet.png', 61, 80);
@@ -208,6 +210,8 @@ Play.prototype = {
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
 
+		++moneyCounter;
+
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
@@ -248,7 +252,7 @@ Play.prototype = {
 			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
 			EnemyJumper.growthReady = false;
 		}
-		
+		console.log(money);
 	},
 
 	//Function for when a plant projectile contacts player
@@ -267,7 +271,9 @@ var GameOver = function(game){};
 GameOver.prototype = {
 	create: function(){
 		// background color already set in MainMenu
-		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
+		money = (moneyCounter / 100) * Granny.score;
+		console.log(moneyCounter);
+		game.add.text(16, 16, "Game over\nScore: " + Granny.score + "\nMoney: $" + money + "\nPress r to play again", { fontSize: '32px', fill: '#000' });
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}
