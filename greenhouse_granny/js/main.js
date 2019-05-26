@@ -307,8 +307,15 @@ GameOver.prototype = {
 
 		//score
 		this.scoreText = game.add.text(160, -250, 'Score:', {font: '26px Sabon', fill: '#fffff'});
-		this.scoreText2 = game.add.text(190, -200, this.score, {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText2 = game.add.text(190, -200, Granny.score, {font: '26px Sabon', fill: '#fffff'});
 		this.scoreText2.anchor.set(.5);
+		this.scoreText3 = game.add.text(540, -250, 'Total Cash:', {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText4 = game.add.text(570, -200, '$' + money, {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText4.anchor.set(.5);
+		this.scoreText5 = game.add.text(330, -250, 'Earned Cash:', {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText6 = game.add.text(360, -200, '$' + tempMoney, {font: '26px Sabon', fill: '#fffff'});
+		this.scoreText6.anchor.set(.5);
+
 
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
@@ -323,6 +330,10 @@ GameOver.prototype = {
 			this.playAgain.y += 5;
 			this.scoreText.y += 5;
 			this.scoreText2.y += 5;
+			this.scoreText3.y += 5;
+			this.scoreText4.y += 5;
+			this.scoreText5.y += 5;
+			this.scoreText6.y += 5;
 		}
 
 		//select controls
