@@ -12,7 +12,7 @@ Granny = function(game, x, y, enemies) {
 	//Setting some attributes for granny
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
-	this.facing = 'left';
+	this.facing = 'right';
 	this.scale.setTo(0.5, 0.5);
 	this.anchor.set(0.5);
 	this.anchorScale = this.scale.x;
@@ -26,8 +26,6 @@ Granny = function(game, x, y, enemies) {
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
-	Granny.x = this.body.x;
-	Granny.y = this.body.y;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -48,28 +46,27 @@ Granny = function(game, x, y, enemies) {
 	this.animations.add('unblocking', [14, 0], 30, false);
 	this.frame = 0;
 
-	//Variable that keeps track of when to play block animation
+	// Variable that keeps track of when to play block animation
 	this.blockPlay;
 
-	Granny.hitbox = game.add.graphics(0,0);
-	Granny.hitbox.beginFill(0xFF0000, 1);
-    Granny.hitbox.drawRect(0, 0, 20, 50);
-    Granny.hitbox.alpha = 0;
-    game.physics.arcade.enable(Granny.hitbox);
+	// Granny's hitbox
+	this.hitbox = game.add.graphics(0,0);
+	this.hitbox.beginFill(0xFF0000, 1);
+    this.hitbox.drawRect(0, 0, 30, 63);
+    this.hitbox.alpha = 0.0;
+    game.physics.arcade.enable(this.hitbox);
 }
 
 //Creating a prototype for granny
 Granny.prototype = Object.create(Phaser.Sprite.prototype);
 Granny.prototype.constructor = Granny;
 
-//Update funtion for granny
+//Update function for granny
 Granny.prototype.update = function() {
 
-	//Keeping track of grannys coordinates globally and updating hitbox coordinates as needed;
-	Granny.x = this.body.x;
-	Granny.y = this.body.y;
-	Granny.hitbox.x = Granny.x + 25;
-	Granny.hitbox.y = Granny.y + 20;
+	// Update Granny's hitbox with her position. We need to take velocity into account otherwise it'll lag behind her.
+	this.hitbox.x = this.x - (this.facing == 'right' ? 25 : 6) + this.body.velocity.x/60;
+	this.hitbox.y = this.y - 25 + this.body.velocity.y/60;
 
 	// ------------------------------------ ATTACKING -------------------------------------
 	
@@ -153,7 +150,9 @@ Granny.prototype.update = function() {
 
 	// --------------------------------- MISCELLANEOUS -------------------------------------
 
-	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
+	// fade the red tint from getting hit
+	if(this.tint < 0xffffff) this.tint += 0x001111;
+	
 	// update the list of enemies that recently damaged the player
 	for(var i = 0; i < this.immuneTo.length; i++){
 		if(this.immuneTo[i].ticksRemaining == 0){

@@ -54,7 +54,7 @@ MainMenu.prototype = {
 		back = game.add.sprite(60, 460, 'buttonbackground');
 		game.add.text(100, 475, 'Credits', {font: '40px Sabon', fill: '#fffff'});
 
-		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use spacebar to select',
+		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use enter to select',
 							{font: '30px Sabon', fill: '#fffff'});
 
 		//Instructions for player input
@@ -105,27 +105,30 @@ MainMenu.prototype = {
 			this.title.scale.x -= .002;
 		}
 
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 1){
-			game.state.start('Play');
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 2){
-			if(this.SHOW == 2){
-				this.credits.alpha = 0;
+		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
+			if(this.SELECT == 1){
+				game.state.start('Play');
 			}
-			this.controlQ.alpha = 1;
-			this.controlS.alpha = 1;
-			this.controlA.alpha = 1;
-			this.SHOW = 1;
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 3){
-			if(this.SHOW == 1){
-				this.controlQ.alpha = 0;
-				this.controlS.alpha = 0;
-				this.controlA.alpha = 0;
+			if(this.SELECT == 2){
+				if(this.SHOW == 2){
+					this.credits.alpha = 0;
+				}
+				this.controlQ.alpha = 1;
+				this.controlS.alpha = 1;
+				this.controlA.alpha = 1;
+				this.SHOW = 1;
 			}
-			this.credits.alpha = 1;
-			this.SHOW = 2;
+			if(this.SELECT == 3){
+				if(this.SHOW == 1){
+					this.controlQ.alpha = 0;
+					this.controlS.alpha = 0;
+					this.controlA.alpha = 0;
+				}
+				this.credits.alpha = 1;
+				this.SHOW = 2;
+			}
 		}
+		
 	}
 }
 
@@ -222,11 +225,11 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
-		game.physics.arcade.collide(Granny.hitbox, this.enemies, this.enemyContact, null, this);
+		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
-		game.physics.arcade.collide(Granny.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
+		game.physics.arcade.collide(this.player.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
 
-		game.physics.arcade.overlap(Granny.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
+		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
 		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
 		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
@@ -352,7 +355,7 @@ GameOver.prototype = {
 			this.select.y = 440;
 		}
 
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
 			if(this.SELECT == 1){
 				//upgrade weapon
 			}

@@ -9,14 +9,14 @@ var shovel = {
 	enemiesDamagedThisAttack: [], // I guess we can tie this property to shovel and not shovelObj since there's only one granny
 	update: function(player, shovelObj){ // called every tick
 		if(player.attackCooldown > 0){
-			shovelObj.angle = -90 + 40*Math.sin((Math.PI*player.attackCooldown)/30);
+			shovelObj.angle = -90 + 80*Math.sin((Math.PI*player.attackCooldown)/30);
 		}
 	},
 	attack: function(game, player, shovelObj, enemies){ // called when the player attacks
 		player.attackCooldown = this.cooldown;
 		
 		enemies.forEachAlive(function(enemy){
-			if (Math.abs(enemy.x-(player.x+(player.facing == 'left' ? -1 : 1))) < 100 && enemy.y-60 <= player.y){
+			if (Math.abs(enemy.x-(player.x+(player.facing == 'left' ? -50 : 50))) < 100 && Math.abs(enemy.y-player.y) < 50){
 				if(this.enemiesDamagedThisAttack.some(e => e === enemy)) return;
 				else this.enemiesDamagedThisAttack.push(enemy);
 				enemy.takeDamage(1);
