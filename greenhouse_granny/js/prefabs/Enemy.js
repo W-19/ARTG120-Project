@@ -2,7 +2,7 @@
 // its projectiles will be created in
 Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 
-	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
+	Phaser.Sprite.call(this, game, x, y, 'plant');
 
 	//Setting some attributes for the enemy
 	this.anchor.set(0.5);
@@ -23,6 +23,11 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
+
+	this.animations.add('moving', [5, 6, 7, 8, 9, 10], 7, true);
+	this.animations.add('shooting', [0, 1, 2, 3, 4], 7, false);
+	this.animations.play('moving');
+	
 }
 
 //Creating a prototype for enemy
@@ -42,17 +47,21 @@ Enemy.prototype.update = function() {
 			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		){
 			this.body.velocity.x = 0;
+			this.frame = 0;
+			this.animations.play('shooting');
 			// Shoot her
 			if (this.bulletCooldown == 0) {
 				bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
 				bullet.anchor.set(0.5);
 				bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
-				this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
+				if (this.facing == 'left') bullet.scale.x = -bullet.scale.x;
+				this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;	
 			}
 		}
 		// If the player's not in range, keep patrolling
 		else {
 			this.body.velocity.x = this.facing == 'left' ? -50 : 50;
+			this.animations.play('moving');
 		}
 
 		// Define when the plant turns around
@@ -65,15 +74,21 @@ Enemy.prototype.update = function() {
 			this.scale.x = -0.5;
 		}
 	}
+
+	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit
 	
 }
 
 Enemy.prototype.takeDamage = function(amount){
 	this.health -= amount;
-	if(this.health <= 0) this.destroy(); // maybe replace with kill?
+	if(this.health <= 0) {
+		Granny.score += 3;
+		this.destroy(); // maybe replace with kill?
+	}
 	else{
 		this.body.velocity.y -= 150;
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
 		this.hitStunDuration = 30;
+		this.tint = 0xff4444;
 	}
 }

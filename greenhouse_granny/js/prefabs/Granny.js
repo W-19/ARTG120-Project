@@ -21,10 +21,13 @@ Granny = function(game, x, y, enemies) {
 	this.health = 10;
 	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
+	Granny.score = 0;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 400;
 	Granny.JUMP_HEIGHT = 650;
+	Granny.x = this.body.x;
+	Granny.y = this.body.y;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -32,11 +35,27 @@ Granny = function(game, x, y, enemies) {
 	this.enemies = enemies;
 	this.immuneTo = []; // holds all the enemies that recently damaged the player and the number of ticks until they can do so again
 
+	//Adding input keys to game
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+	//Adding animations and setting current frame to idle
+	this.animations.add('walking', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 15, true);
+	this.animations.add('blocking', [8, 9, 10, 11, 12, 13], 30, false);
+	this.animations.add('unblocking', [14, 0], 30, false);
+	this.frame = 0;
+
+	//Variable that keeps track of when to play block animation
+	this.blockPlay;
+
+	Granny.hitbox = game.add.graphics(0,0);
+	Granny.hitbox.beginFill(0xFF0000, 1);
+    Granny.hitbox.drawRect(0, 0, 20, 50);
+    Granny.hitbox.alpha = 0;
+    game.physics.arcade.enable(Granny.hitbox);
 }
 
 //Creating a prototype for granny
@@ -46,16 +65,28 @@ Granny.prototype.constructor = Granny;
 //Update funtion for granny
 Granny.prototype.update = function() {
 
-	// ------------------------------------ ATTACKING -------------------------------------
+	//Keeping track of grannys coordinates globally and updating hitbox coordinates as needed;
+	Granny.x = this.body.x;
+	Granny.y = this.body.y;
+	Granny.hitbox.x = Granny.x + 25;
+	Granny.hitbox.y = Granny.y + 20;
 
+	// ------------------------------------ ATTACKING -------------------------------------
+	
 	this.currentWeapon.update(this, this.currentWeaponObj);
 
 	if(this.attackCooldown == 0){
 		if(this.keyAttack.isDown){
 			this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
+			this.currentWeapon.attack(game, this, this.currentWeaponObj, EnemyTree.acorns);
 		}
 	}
-	else this.attackCooldown--;
+	else{
+		this.attackCooldown--;
+		if(this.attackCooldown == 0){
+			this.currentWeapon.rearm();
+		}
+	}
 
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------
 
@@ -65,12 +96,14 @@ Granny.prototype.update = function() {
 	if (this.keyRight.isDown) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
+		this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
 	else if (this.keyLeft.isDown) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
+		this.animations.play('walking');
 		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
 		//play move left animation
 	}
@@ -85,6 +118,10 @@ Granny.prototype.update = function() {
 			this.body.velocity.x = 0;
 		}
 		//play idle animation if on ground
+		if (!this.keyBlock.isDown) {
+			this.frame = 0;
+			this.blockPlay = true;
+		}
 	}
 
     //Double jumping logic
@@ -100,7 +137,18 @@ Granny.prototype.update = function() {
 
 	// ----------------------------------- BLOCKING ---------------------------------------
 
-	if (this.keyBlock.isDown) this.blockTime++;
+	if (this.keyBlock.isDown) {
+		this.blockTime++;
+		if (this.keyBlock.justPressed && this.blockPlay == true) {
+			this.blockPlay = false;
+			this.blockTime = 0;
+			this.animations.play('blocking');
+		}
+	}
+	else if (this.keyBlock.onUp && this.blockPlay == false) {
+			this.animations.play('unblocking');
+		}
+
 	else if (this.blockTime > 0) this.blockTime = -50; // blocking has a 50-tick cooldown
 
 	// --------------------------------- MISCELLANEOUS -------------------------------------
@@ -126,7 +174,7 @@ Granny.prototype.takeDamage = function(amount, source){
 		this.health -= amount;
 		this.tint = 0xff4444;
 	}
-	else if(this.blockTime > 25){ // partial block
+	else if(this.blockTime > 50){ // partial block
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
 	}
@@ -147,5 +195,4 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.currentWeaponObj.scale.setTo(weapon.scale);
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
-
 }
