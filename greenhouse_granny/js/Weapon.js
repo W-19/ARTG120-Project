@@ -5,6 +5,7 @@ var shovel = {
 	damage: 1,
 	scale: 0.14,
 	cooldown: 30,
+	duration: 30,
 	defaultAngle: -90,
 	enemiesDamagedThisAttack: [], // I guess we can tie this property to shovel and not shovelObj since there's only one granny
 	update: function(player, shovelObj){ // called every tick
@@ -17,8 +18,8 @@ var shovel = {
 		
 		enemies.forEachAlive(function(enemy){
 			if (Math.abs(enemy.x-(player.x+(player.facing == 'left' ? -50 : 50))) < 100 && Math.abs(enemy.y-player.y) < 50){
-				if(this.enemiesDamagedThisAttack.some(e => e === enemy)) return;
-				else this.enemiesDamagedThisAttack.push(enemy);
+				if(player.enemiesDamagedThisAttack.some(e => e === enemy)) return; // skip this enemy if it was already damaged
+				else player.enemiesDamagedThisAttack.push(enemy); // otherwise add it to the list and deal damage to it
 				enemy.takeDamage(1);
 			}
 		}, this, true);
@@ -26,6 +27,7 @@ var shovel = {
 		
 		
 		// doesn't work for some strange reason so we have to do the above instead
+		// this is probably because child objects can't have physics bodies
 		/*
 		game.physics.arcade.overlap(shovelObj, enemies, function(shovelObj, enemy){
 			// If we've aready camaged an enemy this attack, don't damage it again
@@ -39,7 +41,7 @@ var shovel = {
 		
 		
 	},
-	rearm : function(){
-		this.enemiesDamagedThisAttack = [];
+	rearm : function(player){
+		player.enemiesDamagedThisAttack = [];
 	}
 }

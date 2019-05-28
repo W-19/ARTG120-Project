@@ -30,8 +30,10 @@ Granny = function(game, x, y, enemies) {
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
 	this.attackCooldown = 0; // she can't attack unless it's 0
+	this.attackDuration = 0; // how long the player's been attacking
 	this.enemies = enemies;
 	this.immuneTo = []; // holds all the enemies that recently damaged the player and the number of ticks until they can do so again
+	this.enemiesDamagedThisAttack = []; // holds all the enemies she's damaged this attack
 
 	//Adding input keys to game
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
@@ -81,7 +83,7 @@ Granny.prototype.update = function() {
 	else{
 		this.attackCooldown--;
 		if(this.attackCooldown == 0){
-			this.currentWeapon.rearm();
+			this.currentWeapon.rearm(this);
 		}
 	}
 
