@@ -253,6 +253,32 @@ Play.prototype = {
 		}
 	},
 
+	// The render function is mostly used for debugging
+	render: function(){
+		// Here's my attempt to draw a debug pixel on the shovel blade. It was laggy, imprecise and involved lots of arbitrary values,
+		// so ultimately I decided to just stick with the rectangle hitbox. Maybe someone can do something with this in the future.
+		/*
+		var xOffset = (this.player.currentWeaponObj.width-20)*Math.cos(this.player.currentWeaponObj.rotation+(Math.PI/4)); // why the last +?
+		var yOffset = (this.player.currentWeaponObj.height/2)*Math.sin(this.player.currentWeaponObj.rotation+(Math.PI/4)); // ditto
+		game.debug.pixel(
+				this.player.x + xOffset * (4/5) * (this.player.facing == 'left' ? -1 : 1) - game.camera.x, // why is *(4/5) necessary?
+				this.player.y + yOffset * (10/9) - 3 - game.camera.y, // likesise, why *(10/9) - 3
+				'#ff00ff', 5
+		);
+		*/
+
+		// The below code uses the arbitrary value of 65 but seems to work better, and it's much simpler	
+		/*
+		var shovelBladeX = this.player.x + 65*Math.cos(this.player.currentWeaponObj.rotation+(Math.PI/4))*(this.player.facing == 'left' ? -1 : 1);
+		var shovelBladeY = this.player.y + 65*Math.sin(this.player.currentWeaponObj.rotation+(Math.PI/4));
+		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
+		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
+		game.debug.physicsGroup(this.enemies);
+		*/
+		
+		
+	},
+
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
 		this.player.takeDamage(1, bullet);
