@@ -54,7 +54,7 @@ MainMenu.prototype = {
 		back = game.add.sprite(60, 460, 'buttonbackground');
 		game.add.text(100, 475, 'Credits', {font: '40px Sabon', fill: '#fffff'});
 
-		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use spacebar to select',
+		this.instructions = game.add.text(320, 380, 'Use up and down arrow to change\nselection and use enter to select',
 							{font: '30px Sabon', fill: '#fffff'});
 
 		//Instructions for player input
@@ -105,35 +105,36 @@ MainMenu.prototype = {
 			this.title.scale.x -= .002;
 		}
 
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 1){
-			game.state.start('Play');
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 2){
-			if(this.SHOW == 2){
-				this.credits.alpha = 0;
+		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
+			if(this.SELECT == 1){
+				game.state.start('Play');
 			}
-			this.controlQ.alpha = 1;
-			this.controlS.alpha = 1;
-			this.controlA.alpha = 1;
-			this.SHOW = 1;
-		}
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.SELECT == 3){
-			if(this.SHOW == 1){
-				this.controlQ.alpha = 0;
-				this.controlS.alpha = 0;
-				this.controlA.alpha = 0;
+			if(this.SELECT == 2){
+				if(this.SHOW == 2){
+					this.credits.alpha = 0;
+				}
+				this.controlQ.alpha = 1;
+				this.controlS.alpha = 1;
+				this.controlA.alpha = 1;
+				this.SHOW = 1;
 			}
-			this.credits.alpha = 1;
-			this.SHOW = 2;
+			if(this.SELECT == 3){
+				if(this.SHOW == 1){
+					this.controlQ.alpha = 0;
+					this.controlS.alpha = 0;
+					this.controlA.alpha = 0;
+				}
+				this.credits.alpha = 1;
+				this.SHOW = 2;
+			}
 		}
+		
 	}
 }
 
 var Play = function(game){};
 Play.prototype = {
 	preload: function(){
-
-		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
@@ -178,15 +179,21 @@ Play.prototype = {
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
 
+		// a couple variables which allow us to respond to changes in the player's health/score
+		this.playerHealthPrev = this.player.health;
+		this.playerScorePrev = 0;
+
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: 32, fill: '#ffffff' });
+    	this.healthBar.anchor.setTo(0.5); // for consistency with the score text
     	this.healthBar.fixedToCamera = true;
-    	this.healthBar.cameraOffset.setTo(16, 16);
+    	this.healthBar.cameraOffset.setTo(120, 36.5);
 
     	//Adding text to keep score at the top right of screen
-    	this.scoreBar = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: '32px', fill: '#ffffff' });
-    	this.scoreBar.fixedToCamera = true;
-    	this.scoreBar.cameraOffset.setTo(640, 16);
+    	this.scoreText = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: 32, fill: '#ffffff' });
+    	this.scoreText.anchor.setTo(0.5);
+    	this.scoreText.fixedToCamera = true;
+    	this.scoreText.cameraOffset.setTo(700.5, 36.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
@@ -222,15 +229,34 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
-		game.physics.arcade.collide(Granny.hitbox, this.enemies, this.enemyContact, null, this);
+		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
-		game.physics.arcade.collide(Granny.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
+		game.physics.arcade.collide(this.player.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
 
-		game.physics.arcade.overlap(Granny.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
+		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
-		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
-		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
-		this.scoreBar.text = "Score: "  + Granny.score;
+		// ------------------------------------- HUD --------------------------------------
+
+		// Flash the health bar when the player takes damage
+		if(this.playerHealthPrev != this.player.health){
+			this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+			this.healthBar.tint = 0xff4444;
+			this.playerHealthPrev = this.player.health;
+		}
+		else if(this.healthBar.tint < 0xffffff){
+			this.healthBar.tint += 0x001111;
+		}
+
+		// Pop the score when the player kills something
+		if(this.playerScorePrev != Granny.score){
+			this.scoreText.text = "Score: " + Granny.score;
+			this.scoreText.fontSize = 40;
+			this.playerScorePrev = Granny.score;
+		}
+		else if(this.scoreText.fontSize > 32){
+			this.scoreText.fontSize -= 1;
+		}
+		
 
 		// ------------------------------------ AUDIO -------------------------------------
 
@@ -248,6 +274,32 @@ Play.prototype = {
 			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
 			EnemyJumper.growthReady = false;
 		}
+	},
+
+	// The render function is mostly used for debugging
+	render: function(){
+		// Here's my attempt to draw a debug pixel on the shovel blade. It was laggy, imprecise and involved lots of arbitrary values,
+		// so ultimately I decided to just stick with the rectangle hitbox. Maybe someone can do something with this in the future.
+		/*
+		var xOffset = (this.player.currentWeaponObj.width-20)*Math.cos(this.player.currentWeaponObj.rotation+(Math.PI/4)); // why the last +?
+		var yOffset = (this.player.currentWeaponObj.height/2)*Math.sin(this.player.currentWeaponObj.rotation+(Math.PI/4)); // ditto
+		game.debug.pixel(
+				this.player.x + xOffset * (4/5) * (this.player.facing == 'left' ? -1 : 1) - game.camera.x, // why is *(4/5) necessary?
+				this.player.y + yOffset * (10/9) - 3 - game.camera.y, // likesise, why *(10/9) - 3
+				'#ff00ff', 5
+		);
+		*/
+
+		// The below code uses the arbitrary value of 65 but seems to work better, and it's much simpler	
+		/*
+		var shovelBladeX = this.player.x + 65*Math.cos(this.player.currentWeaponObj.rotation+(Math.PI/4))*(this.player.facing == 'left' ? -1 : 1);
+		var shovelBladeY = this.player.y + 65*Math.sin(this.player.currentWeaponObj.rotation+(Math.PI/4));
+		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
+		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
+		game.debug.physicsGroup(this.enemies);
+		*/
+		
+		
 	},
 
 	//Function for when a plant projectile contacts player
@@ -352,7 +404,7 @@ GameOver.prototype = {
 			this.select.y = 440;
 		}
 
-		if(game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){
+		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
 			if(this.SELECT == 1){
 				//upgrade weapon
 			}
