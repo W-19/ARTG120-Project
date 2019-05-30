@@ -8,7 +8,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing) {
 	this.anchor.set(0.5);
 	game.physics.enable(this);
 	this.body.collideWorldBounds = true;
-	this.scale.setTo(-0.25, 0.25);
+	EnemyJumper.SCALE = 0.45;
 	this.body.gravity.y = 1000;
 	this.body.velocity.x = -20;
 	this.jumpCooldown = 0;
@@ -24,7 +24,8 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing) {
 	EnemyJumper.x;
 	EnemyJumper.y;
 	EnemyJumper.growthReady;
-	this.scale.x = (this.facing == 'left' ? -0.25 : 0.25);
+	this.scale.x = (this.facing == 'left' ? -EnemyJumper.SCALE : EnemyJumper.SCALE);
+	this.scale.y = EnemyJumper.SCALE;
 
 	this.animations.add('moving', [0, 1, 2, 3], 7, true);
 	this.animations.play('moving');
@@ -79,11 +80,11 @@ EnemyJumper.prototype.update = function() {
 		// Define when the acorn turns around
 		if (this.x < this.leftxFlag) {
 			this.facing = 'right';
-			this.scale.x = 0.25;
+			this.scale.x = EnemyJumper.SCALE;
 		}
 		else if (this.x > this.rightxFlag) {
 			this.facing = 'left';
-			this.scale.x = -0.25;
+			this.scale.x = -EnemyJumper.SCALE;
 		}
 	}
 

@@ -99,14 +99,14 @@ Granny.prototype.update = function() {
 	this.onGround = this.body.blocked.down;
 	
 	//Basic movement handling if statements
-	if (this.keyRight.isDown && this.blockTime == 0) {
+	if (this.keyRight.isDown && !(this.blockTime > 0 && this.onGround)) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
 		this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
-	else if (this.keyLeft.isDown && this.blockTime == 0) {
+	else if (this.keyLeft.isDown && !(this.blockTime > 0 && this.onGround)) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
 		this.animations.play('walking');
