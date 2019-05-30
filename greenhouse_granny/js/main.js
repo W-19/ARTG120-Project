@@ -23,6 +23,7 @@ var currentTrack; // allows us to stop the game audio when we enter the GameOver
 
 var MainMenu = function(game){
 	this.FLAG = true;
+	this.SCREENFLAG = false;
 	this.SELECT = 1;
 	this.SHOW = 1;
 };
@@ -30,7 +31,8 @@ MainMenu.prototype = {
 	preload: function(){
 		game.load.image('title', 'assets/img/GreenhouseGrannyTitle.png');
 		game.load.image('select', 'assets/img/Select.png');
-		game.load.image('buttonbackground', 'assets/img/Buttonbackground.png')
+		game.load.image('buttonbackground', 'assets/img/Buttonbackground.png');
+		game.load.image('blackScreen', 'assets/img/BlackScreen.png');
 	},
 	create: function(){
 
@@ -74,8 +76,18 @@ MainMenu.prototype = {
 		this.credits.alpha = 0;
 
 		this.choose = game.add.sprite(60, 300, 'select');
+
+		//Create blackscreen for fade
+		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
+		this.blackScreen.alpha = 0;
 	},
 	update: function(){
+
+		if(this.SCREENFLAG == true){
+			if(this.blackScreen.alpha < 1){
+				this.blackScreen.alpha += .02;
+			}
+		}
 
 		//Show what player wants to select
 		if(this.SELECT == 1) this.choose.y = 300; 
@@ -105,9 +117,16 @@ MainMenu.prototype = {
 			this.title.scale.x -= .002;
 		}
 
+		//After fade to black start play state
+		if(this.blackScreen.alpha >= 1){
+			game.stage.setBackgroundColor('#FFFFF');
+			game.state.start('Play');
+		}
+
+		//Wait for user input
 		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
 			if(this.SELECT == 1){
-				game.state.start('Play');
+				this.SCREENFLAG = true;
 			}
 			if(this.SELECT == 2){
 				if(this.SHOW == 2){
@@ -132,7 +151,9 @@ MainMenu.prototype = {
 	}
 }
 
-var Play = function(game){};
+var Play = function(game){
+	this.SCREENFLAG = false;
+};
 Play.prototype = {
 	preload: function(){
 		game.load.image('shovel', shovel.path);
@@ -212,6 +233,8 @@ Play.prototype = {
 		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
 		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
 
+		//Black Screen
+		this.blackScreen = game.add.sprite(-50, 1250, 'blackScreen');
 	},
 
 	update: function(){
@@ -268,11 +291,24 @@ Play.prototype = {
 		// ------------------------------- STATES & SUCH ----------------------------------
 		// If all the enemies are dead, trigger the game over state
 		if (this.enemies.length == 0) {
-			game.state.start('GameOver', true, false, 1); // 1 means you win
+			this.SCREENFLAG = true; //In Screen Fade
 		}
 		if (EnemyJumper.growthReady == true) {
 			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
 			EnemyJumper.growthReady = false;
+		}
+
+		// ------------------------------ SCREEN FADE ------------------------------------
+		if(this.SCREENFLAG == false){
+			this.blackScreen.alpha -= .03;
+		}
+
+		if(this.SCREENFLAG == true){
+			this.blackScreen.alpha += .03;
+		}
+		if(this.blackScreen.alpha >= 1){
+			game.stage.setBackgroundColor('#FFFFF');
+			game.state.start('GameOver', true, false, 1); // 1 means you win
 		}
 	},
 
@@ -324,6 +360,7 @@ Play.prototype = {
 
 var GameOver = function(game){
 	this.SELECT = 1;
+	this.SCREENFLAG = false;
 };
 GameOver.prototype = {
 	init: function(score){
@@ -335,6 +372,7 @@ GameOver.prototype = {
 		game.load.image('hubBackground', 'assets/img/EndscreenHubBackground.png');
 	},
 	create: function(){
+
 		// background color already set in MainMenu
 		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
 		money += Math.floor((moneyCounter / 100) * Granny.score);
@@ -368,12 +406,26 @@ GameOver.prototype = {
 		this.scoreText6 = game.add.text(360, -200, '$' + tempMoney, {font: '26px Sabon', fill: '#fffff'});
 		this.scoreText6.anchor.set(.5);
 
-
 		if(currentTrack.isPlaying){
 			currentTrack.stop();
 		}
+
+		//Create blackscreen for fade
+		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
 	},
 	update: function(){
+
+		if(this.SCREENFLAG == false){
+			this.blackScreen.alpha -= .02;
+		}
+		if(this.SCREENFLAG == true){
+			this.blackScreen.alpha += .03;
+		}
+		if(this.blackScreen.alpha >= 1){
+			this.SCREENFLAG = false;
+			game.stage.setBackgroundColor('#FFFFF');
+			game.state.start("Play");
+		}	
 
 		//hub animation
 		if(this.hubBack.y < game.height/2){
@@ -409,7 +461,7 @@ GameOver.prototype = {
 				//upgrade weapon
 			}
 			else if(this.SELECT == 2){
-				game.state.start("Play");
+				this.SCREENFLAG = true;
 			}
 		}
 	}
@@ -420,3 +472,4 @@ game.state.add("MainMenu", MainMenu);
 game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
 game.state.start("MainMenu");
+
