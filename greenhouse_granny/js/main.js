@@ -197,6 +197,7 @@ Play.prototype = {
 		// Set up the player
 		this.player = new Granny(game, 90, 1800, this.enemies);
 		this.player.switchWeapon(shovel);
+		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
 
@@ -333,8 +334,7 @@ Play.prototype = {
 		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
 		game.debug.physicsGroup(this.enemies);
-		*/
-		
+		*/	
 		
 	},
 

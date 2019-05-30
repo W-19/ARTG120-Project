@@ -43,9 +43,10 @@ Enemy.prototype.update = function() {
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if( this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
+		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1400 && (
+			this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
-		){
+		)){
 			this.body.velocity.x = 0;
 			this.frame = 0;
 			this.animations.play('shooting');
@@ -88,7 +89,7 @@ Enemy.prototype.takeDamage = function(amount){
 	else{
 		this.body.velocity.y -= 150;
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
-		this.hitStunDuration = 30;
+		this.hitStunDuration = 40;
 		this.tint = 0xff4444;
 	}
 }

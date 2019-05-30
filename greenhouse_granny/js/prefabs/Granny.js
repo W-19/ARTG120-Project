@@ -16,7 +16,8 @@ Granny = function(game, x, y, enemies) {
 	this.scale.setTo(0.5, 0.5);
 	this.anchor.set(0.5);
 	this.anchorScale = this.scale.x;
-	this.body.gravity.y = 1000;
+	this.body.gravity.y = 1400;
+	this.body.maxVelocity.y = 1000;
 
 	this.health = 10;
 	this.blockTime = 0; // time spent shielding herself
@@ -24,8 +25,8 @@ Granny = function(game, x, y, enemies) {
 	Granny.score = 0;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
-	Granny.MOVE_SPEED = 400;
-	Granny.JUMP_HEIGHT = 650;
+	Granny.MOVE_SPEED = 500;
+	Granny.JUMP_HEIGHT = 750;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -77,12 +78,13 @@ Granny.prototype.update = function() {
 	if(this.attackCooldown == 0){
 		if(this.keyAttack.isDown){
 			this.attackCooldown = this.currentWeapon.cooldown;
+			this.currentWeapon.commenceAttack(this.currentWeaponObj);
 		}
 	}
 	else{
 		this.attackCooldown--;
 		if(this.attackCooldown == 0){
-			this.currentWeapon.rearm(this);
+			this.currentWeapon.rearm(this, this.currentWeaponObj);
 		}
 	}
 
@@ -97,14 +99,14 @@ Granny.prototype.update = function() {
 	this.onGround = this.body.blocked.down;
 	
 	//Basic movement handling if statements
-	if (this.keyRight.isDown) {
+	if (this.keyRight.isDown && this.blockTime == 0) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
 		this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
-	else if (this.keyLeft.isDown) {
+	else if (this.keyLeft.isDown && this.blockTime == 0) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
 		this.animations.play('walking');
@@ -150,8 +152,8 @@ Granny.prototype.update = function() {
 		}
 	}
 	else if (this.keyBlock.onUp && this.blockPlay == false) {
-			this.animations.play('unblocking');
-		}
+		this.animations.play('unblocking');
+	}
 
 	else if (this.blockTime > 0) this.blockTime = -50; // blocking has a 50-tick cooldown
 
