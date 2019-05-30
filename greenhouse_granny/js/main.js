@@ -135,8 +135,6 @@ MainMenu.prototype = {
 var Play = function(game){};
 Play.prototype = {
 	preload: function(){
-
-		game.load.image('platform', 'assets/img/platform.png');
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
@@ -181,15 +179,21 @@ Play.prototype = {
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
 
+		// a couple variables which allow us to respond to changes in the player's health/score
+		this.playerHealthPrev = this.player.health;
+		this.playerScorePrev = 0;
+
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: '32px', fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: 32, fill: '#ffffff' });
+    	this.healthBar.anchor.setTo(0.5); // for consistency with the score text
     	this.healthBar.fixedToCamera = true;
-    	this.healthBar.cameraOffset.setTo(16, 16);
+    	this.healthBar.cameraOffset.setTo(120, 36.5);
 
     	//Adding text to keep score at the top right of screen
-    	this.scoreBar = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: '32px', fill: '#ffffff' });
-    	this.scoreBar.fixedToCamera = true;
-    	this.scoreBar.cameraOffset.setTo(640, 16);
+    	this.scoreText = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: 32, fill: '#ffffff' });
+    	this.scoreText.anchor.setTo(0.5);
+    	this.scoreText.fixedToCamera = true;
+    	this.scoreText.cameraOffset.setTo(700.5, 36.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
 
 		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
@@ -231,9 +235,28 @@ Play.prototype = {
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
-		// For now just updating the health bar every tick is the way to go because I don't want to deal with wrapper objects
-		this.healthBar.text = "Health: " + this.player.health * 10 + "%";
-		this.scoreBar.text = "Score: "  + Granny.score;
+		// ------------------------------------- HUD --------------------------------------
+
+		// Flash the health bar when the player takes damage
+		if(this.playerHealthPrev != this.player.health){
+			this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+			this.healthBar.tint = 0xff4444;
+			this.playerHealthPrev = this.player.health;
+		}
+		else if(this.healthBar.tint < 0xffffff){
+			this.healthBar.tint += 0x001111;
+		}
+
+		// Pop the score when the player kills something
+		if(this.playerScorePrev != Granny.score){
+			this.scoreText.text = "Score: " + Granny.score;
+			this.scoreText.fontSize = 40;
+			this.playerScorePrev = Granny.score;
+		}
+		else if(this.scoreText.fontSize > 32){
+			this.scoreText.fontSize -= 1;
+		}
+		
 
 		// ------------------------------------ AUDIO -------------------------------------
 
