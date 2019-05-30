@@ -181,10 +181,12 @@ Granny.prototype.takeDamage = function(amount, source){
 		this.tint = 0xff4444;
 	}
 	else if(this.blockTime > 50){ // partial block
+		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", '#ffffff'));
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
 	}
 	else{ // full block
+		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", '#ffffff'));
 		return;
 	}
 
