@@ -4,6 +4,8 @@ var shovel = {
 	type: 'melee',
 	damage: 1,
 	scale: 0.14,
+	anchorX: 0.0,
+	anchorY: 0.0,
 	cooldown: 25,
 	defaultAngle: -90,
 	enemiesDamagedThisAttack: [], // I guess we can tie this property to shovel and not shovelObj since there's only one granny
