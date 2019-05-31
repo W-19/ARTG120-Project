@@ -194,7 +194,7 @@ Granny.prototype.takeDamage = function(amount, source){
 		return;
 	}
 
-	if(this.health <= 0) game.state.start('GameOver', true, false, 0);
+	//if(this.health <= 0) game.state.start('GameOver', true, false, 0);
 	// apply knockback
 	this.body.velocity.x = (480 + (20 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
 	this.body.velocity.y = -80 + ((80 * amount) * -Math.sin(game.physics.arcade.angleBetween(this, source))); // vertical knockback is always positive for now
