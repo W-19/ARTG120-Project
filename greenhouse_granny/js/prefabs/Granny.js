@@ -204,6 +204,7 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.removeChildren();
 	this.currentWeapon = weapon;
 	this.currentWeaponObj = this.addChild(game.make.sprite(1, -5, weapon.name));
+	this.currentWeaponObj.anchor.setTo(weapon.anchorX, weapon.anchorY);
 	this.currentWeaponObj.scale.setTo(weapon.scale);
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
