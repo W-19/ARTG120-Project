@@ -235,7 +235,9 @@ Play.prototype = {
 		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
 
 		//Black Screen
-		this.blackScreen = game.add.sprite(-50, 1250, 'blackScreen');
+		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
+		this.blackScreen.scale.x = 5;
+		this.blackScreen.scale.y = 20;
 	},
 
 	update: function(){
@@ -300,14 +302,19 @@ Play.prototype = {
 		}
 
 		// ------------------------------ SCREEN FADE ------------------------------------
-		if(this.SCREENFLAG == false){
+		console.log(this.SCREENFLAG);
+		console.log(this.blackScreen.alpha);
+		if(this.player.health <= 0){
+			this.SCREENFLAG = true;
+		}
+		if(this.SCREENFLAG == false && this.blackScreen.alpha >= 0){
 			this.blackScreen.alpha -= .03;
 		}
-
-		if(this.SCREENFLAG == true){
+		if(this.SCREENFLAG == true && this.blackScreen.alpha <= 1){
 			this.blackScreen.alpha += .03;
 		}
 		if(this.blackScreen.alpha >= 1){
+			this.SCREENFLAG = false;
 			game.stage.setBackgroundColor('#FFFFF');
 			game.state.start('GameOver', true, false, 1); // 1 means you win
 		}
@@ -415,10 +422,11 @@ GameOver.prototype = {
 	},
 	update: function(){
 
-		if(this.SCREENFLAG == false){
+		//Fade in and out
+		if(this.SCREENFLAG == false && this.blackScreen.alpha >= 0){
 			this.blackScreen.alpha -= .02;
 		}
-		if(this.SCREENFLAG == true){
+		if(this.SCREENFLAG == true && this.blackScreen.alpha <= 1){
 			this.blackScreen.alpha += .03;
 		}
 		if(this.blackScreen.alpha >= 1){
