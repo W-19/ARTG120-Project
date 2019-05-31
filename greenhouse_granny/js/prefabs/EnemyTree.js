@@ -40,9 +40,10 @@ EnemyTree.prototype.update = function() {
 	//Attacking
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if(this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && (this.player.y + 100) - this.y >= 0 ||
-			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && (this.player.y + 100) - this.y >= 0)
-		{
+		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
+			this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && (this.player.y + 100) - this.y >= 0 ||
+			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && (this.player.y + 100) - this.y >= 0
+		)){
 			//Attack her
 			if (this.bulletCooldown == 0) {
 				this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
@@ -82,6 +83,7 @@ EnemyTree.prototype.update = function() {
 
 EnemyTree.prototype.takeDamage = function(amount){
 	this.health -= amount;
+	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 5;
 		this.destroy(); // maybe replace with kill?

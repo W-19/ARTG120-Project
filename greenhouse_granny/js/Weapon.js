@@ -21,12 +21,14 @@ var shovel = {
 		// A new function that draws lines and checks them for collision with each enemy. Seems to have issues with hitting trees from the rear.
 		// Why does 90 work better than 65? Who knows.	
 		
-		var shovelBladeX = player.x + 90*Math.cos(shovelObj.rotation+(Math.PI/4))*(player.facing == 'left' ? -1 : 1);
-		var shovelBladeY = player.y + 90*Math.sin(shovelObj.rotation+(Math.PI/4));
+		var shovelBladeX1 = player.x + 90*Math.cos(shovelObj.rotation+(Math.PI/4)-0.08)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY1 = player.y + 90*Math.sin(shovelObj.rotation+(Math.PI/4)-0.08);
+		var shovelBladeX2 = player.x + 90*Math.cos(shovelObj.rotation+(Math.PI/4)+0.08)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY2 = player.y + 90*Math.sin(shovelObj.rotation+(Math.PI/4)+0.08);
 
-		// Draws two lines from the player's center to just above and below the shovel blade
-		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX, shovelBladeY + 10);
-		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX, shovelBladeY - 10)		
+		// Draws two lines from the player's center to each side of the shovel blade
+		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX1, shovelBladeY1);
+		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX2, shovelBladeY2);		
 
 		// Tests for an intersection between the lines and each enemy
 		enemies.forEachAlive(function(enemy){

@@ -334,7 +334,7 @@ Play.prototype = {
 		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
 		game.debug.physicsGroup(this.enemies);
-		*/	
+		*/
 		
 	},
 

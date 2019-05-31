@@ -43,7 +43,7 @@ Enemy.prototype.update = function() {
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1400 && (
+		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
 			this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		)){
@@ -82,6 +82,7 @@ Enemy.prototype.update = function() {
 
 Enemy.prototype.takeDamage = function(amount){
 	this.health -= amount;
+	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 3;
 		this.destroy(); // maybe replace with kill?

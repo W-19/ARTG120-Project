@@ -26,7 +26,7 @@ Granny = function(game, x, y, enemies) {
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 500;
-	Granny.JUMP_HEIGHT = 750;
+	Granny.JUMP_HEIGHT = 775;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -180,15 +180,17 @@ Granny.prototype.takeDamage = function(amount, source){
 
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
+		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+amount, fill: '#ff6666'}, false)
 		this.tint = 0xff4444;
 	}
 	else if(this.blockTime > 50){ // partial block
-		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", '#ffffff'));
+		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
+		game.add.text(new PopupText(game, this.x, this.y, amount/2, {font: 'Palatino', fontSize: 13, fill: '#ff8888'}, false));
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
 	}
 	else{ // full block
-		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", '#ffffff'));
+		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
 		return;
 	}
 

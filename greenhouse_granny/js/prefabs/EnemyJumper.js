@@ -53,9 +53,10 @@ EnemyJumper.prototype.update = function() {
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of acorn to be jumped at, and handling acorn movement in this scenario
-		if( this.facing == 'left' && this.x - this.player.x < EnemyJumper.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
+		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
+			this.facing == 'left' && this.x - this.player.x < EnemyJumper.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < EnemyJumper.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
-		){
+		)){
 			if (this.jumpCooldown == 0) {
 				this.baseY = this.y;
 				this.body.velocity.x = (this.facing == 'left' ? -200 : 200);
@@ -94,6 +95,7 @@ EnemyJumper.prototype.update = function() {
 
 EnemyJumper.prototype.takeDamage = function(amount){
 	this.health -= amount;
+	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		++Granny.score;
 		this.destroy(); // maybe replace with kill?

@@ -1,10 +1,11 @@
 // Based on the code from https://webcache.googleusercontent.com/search?q=cache:I-0a1Apdna4J:https://blog.jwiese.eu/en/2017/03/11/phaser2-prefab-clickable-link/+&cd=4&hl=en&ct=clnk&gl=us&client=firefox-b-1-d
 class PopupText extends Phaser.Text {
-    constructor(game, x, y, text, color) {
-        super(game, x, y, text, {font: '10px Palatino', fill: color}); // make fallbacks eventually
+    constructor(game, x, y, text, style, riseFastAndScaleWhileFading) {
+        super(game, x, y, text, style);
 
         this.anchor.set(0.5);
 		this.age = 0;
+		this.rfaswf = riseFastAndScaleWhileFading;
 
         // Add custom objects to the game
         this.game.add.existing(this);
@@ -15,14 +16,16 @@ class PopupText extends Phaser.Text {
     	if(this.age > 60) this.destroy();
 		else this.age++;
 
-		this.y -= 0.5;
-		if(this.age < 10){
-			this.fontSize += 1;
+		this.y -= (this.rfaswf ? 0.5 : 0.25);
+		if(this.rfaswf){
+			if(this.age < 10 || this.age > 50){
+				this.fontSize += 1;
+			}
 		}
-		else if(this.age > 50){
-			this.fontSize += 1;
+		if(this.age > 50){
 			this.alpha -= 0.1;
 		}
+		
     }
 }
 
