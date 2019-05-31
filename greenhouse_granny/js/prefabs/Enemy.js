@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
+Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hurtSound, deathSound) {
 
 	Phaser.Sprite.call(this, game, x, y, 'plant');
 
@@ -23,6 +23,9 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag) {
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
+
+	Enemy.hurtSound = hurtSound;
+	Enemy.deathSound = deathSound;
 
 	this.animations.add('moving', [5, 6, 7, 8, 9, 10], 7, true);
 	this.animations.add('shooting', [0, 1, 2, 3, 4], 7, false);
@@ -85,10 +88,12 @@ Enemy.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 3;
+		Enemy.deathSound.play();
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
 		this.body.velocity.y -= 150;
+		Enemy.hurtSound.play();
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
 		this.hitStunDuration = 40;
 		this.tint = 0xff4444;

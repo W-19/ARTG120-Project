@@ -15,8 +15,9 @@ var shovel = {
 			shovelObj.angle = -130 + 7*(this.cooldown-player.attackCooldown);
 		}
 	},
-	commenceAttack: function(shovelObj){
+	commenceAttack: function(player, shovelObj){
 		shovelObj.alpha = 1.0;
+		player.attackSound.play();
 	},
 	attack: function(game, player, shovelObj, enemies){ // called when the player attacks	
 

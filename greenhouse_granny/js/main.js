@@ -169,6 +169,11 @@ Play.prototype = {
 
 		game.load.audio('track01', 'assets/audio/Track 1.ogg');
 		//game.load.audio('track02', 'Track 02.ogg'); // unused rn
+		game.load.audio('player jump', 'assets/audio/Player Jump.ogg');
+		game.load.audio('player hurt', 'assets/audio/Player Hurt.ogg');
+		game.load.audio('enemy hurt', 'assets/audio/Enemy Hurt.ogg');
+		game.load.audio('enemy death', 'assets/audio/Enemy Death.ogg');
+		game.load.audio('weapon swing', 'assets/audio/Weapon Swing.ogg');
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
@@ -179,6 +184,18 @@ Play.prototype = {
 		this.track01.volume = 0.25;
 		//load track 2 when we need it
 		currentTrack = this.track01;
+
+		this.playerJump = game.add.audio('player jump');
+		this.playerJump.volume = 0.1;
+		this.playerHurt = game.add.audio('player hurt');
+		this.playerHurt.volume = 0.1;
+		this.enemyHurt = game.add.audio('enemy hurt');
+		this.enemyHurt.volume = 0.1;
+		this.enemyDeath = game.add.audio('enemy death');
+		this.enemyDeath.volume = 0.1;
+		this.weaponSwing = game.add.audio('weapon swing');
+		this.weaponSwing.volume = 0.1;
+
 
 		// Draw the background
 		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
@@ -195,7 +212,7 @@ Play.prototype = {
 		this.enemies = game.add.group();
 
 		// Set up the player
-		this.player = new Granny(game, 90, 1800, this.enemies);
+		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing);
 		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
@@ -223,16 +240,16 @@ Play.prototype = {
 
 		// Set up the enemies
 		//this.enemies.add(new Enemy(game, 1050, 1700, this.player, this.enemyProjectiles, 545, 1050));
-		this.enemies.add(new Enemy(game, 1464, 1500, this.player, this.enemyProjectiles, 1290, 1464));
-		this.enemies.add(new Enemy(game, 2016, 1700, this.player, this.enemyProjectiles, 1761, 2014));
-		this.enemies.add(new Enemy(game, 1695, 1240, this.player, this.enemyProjectiles, 1477, 1695));
-		this.enemies.add(new Enemy(game, 1145, 1180, this.player, this.enemyProjectiles, 993, 1145));
-		this.enemies.add(new Enemy(game, 762, 855, this.player, this.enemyProjectiles, 417, 762));
-		this.enemies.add(new Enemy(game, 351, 190, this.player, this.enemyProjectiles, 212, 351));
-		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015));
-		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015));
-		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles));
-		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles));
+		this.enemies.add(new Enemy(game, 1464, 1500, this.player, this.enemyProjectiles, 1290, 1464, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 2016, 1700, this.player, this.enemyProjectiles, 1761, 2014, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1695, 1240, this.player, this.enemyProjectiles, 1477, 1695, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1145, 1180, this.player, this.enemyProjectiles, 993, 1145, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 762, 855, this.player, this.enemyProjectiles, 417, 762, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 351, 190, this.player, this.enemyProjectiles, 212, 351, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 
 		//Black Screen
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
@@ -297,13 +314,11 @@ Play.prototype = {
 			this.SCREENFLAG = true; //In Screen Fade
 		}
 		if (EnemyJumper.growthReady == true) {
-			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles));
+			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 			EnemyJumper.growthReady = false;
 		}
 
 		// ------------------------------ SCREEN FADE ------------------------------------
-		console.log(this.SCREENFLAG);
-		console.log(this.blackScreen.alpha);
 		if(this.player.health <= 0){
 			this.SCREENFLAG = true;
 		}

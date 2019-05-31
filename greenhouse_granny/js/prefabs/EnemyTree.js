@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-EnemyTree = function(game, x, y, player, enemyProjectiles) {
+EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound) {
 
 	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
 
@@ -23,11 +23,16 @@ EnemyTree = function(game, x, y, player, enemyProjectiles) {
 	EnemyTree.AGGRO_RANGE = 500;
 	this.hitStunDuration = 0;
 	EnemyTree.acorns = game.add.group();
+
+	EnemyTree.hurtSound = hurtSound;
+	EnemyTree.deathSound = deathSound;
 }
 
 //Creating a prototype for enemy
 EnemyTree.prototype = Object.create(Phaser.Sprite.prototype);
 EnemyTree.prototype.constructor = EnemyTree;
+
+
 
 //Update funtion for enemy
 EnemyTree.prototype.update = function() {
@@ -51,8 +56,8 @@ EnemyTree.prototype.update = function() {
 				this.burstCooldown = 22;
 			}
 			if (this.acornCooldown == 0) {
-				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left'));
-				EnemyTree.acorns.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right'));
+				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
+				EnemyTree.acorns.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
 				this.acornCooldown = 500;
 			}
 			if (this.burstShooting == true) {
@@ -86,10 +91,12 @@ EnemyTree.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 5;
+		EnemyTree.deathSound.play();
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
 		this.hitStunDuration = 30;
+		EnemyTree.hurtSound.play();
 		this.tint = 0xff4444;
 	}
 }

@@ -5,7 +5,7 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 }
 
 //Creating Granny function
-Granny = function(game, x, y, enemies) {
+Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -51,6 +51,11 @@ Granny = function(game, x, y, enemies) {
 	// Variable that keeps track of when to play block animation
 	this.blockPlay;
 
+	// Audio references
+	Granny.jumpSound = jumpSound;
+	Granny.hurtSound = hurtSound;
+	this.attackSound = attackSound; // can change depending on the weapon she has equipped
+
 	// Granny's hitbox
 	this.hitbox = game.add.graphics(0,0);
 	this.hitbox.beginFill(0xFF0000, 1);
@@ -78,7 +83,7 @@ Granny.prototype.update = function() {
 	if(this.attackCooldown == 0){
 		if(this.keyAttack.isDown){
 			this.attackCooldown = this.currentWeapon.cooldown;
-			this.currentWeapon.commenceAttack(this.currentWeaponObj);
+			this.currentWeapon.commenceAttack(this, this.currentWeaponObj);
 		}
 	}
 	else{
@@ -136,6 +141,7 @@ Granny.prototype.update = function() {
     }
 	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
 		this.body.velocity.y = -Granny.JUMP_HEIGHT;
+		Granny.jumpSound.play();
 		if(!this.onGround){
 			this.airJumps--;
 		}
@@ -182,12 +188,14 @@ Granny.prototype.takeDamage = function(amount, source){
 		this.health -= amount;
 		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+amount, fill: '#ff6666'}, false)
 		this.tint = 0xff4444;
+		Granny.hurtSound.play();
 	}
 	else if(this.blockTime > 50){ // partial block
 		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
 		game.add.text(new PopupText(game, this.x, this.y, amount/2, {font: 'Palatino', fontSize: 13, fill: '#ff8888'}, false));
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
+		Granny.hurtSound.play();
 	}
 	else{ // full block
 		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));

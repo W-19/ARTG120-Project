@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing) {
+EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSound, deathSound) {
 
 	Phaser.Sprite.call(this, game, x, y, 'acorn');
 
@@ -26,6 +26,9 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing) {
 	EnemyJumper.growthReady;
 	this.scale.x = (this.facing == 'left' ? -EnemyJumper.SCALE : EnemyJumper.SCALE);
 	this.scale.y = EnemyJumper.SCALE;
+
+	EnemyJumper.hurtSound = hurtSound;
+	EnemyJumper.deathSound = deathSound;
 
 	this.animations.add('moving', [0, 1, 2, 3], 7, true);
 	this.animations.play('moving');
@@ -98,10 +101,12 @@ EnemyJumper.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		++Granny.score;
+		Enemy.deathSound.play();
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
 		this.body.velocity.y -= 150;
+		Enemy.hurtSound.play();
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
 		this.hitStunDuration = 30;
 		this.tint = 0xff4444;
