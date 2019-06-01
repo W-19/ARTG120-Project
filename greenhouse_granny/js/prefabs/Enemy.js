@@ -30,7 +30,6 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	this.animations.add('moving', [5, 6, 7, 8, 9, 10], 7, true);
 	this.animations.add('shooting', [0, 1, 2, 3, 4], 7, false);
 	this.animations.play('moving');
-	
 }
 
 //Creating a prototype for enemy

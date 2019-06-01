@@ -23,6 +23,7 @@ EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound
 	EnemyTree.AGGRO_RANGE = 500;
 	this.hitStunDuration = 0;
 	EnemyTree.acorns = game.add.group();
+	this.acornSpawnDelay = 150;
 
 	EnemyTree.hurtSound = hurtSound;
 	EnemyTree.deathSound = deathSound;
@@ -32,8 +33,6 @@ EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound
 EnemyTree.prototype = Object.create(Phaser.Sprite.prototype);
 EnemyTree.prototype.constructor = EnemyTree;
 
-
-
 //Update funtion for enemy
 EnemyTree.prototype.update = function() {
 
@@ -41,21 +40,22 @@ EnemyTree.prototype.update = function() {
 	if(this.burstCooldown > 0) this.burstCooldown--;
 	if(this.acornCooldown > 0) this.acornCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
+	if(this.acornSpawnDelay > 0) this.acornSpawnDelay--;
 
 	//Attacking
 	if(this.hitStunDuration == 0){
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
-		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
+		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 500/* && (
 			this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && (this.player.y + 100) - this.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && (this.player.y + 100) - this.y >= 0
-		)){
+		)*/){
 			//Attack her
 			if (this.bulletCooldown == 0) {
 				this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
 				this.burstShooting = true;
 				this.burstCooldown = 22;
 			}
-			if (this.acornCooldown == 0) {
+			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0) {
 				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
 				EnemyTree.acorns.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
 				this.acornCooldown = 500;
@@ -74,7 +74,7 @@ EnemyTree.prototype.update = function() {
 		}	
 	}
 
-	if (this.x < Granny.x) {
+	if (this.x < this.player.x) {
 		this.facing = 'right';
 		this.scale.x = 1;
 	}
