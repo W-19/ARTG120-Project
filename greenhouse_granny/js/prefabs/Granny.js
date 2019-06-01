@@ -5,7 +5,7 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 }
 
 //Creating Granny function
-Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound) {
+Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, damage) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -27,6 +27,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound) {
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 500;
 	Granny.JUMP_HEIGHT = 775;
+	Granny.DAMAGE = damage;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable

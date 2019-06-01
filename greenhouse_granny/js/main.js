@@ -16,6 +16,7 @@ var game = new Phaser.Game(config);
 
 var money = 0;
 var moneyCounter = 0;
+var GrannyDAMAGE = 0;
 
 var currentTrack; // allows us to stop the game audio when we enter the GameOver state
 
@@ -212,7 +213,7 @@ Play.prototype = {
 		this.enemies = game.add.group();
 
 		// Set up the player
-		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing);
+		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
@@ -480,8 +481,10 @@ GameOver.prototype = {
 		}
 
 		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
-			if(this.SELECT == 1){
+			if(this.SELECT == 1 && money >= 1000){
 				//upgrade weapon
+				money -= 1000;
+				++GrannyDAMAGE;
 			}
 			else if(this.SELECT == 2){
 				this.SCREENFLAG = true;
@@ -489,10 +492,43 @@ GameOver.prototype = {
 		}
 	}
 }
+/*
+var UpgradeMenu = function(game){
+	this.SELECT = 1;
+	this.SCREENFLAG = false;
+};
+UpgradeMenu.prototype = {
+	init: function(score){
+		this.score = score;
+	},
+	preload: function(){
+		game.load.image('endscreen', 'assets/img/Endscreen.png');
+		game.load.image('select', 'assets/img/Select.png');
+		game.load.image('hubBackground', 'assets/img/EndscreenHubBackground.png');
+	},
+	create: function(){
+		// background color already set in MainMenu
+		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
+		money += Math.floor((moneyCounter / 100) * Granny.score);
+
+		game.add.sprite(0, 0, 'endscreen');
+		this.hubBack = game.add.sprite(400, -200, 'hubBackground');
+		this.hubBack.anchor.set(.5);
+		this.hubBack.alpha = .95;
+
+		this.select = game.add.sprite(400, 800, 'select');
+		this.select.anchor.set(.5);
+		this.select.alpha = .75;
+	},
+	update: function(){
+
+	}
+}*/
 
 // Start the game
 game.state.add("MainMenu", MainMenu);
 game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
+//game.state.add("UpgradeMenu", UpgradeMenu);
 game.state.start("MainMenu");
 

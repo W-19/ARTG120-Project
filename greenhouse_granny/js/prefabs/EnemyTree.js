@@ -87,6 +87,7 @@ EnemyTree.prototype.update = function() {
 }
 
 EnemyTree.prototype.takeDamage = function(amount){
+	amount += Granny.DAMAGE;
 	this.health -= amount;
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
