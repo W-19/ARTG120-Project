@@ -5,7 +5,7 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 }
 
 //Creating Granny function
-Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, damage) {
+Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockSound, damage) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -56,6 +56,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, damage
 	Granny.jumpSound = jumpSound;
 	Granny.hurtSound = hurtSound;
 	this.attackSound = attackSound; // can change depending on the weapon she has equipped
+	Granny.blockSound = blockSound;
 
 	// Granny's hitbox
 	this.hitbox = game.add.graphics(0,0);
@@ -200,6 +201,7 @@ Granny.prototype.takeDamage = function(amount, source){
 	}
 	else{ // full block
 		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
+		Granny.blockSound.play();
 		return;
 	}
 
