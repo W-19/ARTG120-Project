@@ -31,7 +31,10 @@ var shovel = {
 
 		// Draws two lines from the player's center to each side of the shovel blade
 		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX1, shovelBladeY1);
-		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX2, shovelBladeY2);		
+		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX2, shovelBladeY2);
+
+		// For some reason we it's hard for the player to can hit normal enemies from the back when facing left,
+		// but even stretching the hit lines in this case had no effect.
 
 		// Tests for an intersection between the lines and each enemy
 		enemies.forEachAlive(function(enemy){

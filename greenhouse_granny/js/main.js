@@ -175,6 +175,8 @@ Play.prototype = {
 		game.load.audio('enemy hurt', 'assets/audio/Enemy Hurt.ogg');
 		game.load.audio('enemy death', 'assets/audio/Enemy Death.ogg');
 		game.load.audio('weapon swing', 'assets/audio/Weapon Swing.ogg');
+		// Altered from the original by user Timbre: https://freesound.org/s/103218/. License: https://creativecommons.org/licenses/by-nc/3.0/.
+		game.load.audio('block', 'assets/audio/Clang.ogg');
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
@@ -196,6 +198,8 @@ Play.prototype = {
 		this.enemyDeath.volume = 0.1;
 		this.weaponSwing = game.add.audio('weapon swing');
 		this.weaponSwing.volume = 0.1;
+		this.block = game.add.audio('block');
+		this.block.volume = 0.1;
 
 
 		// Draw the background
@@ -213,7 +217,7 @@ Play.prototype = {
 		this.enemies = game.add.group();
 
 		// Set up the player
-		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, GrannyDAMAGE);
+		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
@@ -242,7 +246,7 @@ Play.prototype = {
 		// Set up the enemies
 		//this.enemies.add(new Enemy(game, 1050, 1700, this.player, this.enemyProjectiles, 545, 1050));
 		this.enemies.add(new Enemy(game, 1464, 1500, this.player, this.enemyProjectiles, 1290, 1464, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 2016, 1700, this.player, this.enemyProjectiles, 1761, 2014, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 2010, 1700, this.player, this.enemyProjectiles, 1761, 2014, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1695, 1240, this.player, this.enemyProjectiles, 1477, 1695, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1145, 1180, this.player, this.enemyProjectiles, 993, 1145, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 762, 855, this.player, this.enemyProjectiles, 417, 762, this.enemyHurt, this.enemyDeath));
@@ -358,6 +362,7 @@ Play.prototype = {
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
 		game.debug.physicsGroup(this.enemies);
 		*/
+		
 		
 	},
 
