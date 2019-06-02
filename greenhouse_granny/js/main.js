@@ -160,13 +160,14 @@ Play.prototype = {
 		game.load.image('shovel', shovel.path);
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
+		game.load.image('stage', 'assets/img/Final-Stage.png');
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 		game.load.spritesheet('acorn', 'assets/img/SpriteSheets/Acorn_SpriteSheet.png', 61, 80);
 
 		//Load in tilemap and spritesheet
-		game.load.tilemap('level', 'assets/tilemaps/Level1Tilemap.json', null, Phaser.Tilemap.TILED_JSON);
-		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet.png', 64, 64);
+		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet2.png', 64, 64);
 
 		game.load.audio('track01', 'assets/audio/Track 1.ogg');
 		//game.load.audio('track02', 'Track 02.ogg'); // unused rn
@@ -188,6 +189,10 @@ Play.prototype = {
 		//load track 2 when we need it
 		currentTrack = this.track01;
 
+		//Add background to game
+		this.stage = game.add.sprite(0, 3200, 'stage');
+		this.stage.anchor.y = 1;
+
 		this.playerJump = game.add.audio('player jump');
 		this.playerJump.volume = 0.1;
 		this.playerHurt = game.add.audio('player hurt');
@@ -208,7 +213,7 @@ Play.prototype = {
 
 		//Tilemap creation
 		this.map = game.add.tilemap('level');
-		this.map.addTilesetImage('tempTileset', 'tilesheet');
+		this.map.addTilesetImage('TileSheet2', 'tilesheet');
 		this.map.setCollisionByExclusion([]);
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
@@ -515,18 +520,15 @@ UpgradeMenu.prototype = {
 		// background color already set in MainMenu
 		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
 		money += Math.floor((moneyCounter / 100) * Granny.score);
-
 		game.add.sprite(0, 0, 'endscreen');
 		this.hubBack = game.add.sprite(400, -200, 'hubBackground');
 		this.hubBack.anchor.set(.5);
 		this.hubBack.alpha = .95;
-
 		this.select = game.add.sprite(400, 800, 'select');
 		this.select.anchor.set(.5);
 		this.select.alpha = .75;
 	},
 	update: function(){
-
 	}
 }*/
 
@@ -536,4 +538,3 @@ game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
 //game.state.add("UpgradeMenu", UpgradeMenu);
 game.state.start("MainMenu");
-
