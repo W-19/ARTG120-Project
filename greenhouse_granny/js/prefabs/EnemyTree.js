@@ -2,7 +2,7 @@
 // its projectiles will be created in
 EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound) {
 
-	Phaser.Sprite.call(this, game, x, y, 'spitter plant');
+	Phaser.Sprite.call(this, game, x, y, 'tree');
 
 	//Setting some attributes for the enemy
 	this.anchor.set(0.5);

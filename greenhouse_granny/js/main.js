@@ -164,6 +164,7 @@ Play.prototype = {
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 		game.load.spritesheet('acorn', 'assets/img/SpriteSheets/Acorn_SpriteSheet.png', 61, 80);
+		game.load.spritesheet('tree', 'assets/img/SpriteSheets/Tree_SpriteSheet.png', 357, 250);
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap.json', null, Phaser.Tilemap.TILED_JSON);
