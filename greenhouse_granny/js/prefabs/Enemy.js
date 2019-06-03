@@ -28,7 +28,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	Enemy.deathSound = deathSound;
 
 	this.animations.add('moving', [5, 6, 7, 8, 9, 10], 7, true);
-	this.animations.add('shooting', [0, 1, 2, 3, 4], 7, false);
+	this.animations.add('shooting', [0, 1, 2, 3, 4], 8, false);
 	this.animations.play('moving');
 }
 
@@ -50,7 +50,6 @@ Enemy.prototype.update = function() {
 			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		)){
 			this.body.velocity.x = 0;
-			this.frame = 0;
 			this.animations.play('shooting');
 			// Shoot her
 			if (this.bulletCooldown == 0) {
