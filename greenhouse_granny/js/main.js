@@ -249,18 +249,23 @@ Play.prototype = {
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
 
+		//Setting up spawn points
+		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
+		[39, 1300], [2275, 1300], [39, 785], [2275, 785]];
+		this.spawnCounter = 250;
+		this.spawnPoint = -1;
+
 		// Set up the enemies
-		//this.enemies.add(new Enemy(game, 1050, 1700, this.player, this.enemyProjectiles, 545, 1050));
-		this.enemies.add(new Enemy(game, 1464, 1500, this.player, this.enemyProjectiles, 1290, 1464, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 2010, 1700, this.player, this.enemyProjectiles, 1761, 2014, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1695, 1240, this.player, this.enemyProjectiles, 1477, 1695, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1145, 1180, this.player, this.enemyProjectiles, 993, 1145, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 762, 855, this.player, this.enemyProjectiles, 417, 762, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 351, 190, this.player, this.enemyProjectiles, 212, 351, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 910, 530, this.player, this.enemyProjectiles, 910, 1443, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1322, 1170, this.player, this.enemyProjectiles, 999, 1322, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.enemyHurt, this.enemyDeath));
+		/*this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));*/
 
 		//Black Screen
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
@@ -272,7 +277,26 @@ Play.prototype = {
 
 		// ---------------------------------- COLLISIONS ----------------------------------
 		// Keep in mind that collide repels the objects, while overlap does not
+
+		//Counters
 		++moneyCounter;
+		++this.spawnCounter;
+
+		//Randomly spawning enemies based on time
+		if ((this.spawnCounter % 1000) == 0) {
+			tempVal = -1;
+			for (i = 0; i < (this.spawnCounter / 1000); i++) {i
+				this.spawnPoint = game.rnd.integerInRange(0, 11);
+				tempVal = game.rnd.integerInRange(1, 10);
+				if (tempVal == 10) {
+					this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
+					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+				}
+				else {
+					this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
+					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));				}
+			}
+		}
 
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
@@ -475,6 +499,8 @@ GameOver.prototype = {
 			this.scoreText6.y += 5;
 		}
 
+		//this.scoreText4.text = "$" + money;
+
 		//select controls
 		if(game.input.keyboard.downDuration(Phaser.Keyboard.DOWN, 1)){
 			if(this.SELECT == 1) this.SELECT = 2;
@@ -503,35 +529,6 @@ GameOver.prototype = {
 		}
 	}
 }
-/*
-var UpgradeMenu = function(game){
-	this.SELECT = 1;
-	this.SCREENFLAG = false;
-};
-UpgradeMenu.prototype = {
-	init: function(score){
-		this.score = score;
-	},
-	preload: function(){
-		game.load.image('endscreen', 'assets/img/Endscreen.png');
-		game.load.image('select', 'assets/img/Select.png');
-		game.load.image('hubBackground', 'assets/img/EndscreenHubBackground.png');
-	},
-	create: function(){
-		// background color already set in MainMenu
-		tempMoney = Math.floor((moneyCounter / 100) * Granny.score);
-		money += Math.floor((moneyCounter / 100) * Granny.score);
-		game.add.sprite(0, 0, 'endscreen');
-		this.hubBack = game.add.sprite(400, -200, 'hubBackground');
-		this.hubBack.anchor.set(.5);
-		this.hubBack.alpha = .95;
-		this.select = game.add.sprite(400, 800, 'select');
-		this.select.anchor.set(.5);
-		this.select.alpha = .75;
-	},
-	update: function(){
-	}
-}*/
 
 // Start the game
 game.state.add("MainMenu", MainMenu);
