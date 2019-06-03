@@ -252,8 +252,9 @@ Play.prototype = {
 		//Setting up spawn points
 		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
 		[39, 1300], [2275, 1300], [39, 785], [2275, 785]];
-		this.spawnCounter = 250;
+		this.spawnCounter = 0;
 		this.spawnPoint = -1;
+		this.tempVal = -1;
 
 		// Set up the enemies
 		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
@@ -283,18 +284,18 @@ Play.prototype = {
 		++this.spawnCounter;
 
 		//Randomly spawning enemies based on time
-		if ((this.spawnCounter % 1000) == 0) {
-			tempVal = -1;
-			for (i = 0; i < (this.spawnCounter / 1000); i++) {i
+		if ((this.spawnCounter % 500) == 0) {
+			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(0, 11);
-				tempVal = game.rnd.integerInRange(1, 10);
-				if (tempVal == 10) {
+				this.tempVal = game.rnd.integerInRange(1, 10);
+				if (this.tempVal == 10) {
 					this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
 					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 				}
 				else {
 					this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
-					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));				}
+					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
+				}
 			}
 		}
 
@@ -499,7 +500,7 @@ GameOver.prototype = {
 			this.scoreText6.y += 5;
 		}
 
-		//this.scoreText4.text = "$" + money;
+		this.scoreText4.text = "$" + money;
 
 		//select controls
 		if(game.input.keyboard.downDuration(Phaser.Keyboard.DOWN, 1)){
