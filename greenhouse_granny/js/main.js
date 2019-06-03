@@ -263,10 +263,7 @@ Play.prototype = {
 		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.enemyHurt, this.enemyDeath));
-		/*this.enemies.add(new Enemy(game, 2015, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1031, 410, this.player, this.enemyProjectiles, 1031, 2015, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new EnemyTree(game, 870, 1700, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new EnemyTree(game, 2000, 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));*/
+		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 
 		//Black Screen
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
@@ -290,11 +287,11 @@ Play.prototype = {
 				this.tempVal = game.rnd.integerInRange(1, 10);
 				if (this.tempVal == 10) {
 					this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
-					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 				}
 				else {
 					this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
-					this.spawnPoints[this.spawnPoint][this.spawnPoint + 1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
 				}
 			}
 		}
