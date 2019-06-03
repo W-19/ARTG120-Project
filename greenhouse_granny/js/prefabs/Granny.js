@@ -98,7 +98,6 @@ Granny.prototype.update = function() {
 	// Another statement down here so the attack will hit on the first tick but not on the last, rather than vice versa
 	if(this.attackCooldown > 0){
 		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
-		this.currentWeapon.attack(game, this, this.currentWeaponObj, EnemyTree.acorns);
 	}
 
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------

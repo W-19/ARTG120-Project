@@ -39,11 +39,12 @@ Enemy.prototype.constructor = Enemy;
 //Update funtion for enemy
 Enemy.prototype.update = function() {
 
-	if(this.bulletCooldown > 0) this.bulletCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
+		if(this.bulletCooldown > 0) this.bulletCooldown--;
+
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
 		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
 			this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
@@ -94,7 +95,8 @@ Enemy.prototype.takeDamage = function(amount){
 		this.body.velocity.y -= 150;
 		Enemy.hurtSound.play();
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
-		this.hitStunDuration = 40;
+		this.hitStunDuration = 60;
+		this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
 		this.tint = 0xff4444;
 	}
 }

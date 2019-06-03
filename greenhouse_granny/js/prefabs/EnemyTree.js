@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound) {
+EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, hurtSound, deathSound) {
 
 	Phaser.Sprite.call(this, game, x, y, 'tree');
 
@@ -13,7 +13,8 @@ EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound
 	this.scale.setTo(-1, 1);
 	this.body.gravity.y = 1000;
 	EnemyTree.BULLET_COOLDOWN_BASE = 300;
-	this.enemyProjectiles = enemyProjectiles;
+	this.enemies = enemies; // for spawned acorns
+	this.enemyProjectiles = enemyProjectiles; // for spawned projectiles
 	this.facing = 'left';
 	this.bulletCooldown = 0;
 	this.burstCooldown = 0;
@@ -22,7 +23,6 @@ EnemyTree = function(game, x, y, player, enemyProjectiles, hurtSound, deathSound
 	this.player = player;
 	EnemyTree.AGGRO_RANGE = 500;
 	this.hitStunDuration = 0;
-	EnemyTree.acorns = game.add.group();
 	this.acornSpawnDelay = 150;
 
 	EnemyTree.hurtSound = hurtSound;
@@ -36,14 +36,16 @@ EnemyTree.prototype.constructor = EnemyTree;
 //Update funtion for enemy
 EnemyTree.prototype.update = function() {
 
-	if(this.bulletCooldown > 0) this.bulletCooldown--;
-	if(this.burstCooldown > 0) this.burstCooldown--;
-	if(this.acornCooldown > 0) this.acornCooldown--;
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
-	if(this.acornSpawnDelay > 0) this.acornSpawnDelay--;
 
 	//Attacking
 	if(this.hitStunDuration == 0){
+
+		if(this.bulletCooldown > 0) this.bulletCooldown--;
+		if(this.burstCooldown > 0) this.burstCooldown--;
+		if(this.acornCooldown > 0) this.acornCooldown--;
+		if(this.acornSpawnDelay > 0) this.acornSpawnDelay--;
+
 		// Checking to see if player is in range of plant to be shot at, and handling plant movement in this scenario
 		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 500/* && (
 			this.facing == 'left' && this.x - this.player.x < EnemyTree.AGGRO_RANGE && this.x - this.player.x > 0 && (this.player.y + 100) - this.y >= 0 ||
@@ -56,8 +58,8 @@ EnemyTree.prototype.update = function() {
 				this.burstCooldown = 22;
 			}
 			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0) {
-				EnemyTree.acorns.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
-				EnemyTree.acorns.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
+				this.enemies.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
+				this.enemies.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
 				this.acornCooldown = 500;
 			}
 			if (this.burstShooting == true) {
@@ -96,7 +98,8 @@ EnemyTree.prototype.takeDamage = function(amount){
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
-		this.hitStunDuration = 30;
+		this.hitStunDuration = 60;
+		this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
 		EnemyTree.hurtSound.play();
 		this.tint = 0xff4444;
 	}

@@ -42,8 +42,6 @@ EnemyJumper.prototype.constructor = EnemyJumper;
 EnemyJumper.prototype.update = function() {
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
-	if(this.jumpCooldown > 0) this.jumpCooldown--;
-	if(this.growthCounter > 0) this.growthCounter--;
 
 	if (this.growthCounter == 0) {
 		this.kill();
@@ -55,6 +53,10 @@ EnemyJumper.prototype.update = function() {
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
+
+		if(this.jumpCooldown > 0) this.jumpCooldown--;
+		if(this.growthCounter > 0) this.growthCounter--;
+
 		// Checking to see if player is in range of acorn to be jumped at, and handling acorn movement in this scenario
 		if( Phaser.Math.distance(this.x, this.y, this.player.x, this.player.y) < 1100 && (
 			this.facing == 'left' && this.x - this.player.x < EnemyJumper.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
@@ -109,7 +111,7 @@ EnemyJumper.prototype.takeDamage = function(amount){
 		this.body.velocity.y -= 150;
 		Enemy.hurtSound.play();
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
-		this.hitStunDuration = 30;
+		this.hitStunDuration = 60;
 		this.tint = 0xff4444;
 	}
 }

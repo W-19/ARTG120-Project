@@ -263,7 +263,7 @@ Play.prototype = {
 		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.enemyHurt, this.enemyDeath));
 		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 
 		//Black Screen
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
@@ -287,7 +287,7 @@ Play.prototype = {
 				this.tempVal = game.rnd.integerInRange(1, 10);
 				if (this.tempVal == 10) {
 					this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
-					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 				}
 				else {
 					this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
@@ -299,15 +299,12 @@ Play.prototype = {
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
 		game.physics.arcade.collide(this.enemies, this.mapLayer);
-		game.physics.arcade.collide(EnemyTree.acorns, this.mapLayer);
 		game.physics.arcade.collide(this.enemyProjectiles, this.mapLayer, this.bulletContactTerrain, null, this);
 		// probably check for enemyProjectiles too, but we can implement that later on
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
 		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
-
-		game.physics.arcade.collide(this.player.hitbox, EnemyTree.acorns, this.enemyAcornContact, null, this);
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
@@ -347,7 +344,7 @@ Play.prototype = {
 			this.SCREENFLAG = true; //In Screen Fade
 		}
 		if (EnemyJumper.growthReady == true) {
-			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 			EnemyJumper.growthReady = false;
 		}
 
@@ -401,10 +398,6 @@ Play.prototype = {
 	},
 
 	enemyContact: function(player, enemy) {
-		this.player.takeDamage(3, enemy);
-	},
-
-	enemyAcornContact: function(player, enemy) {
 		this.player.takeDamage(3, enemy);
 	},
 
