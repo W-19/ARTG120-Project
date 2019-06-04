@@ -24,6 +24,8 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
 
+	this.MELEE_DAMAGE = 2; // Can't be static because using typeof in main doesn't work :/
+
 	Enemy.hurtSound = hurtSound;
 	Enemy.deathSound = deathSound;
 
@@ -56,6 +58,7 @@ Enemy.prototype.update = function() {
 			if (this.bulletCooldown == 0) {
 				bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-10, 'seed projectile');
 				bullet.anchor.set(0.5);
+				bullet.owner = this;
 				bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 				if (this.facing == 'left') bullet.scale.x = -bullet.scale.x;
 				this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;	
@@ -76,6 +79,10 @@ Enemy.prototype.update = function() {
 			this.facing = 'left';
 			this.scale.x = -0.5;
 		}
+	}
+	// If in hit stun and on the ground, stop all horizontal movement
+	else if (this.hitStunDuration < 58 && this.body.blocked.down){
+		this.body.velocity.x = 0;
 	}
 
 	if(this.tint < 0xffffff) this.tint += 0x001111; // fade the red tint from getting hit

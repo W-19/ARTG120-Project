@@ -234,13 +234,13 @@ Play.prototype = {
 		this.playerScorePrev = 0;
 
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: 32, fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
     	this.healthBar.anchor.setTo(0.5); // for consistency with the score text
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(120, 36.5);
 
     	//Adding text to keep score at the top right of screen
-    	this.scoreText = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: 32, fill: '#ffffff' });
+    	this.scoreText = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
     	this.scoreText.anchor.setTo(0.5);
     	this.scoreText.fixedToCamera = true;
     	this.scoreText.cameraOffset.setTo(700.5, 36.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
@@ -313,11 +313,22 @@ Play.prototype = {
 		// Flash the health bar when the player takes damage
 		if(this.playerHealthPrev != this.player.health){
 			this.healthBar.text = "Health: " + this.player.health * 10 + "%";
-			this.healthBar.tint = 0xff4444;
+			
+			if(this.playerHealthPrev > this.player.health){ // the player took damage
+				this.healthBar.tint = 0xff4444;
+			}
+			else{
+				this.healthBar.tint = 0x44ff44;
+			}
 			this.playerHealthPrev = this.player.health;
 		}
 		else if(this.healthBar.tint < 0xffffff){
-			this.healthBar.tint += 0x001111;
+			if(this.healthBar.tint >= 0xff0000){
+				this.healthBar.tint += 0x001111;
+			}
+			else{
+				this.healthBar.tint += 0x110011;
+			}		
 		}
 
 		// Pop the score when the player kills something
@@ -398,7 +409,9 @@ Play.prototype = {
 	},
 
 	enemyContact: function(player, enemy) {
-		this.player.takeDamage(3, enemy);
+		if(enemy.MELEE_DAMAGE != null){
+			this.player.takeDamage(enemy.MELEE_DAMAGE, enemy);
+		}
 	},
 
 	bulletContactTerrain: function(bullet, terrain) {

@@ -25,6 +25,8 @@ EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, hurtSound, d
 	this.hitStunDuration = 0;
 	this.acornSpawnDelay = 150;
 
+	this.MELEE_DAMAGE = 4; // Can't be static because using typeof in main doesn't work :/
+
 	EnemyTree.hurtSound = hurtSound;
 	EnemyTree.deathSound = deathSound;
 }
@@ -66,6 +68,7 @@ EnemyTree.prototype.update = function() {
 				if (this.burstCooldown % 11 == 0) {	
 					bullet = this.enemyProjectiles.create(this.x + (this.facing == 'left' ? -42 : 42), this.y-40, 'seed projectile');
 					bullet.anchor.set(0.5);
+					bullet.owner = this;
 					bullet.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 					if (this.facing == 'left') bullet.scale.x = -bullet.scale.x;			
 				}
@@ -73,7 +76,8 @@ EnemyTree.prototype.update = function() {
 					this.burstShooting = false;
 				}
 			}
-		}	
+		}
+
 	}
 
 	if (this.x < this.player.x) {
@@ -94,6 +98,7 @@ EnemyTree.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, stroke: '#000000', strokeThickness: 3, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 5;
+		this.player.heal(2);
 		EnemyTree.deathSound.play();
 		this.destroy(); // maybe replace with kill?
 	}
