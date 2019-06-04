@@ -187,19 +187,19 @@ Granny.prototype.takeDamage = function(amount, source){
 
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
-		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+amount, fill: '#ff6666'}, false)
+		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+amount, stroke: '#000000', strokeThickness: 3, fill: '#ff6666'}, false)
 		this.tint = 0xff4444;
 		Granny.hurtSound.play();
 	}
 	else if(this.blockTime > 50){ // partial block
-		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
-		game.add.text(new PopupText(game, this.x, this.y, amount/2, {font: 'Palatino', fontSize: 13, fill: '#ff8888'}, false));
+		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", {font: 'Palatino', fontSize: 10, stroke: '#000000', strokeThickness: 3, fill: '#ffffff'}, true));
+		game.add.text(new PopupText(game, this.x, this.y, amount/2, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#ff8888'}, false));
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
 		Granny.hurtSound.play();
 	}
 	else{ // full block
-		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, fill: '#ffffff'}, true));
+		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, stroke: '#000000', strokeThickness: 3, fill: '#ffffff'}, true));
 		Granny.blockSound.play();
 		return;
 	}
