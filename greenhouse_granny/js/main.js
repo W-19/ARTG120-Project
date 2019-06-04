@@ -441,7 +441,7 @@ GameOver.prototype = {
 		
 
 		//text to play again
-		this.playAgain = game.add.text(400, -60, 'Play Again', {font: '26px Sabon', fill: '#fffff'});
+		this.playAgain = game.add.text(400, -60, 'Continue', {font: '26px Sabon', fill: '#fffff'});
 		this.playAgain.anchor.set(.5);
 
 		//score
