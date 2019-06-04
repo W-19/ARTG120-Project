@@ -161,7 +161,8 @@ Play.prototype = {
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
-		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
+		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
+		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 		game.load.spritesheet('acorn', 'assets/img/SpriteSheets/Acorn_SpriteSheet.png', 61, 80);
 		game.load.spritesheet('tree', 'assets/img/SpriteSheets/Tree_SpriteSheet.png', 357, 250);

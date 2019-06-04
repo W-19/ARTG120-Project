@@ -45,9 +45,14 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	//Adding animations and setting current frame to idle
+	/* old sp ritesheet
 	this.animations.add('walking', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 15, true);
 	this.animations.add('blocking', [8, 9, 10, 11, 12, 13], 30, false);
 	this.animations.add('unblocking', [14, 0], 30, false);
+	*/
+	this.animations.add('walking', [9, 12, 15], 20, true);
+	this.animations.add('blocking', [2, 3, 4, 5, 6, 7], 30, false);
+	this.animations.add('unblocking', [8, 0], 30, false);
 	this.frame = 0;
 
 	// Variable that keeps track of when to play block animation
