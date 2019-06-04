@@ -16,17 +16,18 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.scale.setTo(0.5, 0.5);
 	this.anchor.set(0.5);
 	this.anchorScale = this.scale.x;
-	this.body.gravity.y = 1400;
+	this.body.gravity.y = 1800;
 	this.body.maxVelocity.y = 1000;
 
-	this.health = 10;
+	Granny.MAX_HEALTH = 10;
+	this.health = Granny.MAX_HEALTH;
 	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
 	Granny.score = 0;
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 500;
-	Granny.JUMP_HEIGHT = 775;
+	Granny.JUMP_HEIGHT = 800;
 	Granny.DAMAGE = damage;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
@@ -167,7 +168,9 @@ Granny.prototype.update = function() {
 	// --------------------------------- MISCELLANEOUS -------------------------------------
 
 	// fade the red tint from getting hit
-	if(this.tint < 0xffffff) this.tint += 0x001111;
+	if(this.tint < 0xffffff && this.tint >= 0xff0000) this.tint += 0x001111;
+	// fade the green tint from getting healed
+	else if(this.tint < 0xffffff) this.tint += 0x110011;
 	
 	// update the list of enemies that recently damaged the player
 	for(var i = 0; i < this.immuneTo.length; i++){
@@ -181,6 +184,12 @@ Granny.prototype.update = function() {
 }
 
 Granny.prototype.takeDamage = function(amount, source){
+	
+	// Immunity works per parent object, for now
+	while(source.owner != null){
+		source = source.owner;
+	}
+
 	// If we were recently damaged by this enemy, we take no damage; otherwise, add it to the list
 	if(this.immuneTo.some(elem => elem.enemyObj == source)) return;
 	else this.immuneTo.push(new EnemyCountdown(source, 30)); // We'll be immune to this object for 30 ticks
@@ -208,6 +217,12 @@ Granny.prototype.takeDamage = function(amount, source){
 	// apply knockback
 	this.body.velocity.x = (480 + (20 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
 	this.body.velocity.y = -80 + ((80 * amount) * -Math.sin(game.physics.arcade.angleBetween(this, source))); // vertical knockback is always positive for now
+}
+
+Granny.prototype.heal = function(amount){
+	this.health = Math.min(this.health + amount, Granny.MAX_HEALTH);
+	game.add.text(new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#aaffaa'}, false));
+	this.tint = 0x44ff44;
 }
 
 Granny.prototype.switchWeapon = function(weapon){

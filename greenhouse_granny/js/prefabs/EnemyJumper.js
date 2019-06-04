@@ -27,6 +27,8 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSo
 	this.scale.x = (this.facing == 'left' ? -EnemyJumper.SCALE : EnemyJumper.SCALE);
 	this.scale.y = EnemyJumper.SCALE;
 
+	this.MELEE_DAMAGE = 1; // Can't be static because using typeof in main doesn't work :/
+
 	EnemyJumper.hurtSound = hurtSound;
 	EnemyJumper.deathSound = deathSound;
 
