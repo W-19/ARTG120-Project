@@ -4,6 +4,8 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 	this.ticksRemaining = ticksRemaining;
 }
 
+var blockKeyDown = false; // doesn't need to be a member of Granny, just saves a little performance
+
 //Creating Granny function
 Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockSound, damage) {
 
@@ -27,8 +29,9 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 500;
-	Granny.JUMP_HEIGHT = 800;
+	Granny.JUMP_HEIGHT = 825;
 	Granny.DAMAGE = damage;
+	Granny.BLOCK_COOLDOWN = 50;
 	this.airJumps = 1;
 	this.currentWeapon = null; // the variable from the weapons file
 	this.currentWeaponObj = null; // the actual object associated with said variable
@@ -52,7 +55,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	*/
 	this.animations.add('walking', [9, 12, 15], 20, true);
 	this.animations.add('blocking', [1, 2, 3, 4, 5, 6], 30, false);
-	this.animations.add('unblocking', [7, 0], 30, false);
+	this.animations.add('unblocking', [6, 5, 4, 3, 2, 1], 60, false);
 	this.frame = 0;
 
 	// Audio references
@@ -76,9 +79,32 @@ Granny.prototype.constructor = Granny;
 //Update function for granny
 Granny.prototype.update = function() {
 
+	blockKeyDown = this.keyBlock.isDown;
+
 	// Update Granny's hitbox with her position. We need to take velocity into account otherwise it'll lag behind her.
 	this.hitbox.x = this.x - (this.facing == 'right' ? 25 : 6) + this.body.velocity.x/60;
 	this.hitbox.y = this.y - 25 + this.body.velocity.y/60;
+
+	// ----------------------------------- ANIMATIONS -------------------------------------
+
+	
+	// It's simplest if we do all the animation logic right here
+	if(blockKeyDown){
+		if(this.animations.name != 'blocking' || this.animations.isPlaying == false){
+			this.animations.play('blocking');
+		}
+	}
+	else if(this.blockTime < -Granny.BLOCK_COOLDOWN + 20){
+		//this.animations.play('unblocking'); // why won't this work??
+		this.animations.stop(7);
+	}
+	else if (this.onGround && (this.keyLeft.isDown || this.keyRight.isDown)){
+		this.animations.play('walking');
+	}
+	else{
+		this.animations.play('walking'); // to remove the shielding animation if she stopped shielding in the air
+		this.animations.stop();
+	}
 
 	// ------------------------------------ ATTACKING -------------------------------------
 	
@@ -104,21 +130,18 @@ Granny.prototype.update = function() {
 	}
 
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------
-
 	this.onGround = this.body.blocked.down;
-	
+
 	//Basic movement handling if statements
-	if (this.keyRight.isDown && !(this.blockTime > 0 && this.onGround)) {
+	if (this.keyRight.isDown && !(blockKeyDown && this.onGround)) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
-		if(this.onGround) this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
-	else if (this.keyLeft.isDown && !(this.blockTime > 0 && this.onGround)) {
+	else if (this.keyLeft.isDown && !(blockKeyDown && this.onGround)) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
-		if(this.onGround) this.animations.play('walking');
 		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
 		//play move left animation
 	}
@@ -145,7 +168,6 @@ Granny.prototype.update = function() {
 	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
 		this.body.velocity.y = -Granny.JUMP_HEIGHT;
 		Granny.jumpSound.play();
-		this.animations.stop();
 		if(!this.onGround){
 			this.airJumps--;
 		}
@@ -153,16 +175,12 @@ Granny.prototype.update = function() {
 
 	// ----------------------------------- BLOCKING ---------------------------------------
 
-	if(this.keyBlock.isDown && !(this.blockTime < 0)) {
-		if(this.blockTime == 0){
-			this.animations.play('blocking');
-		}
+	if(blockKeyDown && !(this.blockTime < 0)) {
 		this.blockTime++;
 	}
-	else if(!this.keyBlock.isDown){
+	else if(!blockKeyDown){
 		if (this.blockTime > 0){ // called when the block key is lifted. We could also use "if(this.keyBlock.onUp)"
-			this.blockTime = -50; // blocking has a 50-tick cooldown
-			this.animations.play('unblocking');
+			this.blockTime = -Granny.BLOCK_COOLDOWN;
 		}
 		else if (this.blockTime < 0){
 			this.blockTime++;

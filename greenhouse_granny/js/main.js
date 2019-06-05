@@ -400,9 +400,8 @@ Play.prototype = {
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
 		*/
 
-		/*
-		game.debug.physicsGroup(this.enemies);
-		*/
+		//game.debug.physicsGroup(this.enemies);
+		
 		
 		
 	},
