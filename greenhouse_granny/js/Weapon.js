@@ -32,11 +32,28 @@ var shovel = {
 		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX1, shovelBladeY1);
 		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX2, shovelBladeY2);
 
+		// Why in God's name do we need to use extended lines if the player and enemy are both facing left???
+		//var hitLine1LL = new Phaser.Line(player.x, player.y, shovelBladeX1-40, shovelBladeY1);
+		//var hitLine2LL = new Phaser.Line(player.x, player.y, shovelBladeX2-40, shovelBladeY2);
+
 		// For some reason we it's hard for the player to can hit normal enemies from the back when facing left,
-		// but even stretching the hit lines in this case had no effect.
+		// but even stretching the hit lines in this case had no effect... or did it?
 
 		// Tests for an intersection between the lines and each enemy
 		enemies.forEachAlive(function(enemy){
+			/*
+			// if theyre both facing left
+			if(enemy.facing == 'left' && player.facing == 'left'){
+				if (Phaser.Line.intersectsRectangle(hitLine1LL, enemy) || Phaser.Line.intersectsRectangle(hitLine2LL, enemy)){
+					if(player.enemiesDamagedThisAttack.some(e => e === enemy)) return; // skip this enemy if it was already damaged
+					player.enemiesDamagedThisAttack.push(enemy); // otherwise add it to the list...
+					enemy.takeDamage(this.damage); // ...and deal damage to it
+				}
+				return;
+			}
+			*/
+
+			// otherwise
 			if (Phaser.Line.intersectsRectangle(hitLine1, enemy) || Phaser.Line.intersectsRectangle(hitLine2, enemy)){
 				if(player.enemiesDamagedThisAttack.some(e => e === enemy)) return; // skip this enemy if it was already damaged
 				player.enemiesDamagedThisAttack.push(enemy); // otherwise add it to the list...
