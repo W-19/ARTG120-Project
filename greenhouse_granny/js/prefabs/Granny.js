@@ -51,12 +51,9 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.animations.add('unblocking', [14, 0], 30, false);
 	*/
 	this.animations.add('walking', [9, 12, 15], 20, true);
-	this.animations.add('blocking', [2, 3, 4, 5, 6, 7], 30, false);
-	this.animations.add('unblocking', [8, 0], 30, false);
+	this.animations.add('blocking', [1, 2, 3, 4, 5, 6], 30, false);
+	this.animations.add('unblocking', [7, 0], 30, false);
 	this.frame = 0;
-
-	// Variable that keeps track of when to play block animation
-	this.blockPlay;
 
 	// Audio references
 	Granny.jumpSound = jumpSound;
@@ -89,7 +86,7 @@ Granny.prototype.update = function() {
 	this.currentWeapon.update(this, this.currentWeaponObj);
 
 	if(this.attackCooldown == 0){
-		if(this.keyAttack.isDown){
+		if(this.keyAttack.isDown && this.blockTime <= 0){
 			this.attackCooldown = this.currentWeapon.cooldown;
 			this.currentWeapon.commenceAttack(this, this.currentWeaponObj);
 		}
@@ -114,14 +111,14 @@ Granny.prototype.update = function() {
 	if (this.keyRight.isDown && !(this.blockTime > 0 && this.onGround)) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
-		this.animations.play('walking');
+		if(this.onGround) this.animations.play('walking');
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
 	else if (this.keyLeft.isDown && !(this.blockTime > 0 && this.onGround)) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
-		this.animations.play('walking');
+		if(this.onGround) this.animations.play('walking');
 		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
 		//play move left animation
 	}
@@ -138,7 +135,6 @@ Granny.prototype.update = function() {
 		//play idle animation if on ground
 		if (!this.keyBlock.isDown) {
 			this.frame = 0;
-			this.blockPlay = true;
 		}
 	}
 
@@ -149,6 +145,7 @@ Granny.prototype.update = function() {
 	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
 		this.body.velocity.y = -Granny.JUMP_HEIGHT;
 		Granny.jumpSound.play();
+		this.animations.stop();
 		if(!this.onGround){
 			this.airJumps--;
 		}
@@ -156,19 +153,21 @@ Granny.prototype.update = function() {
 
 	// ----------------------------------- BLOCKING ---------------------------------------
 
-	if (this.keyBlock.isDown) {
-		this.blockTime++;
-		if (this.keyBlock.justPressed && this.blockPlay == true) {
-			this.blockPlay = false;
-			this.blockTime = 0;
+	if(this.keyBlock.isDown && !(this.blockTime < 0)) {
+		if(this.blockTime == 0){
 			this.animations.play('blocking');
 		}
+		this.blockTime++;
 	}
-	else if (this.keyBlock.onUp && this.blockPlay == false) {
-		this.animations.play('unblocking');
+	else if(!this.keyBlock.isDown){
+		if (this.blockTime > 0){ // called when the block key is lifted. We could also use "if(this.keyBlock.onUp)"
+			this.blockTime = -50; // blocking has a 50-tick cooldown
+			this.animations.play('unblocking');
+		}
+		else if (this.blockTime < 0){
+			this.blockTime++;
+		}
 	}
-
-	else if (this.blockTime > 0) this.blockTime = -50; // blocking has a 50-tick cooldown
 
 	// --------------------------------- MISCELLANEOUS -------------------------------------
 

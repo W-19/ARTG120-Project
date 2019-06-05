@@ -392,11 +392,15 @@ Play.prototype = {
 		*/
 
 		// The below code uses the arbitrary value of 65 but seems to work better, and it's much simpler	
+		
 		/*
-		var shovelBladeX = this.player.x + 65*Math.cos(this.player.currentWeaponObj.rotation+(Math.PI/4))*(this.player.facing == 'left' ? -1 : 1);
-		var shovelBladeY = this.player.y + 65*Math.sin(this.player.currentWeaponObj.rotation+(Math.PI/4));
+		var shovelBladeX = this.player.x + 90*Math.cos(this.player.currentWeaponObj.rotation)*(this.player.facing == 'left' ? -1 : 1);
+		var shovelBladeY = this.player.y + 90*Math.sin(this.player.currentWeaponObj.rotation);
 		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
+		*/
+
+		/*
 		game.debug.physicsGroup(this.enemies);
 		*/
 		

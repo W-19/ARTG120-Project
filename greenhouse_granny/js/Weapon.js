@@ -1,9 +1,9 @@
 var shovel = {
 	name: 'shovel',
-	path: 'assets/img/shovel.png',
+	path: 'assets/img/Shovel_Updated.png',
 	type: 'melee',
 	damage: 1,
-	scale: 0.14,
+	scale: 0.9,
 	anchorX: 0.0,
 	anchorY: 0.0,
 	cooldown: 25,
@@ -21,13 +21,12 @@ var shovel = {
 	},
 	attack: function(game, player, shovelObj, enemies){ // called when the player attacks	
 
-		// A new function that draws lines and checks them for collision with each enemy. Seems to have issues with hitting trees from the rear.
-		// Why does 90 work better than 65? Who knows.	
+		// Inexact due to the shovel image being skewed and the rotation center being offset, but it's good enough for now.
 		
-		var shovelBladeX1 = player.x + 90*Math.cos(shovelObj.rotation+(Math.PI/4)-0.08)*(player.facing == 'left' ? -1 : 1);
-		var shovelBladeY1 = player.y + 90*Math.sin(shovelObj.rotation+(Math.PI/4)-0.08);
-		var shovelBladeX2 = player.x + 90*Math.cos(shovelObj.rotation+(Math.PI/4)+0.08)*(player.facing == 'left' ? -1 : 1);
-		var shovelBladeY2 = player.y + 90*Math.sin(shovelObj.rotation+(Math.PI/4)+0.08);
+		var shovelBladeX1 = player.x + 90*Math.cos(shovelObj.rotation-0.08)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY1 = player.y + 90*Math.sin(shovelObj.rotation-0.08);
+		var shovelBladeX2 = player.x + 90*Math.cos(shovelObj.rotation+0.08)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY2 = player.y + 90*Math.sin(shovelObj.rotation+0.08);
 
 		// Draws two lines from the player's center to each side of the shovel blade
 		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX1, shovelBladeY1);
