@@ -168,8 +168,8 @@ Play.prototype = {
 		game.load.spritesheet('tree', 'assets/img/SpriteSheets/Tree_SpriteSheet.png', 357, 250);
 
 		//Load in tilemap and spritesheet
-		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap.json', null, Phaser.Tilemap.TILED_JSON);
-		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet2.png', 64, 64);
+		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap2.json', null, Phaser.Tilemap.TILED_JSON);
+		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet3.png', 8, 8);
 
 		game.load.audio('track01', 'assets/audio/Track 1.ogg');
 		//game.load.audio('track02', 'Track 02.ogg'); // unused rn
@@ -192,8 +192,8 @@ Play.prototype = {
 		currentTrack = this.track01;
 
 		//Add background to game
-		this.stage = game.add.sprite(0, 3200, 'stage');
-		this.stage.anchor.y = 1;
+		/*this.stage = game.add.sprite(0, 3200, 'stage');
+		this.stage.anchor.y = 1;*/
 
 		this.playerJump = game.add.audio('player jump');
 		this.playerJump.volume = 0.1;
@@ -214,11 +214,16 @@ Play.prototype = {
 		game.stage.setBackgroundColor('#87CEEB');
 
 		//Tilemap creation
+		game.physics.arcade.TILE_BIAS = 32;
 		this.map = game.add.tilemap('level');
-		this.map.addTilesetImage('TileSheet2', 'tilesheet');
+		this.map.addTilesetImage('Tilesheet3', 'tilesheet');
 		this.map.setCollisionByExclusion([]);
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
+
+		//Add background to game
+		this.stage = game.add.sprite(0, 3200, 'stage');
+		this.stage.anchor.y = 1;
 
 		// A group which holds all the enemies (but not their projectiles!). We'll populate it later
 		this.enemies = game.add.group();
@@ -544,3 +549,4 @@ game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
 //game.state.add("UpgradeMenu", UpgradeMenu);
 game.state.start("MainMenu");
+
