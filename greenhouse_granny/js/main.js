@@ -318,7 +318,11 @@ Play.prototype = {
 
 		// Flash the health bar when the player takes damage
 		if(this.playerHealthPrev != this.player.health){
-			this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+			if(this.player.health < 0){
+				this.healthBar.text = "Health: " + 0 + "%";
+			}else if (this.player.health >= 0){
+				this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+			}
 			
 			if(this.playerHealthPrev > this.player.health){ // the player took damage
 				this.healthBar.tint = 0xff4444;
