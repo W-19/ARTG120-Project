@@ -29,7 +29,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	Granny.MAX_AIR_JUMPS = 1;
 	Granny.ACCELERATION_SPEED = 40;
 	Granny.MOVE_SPEED = 500;
-	Granny.JUMP_HEIGHT = 825;
+	Granny.JUMP_HEIGHT = 875;
 	Granny.DAMAGE = damage;
 	Granny.BLOCK_COOLDOWN = 50;
 	this.airJumps = 1;
@@ -89,7 +89,7 @@ Granny.prototype.update = function() {
 
 	
 	// It's simplest if we do all the animation logic right here
-	if(blockKeyDown){
+	if(blockKeyDown && this.blockTime > 0){
 		if(this.animations.name != 'blocking' || this.animations.isPlaying == false){
 			this.animations.play('blocking');
 		}

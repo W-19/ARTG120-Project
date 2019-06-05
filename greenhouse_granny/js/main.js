@@ -279,9 +279,7 @@ Play.prototype = {
 
 	update: function(){
 
-		// ---------------------------------- COLLISIONS ----------------------------------
-		// Keep in mind that collide repels the objects, while overlap does not
-
+		// ----------------------------------- SPAWNING -----------------------------------
 		//Counters
 		++moneyCounter;
 		++this.spawnCounter;
@@ -291,16 +289,21 @@ Play.prototype = {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(0, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);
-				if (this.tempVal == 10) {
-					this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
+				var spawnedEnemy;
+				// Spawn an enemy at a random x and y from the list
+				if (this.tempVal == 10) { // Tree
+					spawnedEnemy = this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][0],
 					this.spawnPoints[this.spawnPoint][1], this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
 				}
-				else {
-					this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][this.spawnPoint],
+				else { // Spitter
+					spawnedEnemy = this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][0],
 					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
 				}
 			}
 		}
+
+		// ---------------------------------- COLLISIONS ----------------------------------
+		// Keep in mind that collide repels the objects, while overlap does not
 
 		// Terrain collisions
 		game.physics.arcade.collide(this.player, this.mapLayer);
