@@ -23,6 +23,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
+	this.inWindbox = 0; // true if > 0
 
 	this.MELEE_DAMAGE = 2; // Can't be static because using typeof in main doesn't work :/
 
@@ -41,7 +42,12 @@ Enemy.prototype.constructor = Enemy;
 //Update funtion for enemy
 Enemy.prototype.update = function() {
 
-	if(this.hitStunDuration > 0) this.hitStunDuration--;
+	if(this.hitStunDuration > 0){
+		this.hitStunDuration--;
+	}
+
+	if(this.inWindbox > 0) this.inWindbox--;
+	else this.body.gravity.y = 1000;
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
@@ -52,7 +58,7 @@ Enemy.prototype.update = function() {
 			this.facing == 'left' && this.x - this.player.x < Enemy.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < Enemy.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		)){
-			this.body.velocity.x = 0;
+			if(this.inWindbox == 0) this.body.velocity.x = 0;
 			this.animations.play('shooting');
 			// Shoot her
 			if (this.bulletCooldown == 0) {
@@ -66,19 +72,22 @@ Enemy.prototype.update = function() {
 		}
 		// If the player's not in range, keep patrolling
 		else {
-			this.body.velocity.x = this.facing == 'left' ? -50 : 50;
+			if(this.inWindbox == 0) this.body.velocity.x = this.facing == 'left' ? -50 : 50;
 			this.animations.play('moving');
 		}
 
 		// Define when the plant turns around
-		if (this.x < this.leftxFlag) {
-			this.facing = 'right';
-			this.scale.x = 0.5;
+		if(this.inWindbox == 0){
+			if (this.x < this.leftxFlag) {
+				this.facing = 'right';
+				this.scale.x = 0.5;
+			}
+			else if (this.x > this.rightxFlag) {
+				this.facing = 'left';
+				this.scale.x = -0.5;
+			}
 		}
-		else if (this.x > this.rightxFlag) {
-			this.facing = 'left';
-			this.scale.x = -0.5;
-		}
+		
 	}
 	// If in hit stun and on the ground, stop all horizontal movement
 	else if (this.hitStunDuration < 58 && this.body.blocked.down){
@@ -106,4 +115,11 @@ Enemy.prototype.takeDamage = function(amount){
 		this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
 		this.tint = 0xff4444;
 	}
+}
+
+Enemy.prototype.windbox = function(amountX, amountY){
+	this.inWindbox = 2;
+	this.body.gravity.y = 0;
+	this.body.velocity.x = amountX;
+	this.body.velocity.y = amountY; // The object needs to be lifted off the ground in order for x knockback to apply
 }

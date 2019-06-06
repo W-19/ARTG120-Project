@@ -15,7 +15,6 @@ var shovel = {
 		}
 	},
 	commenceAttack: function(player, shovelObj){
-		shovelObj.alpha = 1.0;
 		player.attackSound.play();
 	},
 	attack: function(game, player, shovelObj, enemies){ // called when the player attacks	
@@ -89,6 +88,37 @@ var shovel = {
 	},
 	rearm: function(player, shovelObj){
 		player.enemiesDamagedThisAttack = [];
-		shovelObj.alpha = 0.0;
+	}
+}
+
+var leafblower = {
+	name: 'leafblower',
+	path: 'assets/img/Leafblower.png',
+	type: 'AOE',
+	damage: 0,
+	scale: 0.5,
+	anchorX: 0.0,
+	anchorY: 0.0,
+	cooldown: 1,
+	defaultAngle: 0,
+	update: function(player, leafblowerObj){ // called every tick
+		// Nothing special happens here
+	},
+	commenceAttack: function(player, leafblowerObj){
+		player.attackSound.play(); // just play the shovel swing sound for now
+	},
+	attack: function(game, player, leafblowerObj, enemies){ // called when the player attacks	
+		// Hitbox: a simple rectangle in front of the player
+		enemies.forEachAlive(function(enemy){
+			if(Math.abs((enemy.x-enemy.width/2)-((player.x+player.width/2)+(player.facing == 'left' ? -150 : 150))) < 100 && Math.abs(enemy.y-player.y) < (player.height/2 + enemy.height/2)){
+				//enemy.body.velocity.x = (Math.abs(player.x-enemy.x)/2) * (player.facing == 'left' ? -1 : 1);
+				//enemy.hitStunDuration = 3; // Mostly so they won't try to move on their own
+				enemy.windbox((600 - Math.abs(player.x-enemy.x)*2) * (player.facing == 'left' ? -1 : 1), 0);
+			}
+		}, this, true);
+		
+	},
+	rearm: function(player, leafblowerObj){
+		// Nothing here either
 	}
 }

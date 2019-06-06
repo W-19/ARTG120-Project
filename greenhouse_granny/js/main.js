@@ -158,6 +158,8 @@ var Play = function(game){
 Play.prototype = {
 	preload: function(){
 		game.load.image('shovel', shovel.path);
+		game.load.image('leafblower', leafblower.path);
+
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
@@ -230,7 +232,7 @@ Play.prototype = {
 
 		// Set up the player
 		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
-		this.player.switchWeapon(shovel);
+		this.player.switchWeapon(leafblower);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
@@ -285,7 +287,7 @@ Play.prototype = {
 		++this.spawnCounter;
 
 		//Randomly spawning enemies based on time
-		if ((this.spawnCounter % 500) == 0) {
+		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 80) {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(0, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);

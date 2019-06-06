@@ -19,6 +19,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSo
 	this.leftxFlag = leftxFlag;
 	this.rightxFlag = rightxFlag;
 	this.hitStunDuration = 0;
+	this.inWindbox = 0; // true if > 0
 	this.baseY = y;
 	this.growthCounter = 1000;
 	EnemyJumper.x;
@@ -44,6 +45,9 @@ EnemyJumper.prototype.constructor = EnemyJumper;
 EnemyJumper.prototype.update = function() {
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
+
+	if(this.inWindbox > 0) this.inWindbox--;
+	else this.body.gravity.y = 1000;
 
 	if (this.growthCounter == 0) {
 		this.kill();
@@ -116,4 +120,11 @@ EnemyJumper.prototype.takeDamage = function(amount){
 		this.hitStunDuration = 60;
 		this.tint = 0xff4444;
 	}
+}
+
+EnemyJumper.prototype.windbox = function(amountX, amountY){
+	this.inWindbox = 2;
+	this.body.gravity.y = 0;
+	this.body.velocity.x = amountX;
+	this.body.velocity.y = amountY; // The object needs to be lifted off the ground in order for x knockback to apply
 }

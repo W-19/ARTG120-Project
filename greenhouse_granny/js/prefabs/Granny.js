@@ -46,6 +46,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
 	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 
 	//Adding animations and setting current frame to idle
 	/* old sp ritesheet
@@ -113,8 +114,15 @@ Granny.prototype.update = function() {
 
 	if(this.attackCooldown == 0){
 		if(this.keyAttack.isDown && this.blockTime <= 0){
+			this.currentWeaponObj.alpha = 1.0;
 			this.attackCooldown = this.currentWeapon.cooldown;
 			this.currentWeapon.commenceAttack(this, this.currentWeaponObj);
+		}
+		else{
+			if(this.keySwitchWeapon.justDown){
+				this.switchWeapon(this.currentWeapon == shovel ? leafblower : shovel);
+			}
+			this.currentWeaponObj.alpha = 0.0;
 		}
 	}
 	else{
@@ -133,13 +141,13 @@ Granny.prototype.update = function() {
 	this.onGround = this.body.blocked.down;
 
 	//Basic movement handling if statements
-	if (this.keyRight.isDown && !(blockKeyDown && this.onGround)) {
+	if (this.keyRight.isDown && !(blockKeyDown && this.blockTime >= 0 && this.onGround)) {
 		this.facing = 'right';
 		this.scale.x = this.anchorScale;
 		this.body.velocity.x = Math.min(this.body.velocity.x+Granny.ACCELERATION_SPEED, Granny.MOVE_SPEED);
 		//play move right animation
 	}
-	else if (this.keyLeft.isDown && !(blockKeyDown && this.onGround)) {
+	else if (this.keyLeft.isDown && !(blockKeyDown && this.blockTime >= 0 && this.onGround)) {
 		this.facing = 'left';
 		this.scale.x = -this.anchorScale;
 		this.body.velocity.x = Math.max(this.body.velocity.x-Granny.ACCELERATION_SPEED, -Granny.MOVE_SPEED);
@@ -255,4 +263,5 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.currentWeaponObj.scale.setTo(weapon.scale);
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
+	game.add.text(new PopupText(game, this.x, this.y, "Switched to " + this.currentWeapon.name, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#3333ff'}, true));
 }

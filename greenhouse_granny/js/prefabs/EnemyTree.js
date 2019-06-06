@@ -109,3 +109,7 @@ EnemyTree.prototype.takeDamage = function(amount){
 		this.tint = 0xff4444;
 	}
 }
+
+EnemyTree.prototype.windbox = function(amountX, amountY){
+	// Trees do not react to windboxes
+}
