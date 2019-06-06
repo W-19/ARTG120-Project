@@ -11,6 +11,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSo
 	EnemyJumper.SCALE = 0.45;
 	this.body.gravity.y = 1000;
 	this.body.velocity.x = -20;
+	this.body.immovable = true;
 	this.jumpCooldown = 0;
 	this.health = 20;
 	this.player = player;
@@ -47,7 +48,6 @@ EnemyJumper.prototype.update = function() {
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
 	if(this.inWindbox > 0) this.inWindbox--;
-	else this.body.gravity.y = 1000;
 
 	if (this.growthCounter == 0) {
 		this.kill();
@@ -58,7 +58,7 @@ EnemyJumper.prototype.update = function() {
 	}
 
 	// Attacking & patrolling
-	if(this.hitStunDuration == 0){
+	if(this.hitStunDuration == 0 && this.inWindbox == 0){
 
 		if(this.jumpCooldown > 0) this.jumpCooldown--;
 		if(this.growthCounter > 0) this.growthCounter--;
@@ -68,7 +68,7 @@ EnemyJumper.prototype.update = function() {
 			this.facing == 'left' && this.x - this.player.x < EnemyJumper.AGGRO_RANGE && this.x - this.player.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0 ||
 			this.facing == 'right' && this.player.x - this.x < EnemyJumper.AGGRO_RANGE && this.player.x - this.x > 0 && this.y - this.player.y <= 30 && this.y - this.player.y >= 0
 		)){
-			if (this.jumpCooldown == 0) {
+			if (this.body.blocked.down && this.jumpCooldown == 0) {
 				this.baseY = this.y;
 				this.body.velocity.x = (this.facing == 'left' ? -200 : 200);
 				this.body.velocity.y = -550;
@@ -124,7 +124,6 @@ EnemyJumper.prototype.takeDamage = function(amount){
 
 EnemyJumper.prototype.windbox = function(amountX, amountY){
 	this.inWindbox = 2;
-	this.body.gravity.y = 0;
-	this.body.velocity.x = amountX;
-	this.body.velocity.y = amountY; // The object needs to be lifted off the ground in order for x knockback to apply
+	if(amountX != null) this.body.velocity.x = amountX;
+	if(amountY != null) this.body.velocity.y = amountY;
 }

@@ -42,12 +42,9 @@ Enemy.prototype.constructor = Enemy;
 //Update funtion for enemy
 Enemy.prototype.update = function() {
 
-	if(this.hitStunDuration > 0){
-		this.hitStunDuration--;
-	}
+	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
 	if(this.inWindbox > 0) this.inWindbox--;
-	else this.body.gravity.y = 1000;
 
 	// Attacking & patrolling
 	if(this.hitStunDuration == 0){
@@ -119,7 +116,6 @@ Enemy.prototype.takeDamage = function(amount){
 
 Enemy.prototype.windbox = function(amountX, amountY){
 	this.inWindbox = 2;
-	this.body.gravity.y = 0;
-	this.body.velocity.x = amountX;
-	this.body.velocity.y = amountY; // The object needs to be lifted off the ground in order for x knockback to apply
+	if(amountX != null) this.body.velocity.x = amountX;
+	if(amountY != null) this.body.velocity.y = amountY;
 }

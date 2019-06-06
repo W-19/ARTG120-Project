@@ -17,21 +17,25 @@ var shovel = {
 	commenceAttack: function(player, shovelObj){
 		player.attackSound.play();
 	},
-	attack: function(game, player, shovelObj, enemies){ // called when the player attacks	
+	attack: function(game, player, shovelObj, enemies, enemyProjectiles){ // called when the player attacks	
 
-		// Remove the 0.1 when the image skewedness is fixed
-		var shovelBladeX1 = player.x + 110*Math.cos(shovelObj.rotation-0.08+0.1)*(player.facing == 'left' ? -1 : 1);
-		var shovelBladeY1 = player.y + 110*Math.sin(shovelObj.rotation-0.08+0.1);
-		var shovelBladeX2 = player.x + 110*Math.cos(shovelObj.rotation+0.08+0.1)*(player.facing == 'left' ? -1 : 1);
-		var shovelBladeY2 = player.y + 110*Math.sin(shovelObj.rotation+0.08+0.1);
+		// Remove the second bunch of 0.1s when the image skewedness is fixed
+		var shovelBladeX1 = player.x + 110*Math.cos(shovelObj.rotation-0.1+0.1)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY1 = player.y + 110*Math.sin(shovelObj.rotation-0.1+0.1);
+		var shovelBladeX2 = player.x + 110*Math.cos(shovelObj.rotation+0.1)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY2 = player.y + 110*Math.sin(shovelObj.rotation+0.1);
+		var shovelBladeX3 = player.x + 110*Math.cos(shovelObj.rotation+0.1+0.1)*(player.facing == 'left' ? -1 : 1);
+		var shovelBladeY3 = player.y + 110*Math.sin(shovelObj.rotation+0.1+0.1);
 
-		// Draws two lines from the player's center to each side of the shovel blade
+		// Draws three lines from the player's center to each side of the shovel blade
 		var hitLine1 = new Phaser.Line(player.x, player.y, shovelBladeX1, shovelBladeY1);
 		var hitLine2 = new Phaser.Line(player.x, player.y, shovelBladeX2, shovelBladeY2);
+		var hitLine3 = new Phaser.Line(player.x, player.y, shovelBladeX3, shovelBladeY3);
 
 		// Why in God's name do we need to use extended lines if the player and enemy are both facing left???
 		var hitLine1LL = new Phaser.Line(player.x, player.y, shovelBladeX1-25, shovelBladeY1);
 		var hitLine2LL = new Phaser.Line(player.x, player.y, shovelBladeX2-25, shovelBladeY2);
+		var hitLine3LL = new Phaser.Line(player.x, player.y, shovelBladeX3-25, shovelBladeY3);
 
 		// For some reason we it's hard for the player to can hit normal enemies from the back when facing left,
 		// but even stretching the hit lines in this case had no effect... or did it?
@@ -41,7 +45,10 @@ var shovel = {
 			
 			// if theyre both facing left
 			if(enemy.facing == 'left' && player.facing == 'left'){
-				if (Phaser.Line.intersectsRectangle(hitLine1LL, enemy) || Phaser.Line.intersectsRectangle(hitLine2LL, enemy)){
+				if (Phaser.Line.intersectsRectangle(hitLine1LL, enemy) ||
+						Phaser.Line.intersectsRectangle(hitLine2LL, enemy) ||
+						Phaser.Line.intersectsRectangle(hitLine3LL, enemy)
+				){
 					if(player.enemiesDamagedThisAttack.some(e => e === enemy)) return; // skip this enemy if it was already damaged
 					player.enemiesDamagedThisAttack.push(enemy); // otherwise add it to the list...
 					enemy.takeDamage(this.damage); // ...and deal damage to it
@@ -51,7 +58,10 @@ var shovel = {
 			
 
 			// otherwise
-			if (Phaser.Line.intersectsRectangle(hitLine1, enemy) || Phaser.Line.intersectsRectangle(hitLine2, enemy)){
+			if (Phaser.Line.intersectsRectangle(hitLine1, enemy) ||
+					Phaser.Line.intersectsRectangle(hitLine2, enemy) ||
+					Phaser.Line.intersectsRectangle(hitLine3, enemy)
+			){
 				if(player.enemiesDamagedThisAttack.some(e => e === enemy)) return; // skip this enemy if it was already damaged
 				player.enemiesDamagedThisAttack.push(enemy); // otherwise add it to the list...
 				enemy.takeDamage(this.damage); // ...and deal damage to it
@@ -107,14 +117,31 @@ var leafblower = {
 	commenceAttack: function(player, leafblowerObj){
 		player.attackSound.play(); // just play the shovel swing sound for now
 	},
-	attack: function(game, player, leafblowerObj, enemies){ // called when the player attacks	
+	attack: function(game, player, leafblowerObj, enemies, enemyProjectiles){ // called when the player attacks	
 		// Hitbox: a simple rectangle in front of the player
 		enemies.forEachAlive(function(enemy){
-			// Improve the windbox below!!
-			if(Math.abs((enemy.x-enemy.width/2)-((player.x+player.width/2)+(player.facing == 'left' ? -150 : 150))) < 100 && Math.abs(enemy.y-player.y) < (player.height/2 + enemy.height/2)){
-				//enemy.body.velocity.x = (Math.abs(player.x-enemy.x)/2) * (player.facing == 'left' ? -1 : 1);
-				//enemy.hitStunDuration = 3; // Mostly so they won't try to move on their own
-				enemy.windbox((600 - Math.abs(player.x-enemy.x)*2) * (player.facing == 'left' ? -1 : 1), 0);
+			// The windbox touches the enemy if their hitboxes overlap in the y and the enemy's x is between 130 and 280 from the player's
+			// while the player is facing them
+			// OLD Y-TESTING: if(Math.abs((enemy.x-enemy.width/2)-((player.x+player.width/2)+(player.facing == 'left' ? -150 : 150))) < 100 && Math.abs(enemy.y-player.y) < (player.height/2 + enemy.height/2)){
+			// THE RIGHT IDEA BUT IT DOESN'T WORK YET: (((enemy.y-enemy.height/2) - (player.y+player.height/2) < 0 || (player.y-player.height/2) - (enemy.y+enemy.height/2)) < 0)
+			if(Math.abs(player.y - enemy.y) < player.height/2 + enemy.height/2 && (
+					(player.facing == 'left' && player.x-enemy.x > 130 && player.x-enemy.x < 280) ||
+					(player.facing == 'right' && enemy.x-player.x > 130 && enemy.x-player.x < 280)
+			)){
+				enemy.windbox((600 - Math.abs(player.x-enemy.x)*2) * (player.facing == 'left' ? -1 : 1), null);
+			}
+		}, this, true);
+
+		enemyProjectiles.forEachAlive(function(projectile){
+			if(projectile.owner != player && Math.abs(projectile.y - player.y) < 30 && (
+					(player.facing == 'left' && (player.x-projectile.x > 130) && (player.x-projectile.x < 280)) ||
+					(player.facing == 'right' && (projectile.x-player.x > 130) && (projectile.x-player.x < 280))
+			)){
+				projectile.scale.x *= -1;
+				projectile.body.velocity.x *= -1;
+				projectile.owner = player;
+				projectile.tint = 0x0000ff;
+				// but it doesn't actually damage enemies now
 			}
 		}, this, true);
 		

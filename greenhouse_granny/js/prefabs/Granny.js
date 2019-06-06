@@ -7,7 +7,7 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 var blockKeyDown = false; // doesn't need to be a member of Granny, just saves a little performance
 
 //Creating Granny function
-Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockSound, damage) {
+Granny = function(game, x, y, enemies, enemyProjectiles, jumpSound, hurtSound, attackSound, blockSound, damage) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -37,6 +37,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.currentWeaponObj = null; // the actual object associated with said variable
 	this.attackCooldown = 0; // she can't attack unless it's 0
 	this.enemies = enemies;
+	this.enemyProjectiles = enemyProjectiles;
 	this.immuneTo = []; // holds all the enemies that recently damaged the player and the number of ticks until they can do so again
 	this.enemiesDamagedThisAttack = []; // holds all the enemies she's damaged this attack
 
@@ -134,7 +135,7 @@ Granny.prototype.update = function() {
 
 	// Another statement down here so the attack will hit on the first tick but not on the last, rather than vice versa
 	if(this.attackCooldown > 0){
-		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies);
+		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies, this.enemyProjectiles);
 	}
 
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------

@@ -170,6 +170,7 @@ Play.prototype = {
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
+		game.load.image('top bar', 'assets/img/top bar.png');
 		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
@@ -234,11 +235,22 @@ Play.prototype = {
 		this.stage = game.add.sprite(0, 3200, 'stage');
 		this.stage.anchor.y = 1;
 
+		// A bar at the top so health and score are more visible
+		this.HUDBar = game.add.sprite(0, 0, 'top bar');
+		this.HUDBar.scale.setTo(2.0, 1.2); // 400x50 -> 800x60
+		this.HUDBar.alpha = 0.8;
+		this.HUDBar.fixedToCamera = true;
+
+
 		// A group which holds all the enemies (but not their projectiles!). We'll populate it later
 		this.enemies = game.add.group();
 
+		// A group that holds all the enemy projectiles
+		this.enemyProjectiles = game.add.group();
+		this.enemyProjectiles.enableBody = true;
+
 		// Set up the player
-		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
+		this.player = new Granny(game, 90, 1800, this.enemies, this.enemyProjectiles, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
@@ -252,17 +264,13 @@ Play.prototype = {
     	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health, { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
     	this.healthBar.anchor.setTo(0.5); // for consistency with the score text
     	this.healthBar.fixedToCamera = true;
-    	this.healthBar.cameraOffset.setTo(120, 36.5);
+    	this.healthBar.cameraOffset.setTo(120, 30.5);
 
     	//Adding text to keep score at the top right of screen
     	this.scoreText = game.add.text(16, 16, 'Score: ' + Granny.score, { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
     	this.scoreText.anchor.setTo(0.5);
     	this.scoreText.fixedToCamera = true;
-    	this.scoreText.cameraOffset.setTo(700.5, 36.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
-
-		// A group that holds all the enemy projectiles
-		this.enemyProjectiles = game.add.group();
-		this.enemyProjectiles.enableBody = true;
+    	this.scoreText.cameraOffset.setTo(700.5, 30.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
 
 		//Setting up spawn points
 		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
@@ -286,7 +294,8 @@ Play.prototype = {
 		this.blackScreen.scale.y = 20;
 
 		// Block cooldown text
-		this.blockCooldownText = game.add.text(0, 0, 'If this text appears ingame then something\'s wrong', {font: 'Palatino', fontSize: 18, stroke: '#000000', strokeThickness: 2, fill: '#bbbbbb'});
+		this.blockCooldownText = game.add.text(0, 0, 'If this text appears ingame then something\'s wrong',
+				{font: 'Palatino', fontSize: 18, stroke: '#000000', strokeThickness: 2, fill: '#bbbbbb'});
 		this.blockCooldownText.anchor.setTo(0.5);
     	this.blockCooldownText.fixedToCamera = true;
     	this.blockCooldownText.cameraOffset.setTo(game.width/2 + 0.5, game.height - 39.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
@@ -334,6 +343,10 @@ Play.prototype = {
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
 
 		// ------------------------------------- HUD --------------------------------------
+
+		game.world.bringToTop(this.HUDBar);
+		game.world.bringToTop(this.healthBar);
+		game.world.bringToTop(this.scoreText);
 
 		// Flash the health bar when the player takes damage
 		if(this.playerHealthPrev != this.player.health){
@@ -446,8 +459,10 @@ Play.prototype = {
 
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
-		this.player.takeDamage(8, bullet);
-		bullet.kill();
+		if(bullet.owner != player){
+			this.player.takeDamage(8, bullet);
+			bullet.kill();
+		}
 	},
 
 	enemyContact: function(player, enemy) {
