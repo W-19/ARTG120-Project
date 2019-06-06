@@ -13,7 +13,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	this.body.velocity.x = -50;
 	this.body.immovable = true;
 	
-	this.health = 3;
+	this.health = 30;
 	this.player = player;
 	this.enemyProjectiles = enemyProjectiles;
 	this.facing = 'left';
@@ -25,7 +25,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 	this.hitStunDuration = 0;
 	this.inWindbox = 0; // true if > 0
 
-	this.MELEE_DAMAGE = 2; // Can't be static because using typeof in main doesn't work :/
+	this.MELEE_DAMAGE = 20; // Can't be static because using typeof in main doesn't work :/
 
 	Enemy.hurtSound = hurtSound;
 	Enemy.deathSound = deathSound;

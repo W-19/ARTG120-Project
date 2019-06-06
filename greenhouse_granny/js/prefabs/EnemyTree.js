@@ -19,13 +19,13 @@ EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, hurtSound, d
 	this.bulletCooldown = 0;
 	this.burstCooldown = 0;
 	this.acornCooldown = 0;
-	this.health = 5;
+	this.health = 100;
 	this.player = player;
 	EnemyTree.AGGRO_RANGE = 500;
 	this.hitStunDuration = 0;
 	this.acornSpawnDelay = 150;
 
-	this.MELEE_DAMAGE = 4; // Can't be static because using typeof in main doesn't work :/
+	this.MELEE_DAMAGE = 35; // Can't be static because using typeof in main doesn't work :/
 
 	EnemyTree.hurtSound = hurtSound;
 	EnemyTree.deathSound = deathSound;
@@ -59,7 +59,7 @@ EnemyTree.prototype.update = function() {
 				this.burstShooting = true;
 				this.burstCooldown = 22;
 			}
-			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0) {
+			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0 && this.enemies.length < 80) {
 				this.enemies.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
 				this.enemies.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
 				this.acornCooldown = 500;
@@ -98,7 +98,7 @@ EnemyTree.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, stroke: '#000000', strokeThickness: 3, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 5;
-		this.player.heal(2);
+		this.player.heal(20);
 		EnemyTree.deathSound.play();
 		this.destroy(); // maybe replace with kill?
 	}

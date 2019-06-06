@@ -2,7 +2,7 @@ var shovel = {
 	name: 'shovel',
 	path: 'assets/img/Shovel_Updated.png',
 	type: 'melee',
-	damage: 1,
+	damage: 10,
 	scale: 1.0,
 	anchorX: 0.0,
 	anchorY: 0.0,
@@ -110,6 +110,7 @@ var leafblower = {
 	attack: function(game, player, leafblowerObj, enemies){ // called when the player attacks	
 		// Hitbox: a simple rectangle in front of the player
 		enemies.forEachAlive(function(enemy){
+			// Improve the windbox below!!
 			if(Math.abs((enemy.x-enemy.width/2)-((player.x+player.width/2)+(player.facing == 'left' ? -150 : 150))) < 100 && Math.abs(enemy.y-player.y) < (player.height/2 + enemy.height/2)){
 				//enemy.body.velocity.x = (Math.abs(player.x-enemy.x)/2) * (player.facing == 'left' ? -1 : 1);
 				//enemy.hitStunDuration = 3; // Mostly so they won't try to move on their own

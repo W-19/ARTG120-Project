@@ -12,7 +12,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSo
 	this.body.gravity.y = 1000;
 	this.body.velocity.x = -20;
 	this.jumpCooldown = 0;
-	this.health = 2;
+	this.health = 20;
 	this.player = player;
 	this.facing = facing;
 	EnemyJumper.AGGRO_RANGE = 300;
@@ -28,7 +28,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, hurtSo
 	this.scale.x = (this.facing == 'left' ? -EnemyJumper.SCALE : EnemyJumper.SCALE);
 	this.scale.y = EnemyJumper.SCALE;
 
-	this.MELEE_DAMAGE = 1; // Can't be static because using typeof in main doesn't work :/
+	this.MELEE_DAMAGE = 10; // Can't be static because using typeof in main doesn't work :/
 
 	EnemyJumper.hurtSound = hurtSound;
 	EnemyJumper.deathSound = deathSound;

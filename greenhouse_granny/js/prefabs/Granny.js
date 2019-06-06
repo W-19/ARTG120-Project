@@ -21,7 +21,7 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.body.gravity.y = 1800;
 	this.body.maxVelocity.y = 1000;
 
-	Granny.MAX_HEALTH = 10;
+	Granny.MAX_HEALTH = 100;
 	this.health = Granny.MAX_HEALTH;
 	this.blockTime = 0; // time spent shielding herself
 	this.onGround = false;
@@ -44,9 +44,9 @@ Granny = function(game, x, y, enemies, jumpSound, hurtSound, attackSound, blockS
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.Q);
-	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.C);
+	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.X);
+	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
 	//Adding animations and setting current frame to idle
 	/* old sp ritesheet
@@ -183,10 +183,10 @@ Granny.prototype.update = function() {
 
 	// ----------------------------------- BLOCKING ---------------------------------------
 
-	if(blockKeyDown && !(this.blockTime < 0)) {
+	if(blockKeyDown && !(this.blockTime < 0)) { // she's blocking
 		this.blockTime++;
 	}
-	else if(!blockKeyDown){
+	else{
 		if (this.blockTime > 0){ // called when the block key is lifted. We could also use "if(this.keyBlock.onUp)"
 			this.blockTime = -Granny.BLOCK_COOLDOWN;
 		}
@@ -226,7 +226,7 @@ Granny.prototype.takeDamage = function(amount, source){
 
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
-		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+amount, stroke: '#000000', strokeThickness: 3, fill: '#ff6666'}, false)
+		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+Math.ceil(amount/10), stroke: '#000000', strokeThickness: 3, fill: '#ff6666'}, false)
 		this.tint = 0xff4444;
 		Granny.hurtSound.play();
 	}
@@ -245,8 +245,8 @@ Granny.prototype.takeDamage = function(amount, source){
 
 	//if(this.health <= 0) game.state.start('GameOver', true, false, 0);
 	// apply knockback
-	this.body.velocity.x = (480 + (20 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
-	this.body.velocity.y = -80 + ((80 * amount) * -Math.sin(game.physics.arcade.angleBetween(this, source))); // vertical knockback is always positive for now
+	this.body.velocity.x = (480 + (4 * amount)) * -Math.cos(game.physics.arcade.angleBetween(this, source));
+	this.body.velocity.y = -80 + ((16 * amount) * -Math.sin(game.physics.arcade.angleBetween(this, source))); // vertical knockback is always positive for now
 }
 
 Granny.prototype.heal = function(amount){
@@ -263,5 +263,5 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.currentWeaponObj.scale.setTo(weapon.scale);
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
-	game.add.text(new PopupText(game, this.x, this.y, "Switched to " + this.currentWeapon.name, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#3333ff'}, true));
+	game.add.text(new PopupText(game, this.x, this.y, this.currentWeapon.name, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#7777ff'}, true));
 }

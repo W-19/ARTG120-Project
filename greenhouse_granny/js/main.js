@@ -45,7 +45,7 @@ MainMenu.prototype = {
 		this.title.anchor.set(.5);
 
 		//Version
-		var title = game.add.text(game.width/2, 220, "v0.6", { fontSize: '32px', fill: '#000' })
+		var title = game.add.text(game.width/2, 220, "v1.0a", { fontSize: '32px', fill: '#000' })
 
 		//background and text for play, controls, and credits
 		var back = game.add.sprite(60, 300, 'buttonbackground');
@@ -61,14 +61,16 @@ MainMenu.prototype = {
 							{font: '30px Sabon', fill: '#fffff'});
 
 		//Instructions for player input
-		this.controlQ = game.add.text(400, 350, "Press Q to attack", {font: '30px Sabon', fill: '#fffff'});
-		this.controlS = game.add.text(400, 400, "Hold Spacebar to block", {font: '30px Sabon', fill: '#fffff'});
-		this.controlA = game.add.text(400, 450, "Use arrow keys to run and jump", {font: '30px Sabon', fill: '#fffff'});
+		this.controlAttack = game.add.text(400, 350, "Press C to attack", {font: '30px Sabon', fill: '#fffff'});
+		this.controlBlock = game.add.text(400, 400, "Hold X to block", {font: '30px Sabon', fill: '#fffff'});
+		this.controlMovement = game.add.text(400, 450, "Use arrow keys to run and jump", {font: '30px Sabon', fill: '#fffff'});
+		this.controlSwitchWeapon = game.add.text(400, 500, "Press Z to toggle shovel/leafblower", {font: '30px Sabon', fill: '#fffff'});
 
 		//Make these intructions invisable
-		this.controlQ.alpha = 0;
-		this.controlS.alpha = 0;
-		this.controlA.alpha = 0;
+		this.controlAttack.alpha = 0.0;
+		this.controlBlock.alpha = 0.0;
+		this.controlMovement.alpha = 0.0;
+		this.controlSwitchWeapon.alpha = 0.0;
 
 		//Credits for game
 		this.credits = game.add.text(350, 350, "            Made by: \nSimon Katzer, Jack Cuneo, \nMatthew Tolentino, \nand Trystan Nguyen",
@@ -133,16 +135,18 @@ MainMenu.prototype = {
 				if(this.SHOW == 2){
 					this.credits.alpha = 0;
 				}
-				this.controlQ.alpha = 1;
-				this.controlS.alpha = 1;
-				this.controlA.alpha = 1;
+				this.controlAttack.alpha = 1.0;
+				this.controlBlock.alpha = 1.0;
+				this.controlMovement.alpha = 1.0;
+				this.controlSwitchWeapon.alpha = 1.0;
 				this.SHOW = 1;
 			}
 			if(this.SELECT == 3){
 				if(this.SHOW == 1){
-					this.controlQ.alpha = 0;
-					this.controlS.alpha = 0;
-					this.controlA.alpha = 0;
+					this.controlAttack.alpha = 0.0;
+					this.controlBlock.alpha = 0.0;
+					this.controlMovement.alpha = 0.0;
+					this.controlSwitchWeapon.alpha = 0.0;
 				}
 				this.credits.alpha = 1;
 				this.SHOW = 2;
@@ -157,6 +161,9 @@ var Play = function(game){
 };
 Play.prototype = {
 	preload: function(){
+
+		game.time.advancedTiming = true; // So we can show the block cooldown in seconds
+
 		game.load.image('shovel', shovel.path);
 		game.load.image('leafblower', leafblower.path);
 
@@ -232,7 +239,7 @@ Play.prototype = {
 
 		// Set up the player
 		this.player = new Granny(game, 90, 1800, this.enemies, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
-		this.player.switchWeapon(leafblower);
+		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
 		game.camera.follow(this.player);
@@ -242,7 +249,7 @@ Play.prototype = {
 		this.playerScorePrev = 0;
 
 		//Adding text to keep score at the top left of screen
-    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health * 10 + '%', { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
+    	this.healthBar = game.add.text(16, 16, 'Health: ' + this.player.health, { fontSize: 32, stroke: '#000000', strokeThickness: 3, fill: '#ffffff' });
     	this.healthBar.anchor.setTo(0.5); // for consistency with the score text
     	this.healthBar.fixedToCamera = true;
     	this.healthBar.cameraOffset.setTo(120, 36.5);
@@ -277,6 +284,13 @@ Play.prototype = {
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
 		this.blackScreen.scale.x = 5;
 		this.blackScreen.scale.y = 20;
+
+		// Block cooldown text
+		this.blockCooldownText = game.add.text(0, 0, 'If this text appears ingame then something\'s wrong', {font: 'Palatino', fontSize: 18, stroke: '#000000', strokeThickness: 2, fill: '#bbbbbb'});
+		this.blockCooldownText.anchor.setTo(0.5);
+    	this.blockCooldownText.fixedToCamera = true;
+    	this.blockCooldownText.cameraOffset.setTo(game.width/2 + 0.5, game.height - 39.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
+    	this.blockCooldownText.alpha = 0.0;
 	},
 
 	update: function(){
@@ -324,9 +338,10 @@ Play.prototype = {
 		// Flash the health bar when the player takes damage
 		if(this.playerHealthPrev != this.player.health){
 			if(this.player.health < 0){
-				this.healthBar.text = "Health: " + 0 + "%";
-			}else if (this.player.health >= 0){
-				this.healthBar.text = "Health: " + this.player.health * 10 + "%";
+				this.healthBar.text = "Health: 0";
+			}
+			else if(this.player.health >= 0){
+				this.healthBar.text = "Health: " + this.player.health;
 			}
 			
 			if(this.playerHealthPrev > this.player.health){ // the player took damage
@@ -354,6 +369,15 @@ Play.prototype = {
 		}
 		else if(this.scoreText.fontSize > 32){
 			this.scoreText.fontSize -= 1;
+		}
+
+		// Show the cooldown for blocking, if applicable
+		if(this.player.blockTime < 0){
+			this.blockCooldownText.text = "Block: " + (-this.player.blockTime/game.time.fps).toFixed(2) + "s"; // round to 2 decimal places
+			this.blockCooldownText.alpha = 1.0;
+		}
+		else{
+			this.blockCooldownText.alpha = 0.0;
 		}
 		
 
@@ -422,7 +446,7 @@ Play.prototype = {
 
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
-		this.player.takeDamage(1, bullet);
+		this.player.takeDamage(8, bullet);
 		bullet.kill();
 	},
 
