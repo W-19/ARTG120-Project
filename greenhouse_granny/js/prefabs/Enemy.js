@@ -10,6 +10,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, au
 	this.body.collideWorldBounds = true;
 	this.scale.setTo(-0.5, 0.5);
 	this.body.gravity.y = 1000;
+	this.body.maxVelocity.y = 1000;
 	this.body.velocity.x = -50;
 	this.body.immovable = true;
 	

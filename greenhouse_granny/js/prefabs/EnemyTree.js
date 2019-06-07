@@ -12,6 +12,7 @@ EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, audio) {
 	this.body.setSize(180, 245, 0, 0);
 	this.scale.setTo(-1, 1);
 	this.body.gravity.y = 1000;
+	this.body.maxVelocity.y = 1000;
 	EnemyTree.BULLET_COOLDOWN_BASE = 300;
 	this.enemies = enemies; // for spawned acorns
 	this.enemyProjectiles = enemyProjectiles; // for spawned projectiles
