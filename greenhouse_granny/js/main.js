@@ -18,7 +18,7 @@ var money = 0;
 var moneyCounter = 0;
 var GrannyDAMAGE = 0;
 
-var currentTrack; // allows us to stop the game audio when we enter the GameOver state
+var currentTrack = null; // allows us to stop the game audio when we enter the GameOver state
 
 // Define states
 
@@ -34,8 +34,12 @@ MainMenu.prototype = {
 		game.load.image('select', 'assets/img/Select.png');
 		game.load.image('buttonbackground', 'assets/img/Buttonbackground.png');
 		game.load.image('blackScreen', 'assets/img/BlackScreen.png');
+		game.load.audio('menu music', 'assets/audio/Track 1.ogg');
 	},
 	create: function(){
+
+		currentTrack = game.add.audio('menu music');
+		currentTrack.volume = 0.25;
 
 		//Set background color
 		game.stage.setBackgroundColor('#87CEEB');
@@ -85,6 +89,11 @@ MainMenu.prototype = {
 		this.blackScreen.alpha = 0;
 	},
 	update: function(){
+
+		// Loop the audio
+		if(currentTrack.isDecoded && !currentTrack.isPlaying){
+			currentTrack.play();
+		}
 
 		if(this.SCREENFLAG == true){
 			if(this.blackScreen.alpha < 1){
@@ -170,7 +179,7 @@ Play.prototype = {
 		game.load.image('seed projectile', 'assets/img/Seed_Projectile.png');
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
-		game.load.image('top bar', 'assets/img/top bar.png');
+		game.load.image('top bar', 'assets/img/UI_Bar.png');
 		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
@@ -181,47 +190,19 @@ Play.prototype = {
 		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap2.json', null, Phaser.Tilemap.TILED_JSON);
 		game.load.spritesheet('tilesheet', 'assets/img/Tilesheet3.png', 8, 8);
 
-		game.load.audio('track01', 'assets/audio/Track 1.ogg');
-		//game.load.audio('track02', 'Track 02.ogg'); // unused rn
+		game.load.audio('game music', 'assets/audio/Old GB Song.ogg');
 		game.load.audio('player jump', 'assets/audio/Player Jump.ogg');
 		game.load.audio('player hurt', 'assets/audio/Player Hurt.ogg');
 		game.load.audio('enemy hurt', 'assets/audio/Enemy Hurt.ogg');
 		game.load.audio('enemy death', 'assets/audio/Enemy Death.ogg');
 		game.load.audio('weapon swing', 'assets/audio/Weapon Swing.ogg');
+		game.load.audio('leafblower', 'assets/audio/Leafblower.ogg');
 		// Altered from the original by user Timbre: https://freesound.org/s/103218/. License: https://creativecommons.org/licenses/by-nc/3.0/.
 		game.load.audio('block', 'assets/audio/Clang.ogg');
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
 		game.physics.startSystem(Phaser.Physics.ARCADE);
-
-		// Add audio to the game
-		this.track01 = game.add.audio('track01');
-		this.track01.volume = 0.25;
-		//load track 2 when we need it
-		currentTrack = this.track01;
-
-		//Add background to game
-		/*this.stage = game.add.sprite(0, 3200, 'stage');
-		this.stage.anchor.y = 1;*/
-
-		this.playerJump = game.add.audio('player jump');
-		this.playerJump.volume = 0.1;
-		this.playerHurt = game.add.audio('player hurt');
-		this.playerHurt.volume = 0.1;
-		this.enemyHurt = game.add.audio('enemy hurt');
-		this.enemyHurt.volume = 0.1;
-		this.enemyDeath = game.add.audio('enemy death');
-		this.enemyDeath.volume = 0.1;
-		this.weaponSwing = game.add.audio('weapon swing');
-		this.weaponSwing.volume = 0.1;
-		this.block = game.add.audio('block');
-		this.block.volume = 0.1;
-
-
-		// Draw the background
-		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
-		game.stage.setBackgroundColor('#87CEEB');
 
 		//Tilemap creation
 		game.physics.arcade.TILE_BIAS = 32;
@@ -234,6 +215,9 @@ Play.prototype = {
 		//Add background to game
 		this.stage = game.add.sprite(0, 3200, 'stage');
 		this.stage.anchor.y = 1;
+		// Draw the background
+		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
+		game.stage.setBackgroundColor('#87CEEB');
 
 		// A bar at the top so health and score are more visible
 		this.HUDBar = game.add.sprite(0, 0, 'top bar');
@@ -241,16 +225,40 @@ Play.prototype = {
 		this.HUDBar.alpha = 0.8;
 		this.HUDBar.fixedToCamera = true;
 
+		// -------------------------------------------------------------------------------------------------------------
 
-		// A group which holds all the enemies (but not their projectiles!). We'll populate it later
+		// This object will hold all the audio assets that prefabs could need to use
+		this.audio = {
+			playerJump: game.add.audio('player jump'),
+			playerHurt: game.add.audio('player hurt'),
+			enemyHurt: game.add.audio('enemy hurt'),
+			enemyDeath: game.add.audio('enemy death'),
+			weaponSwing: game.add.audio('weapon swing'),
+			leafblower: game.add.audio('leafblower'),
+			block: game.add.audio('block')
+		};
+
+		this.audio.playerJump.volume = 0.1;
+		this.audio.playerHurt.volume = 0.1;
+		this.audio.enemyHurt.volume = 0.1;
+		this.audio.enemyDeath.volume = 0.1;
+		this.audio.weaponSwing.volume = 0.1;
+		this.audio.block.volume = 0.1;
+		this.audio.leafblower.volume = 0.45;
+
+		if(currentTrack.isPlaying){
+			currentTrack.stop();
+		}
+		currentTrack = game.add.audio('game music');
+		currentTrack.volume = 0.25;
+
+		// Groups (populated dynamically later on)
 		this.enemies = game.add.group();
-
-		// A group that holds all the enemy projectiles
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
 
 		// Set up the player
-		this.player = new Granny(game, 90, 1800, this.enemies, this.enemyProjectiles, this.playerJump, this.playerHurt, this.weaponSwing, this.block, GrannyDAMAGE);
+		this.player = new Granny(game, 90, 1800, this.enemies, this.enemyProjectiles, this.audio, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
 		this.player.currentWeapon.rearm(this.player, this.player.currentWeaponObj);
 		game.add.existing(this.player);
@@ -280,13 +288,13 @@ Play.prototype = {
 		this.tempVal = -1;
 
 		// Set up the enemies
-		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 910, 530, this.player, this.enemyProjectiles, 910, 1443, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1322, 1170, this.player, this.enemyProjectiles, 999, 1322, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.enemyHurt, this.enemyDeath));
-		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
+		this.enemies.add(new Enemy(game, 910, 530, this.player, this.enemyProjectiles, 910, 1443, this.audio));
+		this.enemies.add(new Enemy(game, 1322, 1170, this.player, this.enemyProjectiles, 999, 1322, this.audio));
+		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.audio));
+		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.audio));
+		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.audio));
+		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.audio));
 
 		//Black Screen
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
@@ -318,11 +326,11 @@ Play.prototype = {
 				// Spawn an enemy at a random x and y from the list
 				if (this.tempVal == 10) { // Tree
 					spawnedEnemy = this.enemies.add(new EnemyTree(game, this.spawnPoints[this.spawnPoint][0],
-					this.spawnPoints[this.spawnPoint][1], this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemies, this.enemyProjectiles, this.audio));
 				}
 				else { // Spitter
 					spawnedEnemy = this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][0],
-					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, 39, 2275, this.enemyHurt, this.enemyDeath));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, 39, 2275, this.audio));
 				}
 			}
 		}
@@ -397,7 +405,7 @@ Play.prototype = {
 		// ------------------------------------ AUDIO -------------------------------------
 
 		// Loop the audio
-		if(!currentTrack.isPlaying){
+		if(currentTrack.isDecoded && !currentTrack.isPlaying){
 			currentTrack.play();
 		}
 
@@ -407,7 +415,7 @@ Play.prototype = {
 			this.SCREENFLAG = true; //In Screen Fade
 		}
 		if (EnemyJumper.growthReady == true) {
-			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemies, this.enemyProjectiles, this.enemyHurt, this.enemyDeath));
+			this.enemies.add(new EnemyTree(game, EnemyJumper.x, EnemyJumper.y - 100, this.player, this.enemies, this.enemyProjectiles, this.audio));
 			EnemyJumper.growthReady = false;
 		}
 

@@ -8,14 +8,14 @@ var shovel = {
 	anchorY: 0.0,
 	cooldown: 25,
 	defaultAngle: -90,
-	update: function(player, shovelObj){ // called every tick
+	update: function(player, shovelObj){ // called every tick. Less useful now that weapons are hidden when not firing
 		if(player.attackCooldown > 0){
 			//shovelObj.angle = -90 + 80*Math.sin((Math.PI*player.attackCooldown)/30);
-			shovelObj.angle = -130 + 7*(this.cooldown-player.attackCooldown);
+			shovelObj.angle = -130 + 8*(this.cooldown-player.attackCooldown);
 		}
 	},
-	commenceAttack: function(player, shovelObj){
-		player.attackSound.play();
+	commenceAttack: function(){
+		Granny.AUDIO.weaponSwing.play();
 	},
 	attack: function(game, player, shovelObj, enemies, enemyProjectiles){ // called when the player attacks	
 
@@ -111,19 +111,17 @@ var leafblower = {
 	anchorY: 0.0,
 	cooldown: 1,
 	defaultAngle: 0,
-	update: function(player, leafblowerObj){ // called every tick
+	update: function(player, leafblowerObj){ // called every tick. Less useful now that weapons are hidden when not firing
 		// Nothing special happens here
 	},
-	commenceAttack: function(player, leafblowerObj){
-		player.attackSound.play(); // just play the shovel swing sound for now
+	commenceAttack: function(){
+		Granny.AUDIO.leafblower.play();
 	},
-	attack: function(game, player, leafblowerObj, enemies, enemyProjectiles){ // called when the player attacks	
+	attack: function(game, player, leafblowerObj, enemies, enemyProjectiles){ // called when the player attacks
 		// Hitbox: a simple rectangle in front of the player
 		enemies.forEachAlive(function(enemy){
 			// The windbox touches the enemy if their hitboxes overlap in the y and the enemy's x is between 130 and 280 from the player's
 			// while the player is facing them
-			// OLD Y-TESTING: if(Math.abs((enemy.x-enemy.width/2)-((player.x+player.width/2)+(player.facing == 'left' ? -150 : 150))) < 100 && Math.abs(enemy.y-player.y) < (player.height/2 + enemy.height/2)){
-			// THE RIGHT IDEA BUT IT DOESN'T WORK YET: (((enemy.y-enemy.height/2) - (player.y+player.height/2) < 0 || (player.y-player.height/2) - (enemy.y+enemy.height/2)) < 0)
 			if(Math.abs(player.y - enemy.y) < player.height/2 + enemy.height/2 && (
 					(player.facing == 'left' && player.x-enemy.x > 130 && player.x-enemy.x < 280) ||
 					(player.facing == 'right' && enemy.x-player.x > 130 && enemy.x-player.x < 280)

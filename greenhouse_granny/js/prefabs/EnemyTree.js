@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, hurtSound, deathSound) {
+EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, audio) {
 
 	Phaser.Sprite.call(this, game, x, y, 'tree');
 
@@ -27,8 +27,7 @@ EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, hurtSound, d
 
 	this.MELEE_DAMAGE = 35; // Can't be static because using typeof in main doesn't work :/
 
-	EnemyTree.hurtSound = hurtSound;
-	EnemyTree.deathSound = deathSound;
+	EnemyTree.AUDIO = audio;
 }
 
 //Creating a prototype for enemy
@@ -61,7 +60,7 @@ EnemyTree.prototype.update = function() {
 			}
 			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0 && this.enemies.length < 80) {
 				this.enemies.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
-				this.enemies.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', this.enemyHurt, this.enemyDeath));
+				this.enemies.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', EnemyJumper.AUDIO));
 				this.acornCooldown = 500;
 			}
 			if (this.burstShooting == true) {
@@ -99,13 +98,13 @@ EnemyTree.prototype.takeDamage = function(amount){
 	if(this.health <= 0) {
 		Granny.score += 5;
 		this.player.heal(20);
-		EnemyTree.deathSound.play();
+		EnemyTree.AUDIO.enemyDeath.play();
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
 		this.hitStunDuration = 60;
 		this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
-		EnemyTree.hurtSound.play();
+		EnemyTree.AUDIO.enemyHurt.play();
 		this.tint = 0xff4444;
 	}
 }

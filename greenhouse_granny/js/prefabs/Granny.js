@@ -7,7 +7,7 @@ function EnemyCountdown(enemyObj, ticksRemaining){
 var blockKeyDown = false; // doesn't need to be a member of Granny, just saves a little performance
 
 //Creating Granny function
-Granny = function(game, x, y, enemies, enemyProjectiles, jumpSound, hurtSound, attackSound, blockSound, damage) {
+Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 
 	Phaser.Sprite.call(this, game, x, y, 'granny');
 
@@ -50,7 +50,7 @@ Granny = function(game, x, y, enemies, enemyProjectiles, jumpSound, hurtSound, a
 	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
 	//Adding animations and setting current frame to idle
-	/* old sp ritesheet
+	/* old spritesheet
 	this.animations.add('walking', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25], 15, true);
 	this.animations.add('blocking', [8, 9, 10, 11, 12, 13], 30, false);
 	this.animations.add('unblocking', [14, 0], 30, false);
@@ -61,10 +61,7 @@ Granny = function(game, x, y, enemies, enemyProjectiles, jumpSound, hurtSound, a
 	this.frame = 0;
 
 	// Audio references
-	Granny.jumpSound = jumpSound;
-	Granny.hurtSound = hurtSound;
-	this.attackSound = attackSound; // can change depending on the weapon she has equipped
-	Granny.blockSound = blockSound;
+	Granny.AUDIO = audio;
 
 	// Granny's hitbox
 	this.hitbox = game.add.graphics(0,0);
@@ -117,7 +114,7 @@ Granny.prototype.update = function() {
 		if(this.keyAttack.isDown && this.blockTime <= 0){
 			this.currentWeaponObj.alpha = 1.0;
 			this.attackCooldown = this.currentWeapon.cooldown;
-			this.currentWeapon.commenceAttack(this, this.currentWeaponObj);
+			this.currentWeapon.commenceAttack();
 		}
 		else{
 			if(this.keySwitchWeapon.justDown){
@@ -176,7 +173,7 @@ Granny.prototype.update = function() {
     }
 	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
 		this.body.velocity.y = -Granny.JUMP_HEIGHT;
-		Granny.jumpSound.play();
+		Granny.AUDIO.playerJump.play();
 		if(!this.onGround){
 			this.airJumps--;
 		}
@@ -229,18 +226,18 @@ Granny.prototype.takeDamage = function(amount, source){
 		this.health -= amount;
 		new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 15+Math.ceil(amount/10), stroke: '#000000', strokeThickness: 3, fill: '#ff6666'}, false)
 		this.tint = 0xff4444;
-		Granny.hurtSound.play();
+		Granny.AUDIO.playerHurt.play();
 	}
 	else if(this.blockTime > 50){ // partial block
 		game.add.text(new PopupText(game, this.x, this.y-50, "Partial block!", {font: 'Palatino', fontSize: 10, stroke: '#000000', strokeThickness: 3, fill: '#ffffff'}, true));
 		game.add.text(new PopupText(game, this.x, this.y, amount/2, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#ff8888'}, false));
 		this.health -= amount/2;
 		this.tint = 0xffbbbb;
-		Granny.hurtSound.play();
+		Granny.AUDIO.playerHurt.play();
 	}
 	else{ // full block
 		game.add.text(new PopupText(game, this.x, this.y-50, "Blocked!", {font: 'Palatino', fontSize: 10, stroke: '#000000', strokeThickness: 3, fill: '#ffffff'}, true));
-		Granny.blockSound.play();
+		Granny.AUDIO.block.play();
 		return;
 	}
 
@@ -252,7 +249,7 @@ Granny.prototype.takeDamage = function(amount, source){
 
 Granny.prototype.heal = function(amount){
 	this.health = Math.min(this.health + amount, Granny.MAX_HEALTH);
-	game.add.text(new PopupText(game, this.x, this.y, amount, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#aaffaa'}, false));
+	game.add.text(new PopupText(game, this.x, this.y, Math.min(this.health + amount, Granny.MAX_HEALTH), {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#aaffaa'}, false));
 	this.tint = 0x44ff44;
 }
 

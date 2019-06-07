@@ -1,6 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
 // its projectiles will be created in
-Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hurtSound, deathSound) {
+Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, audio) {
 
 	Phaser.Sprite.call(this, game, x, y, 'plant');
 
@@ -27,8 +27,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, hu
 
 	this.MELEE_DAMAGE = 20; // Can't be static because using typeof in main doesn't work :/
 
-	Enemy.hurtSound = hurtSound;
-	Enemy.deathSound = deathSound;
+	Enemy.AUDIO = audio;
 
 	this.animations.add('moving', [5, 6, 7, 8, 9, 10], 7, true);
 	this.animations.add('shooting', [0, 1, 2, 3, 4], 8, false);
@@ -101,12 +100,12 @@ Enemy.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, stroke: '#000000', strokeThickness: 3, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 3;
-		Enemy.deathSound.play();
+		Enemy.AUDIO.enemyDeath.play();
 		this.destroy(); // maybe replace with kill?
 	}
 	else{
 		this.body.velocity.y -= 150;
-		Enemy.hurtSound.play();
+		Enemy.AUDIO.enemyHurt.play();
 		this.body.velocity.x = (this.player.facing == 'left' ? -80 : 80);
 		this.hitStunDuration = 60;
 		this.bulletCooldown = Enemy.BULLET_COOLDOWN_BASE;
