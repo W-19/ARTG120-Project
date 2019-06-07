@@ -280,6 +280,10 @@ Play.prototype = {
     	this.scoreText.fixedToCamera = true;
     	this.scoreText.cameraOffset.setTo(700.5, 30.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
 
+    	this.equippedWeaponImage = game.add.sprite(game.width/2, 30.5, this.player.currentWeapon.path);
+    	this.equippedWeaponImage.anchor.set(0.5);
+    	this.equippedWeaponImage.scale.set(this.player.currentWeapon.scale);
+
 		//Setting up spawn points
 		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
 		[39, 1300], [2275, 1300], [39, 785], [2275, 785]];
