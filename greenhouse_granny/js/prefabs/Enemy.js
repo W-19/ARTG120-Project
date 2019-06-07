@@ -41,6 +41,13 @@ Enemy.prototype.constructor = Enemy;
 //Update funtion for enemy
 Enemy.prototype.update = function() {
 
+	if(this.x <= 40 && this.y >= 3000) {
+    	this.reset(30, 790);
+    }
+    if(this.x >= 2274 && this.y >= 3000) {
+    	this.reset(2275, 790);
+    }
+
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
 
 	if(this.inWindbox > 0) this.inWindbox--;
