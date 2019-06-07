@@ -211,10 +211,14 @@ Play.prototype = {
 		this.map.setCollisionByExclusion([]);
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
+		
+		//Far Background creation
+		this.farStage = game.add.sprite(0, 0, 'farBackground');
 
 		//Add background to game
 		this.stage = game.add.sprite(0, 3200, 'stage');
 		this.stage.anchor.y = 1;
+		
 		// Draw the background
 		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
 		game.stage.setBackgroundColor('#87CEEB');
