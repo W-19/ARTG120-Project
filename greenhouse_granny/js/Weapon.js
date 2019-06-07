@@ -103,7 +103,7 @@ var shovel = {
 
 var leafblower = {
 	name: 'leafblower',
-	path: 'assets/img/Leafblower.png',
+	path: 'assets/img/Short Leafblower.png',
 	type: 'AOE',
 	damage: 0,
 	scale: 0.5,
@@ -132,8 +132,8 @@ var leafblower = {
 
 		enemyProjectiles.forEachAlive(function(projectile){
 			if(projectile.owner != player && Math.abs(projectile.y - player.y) < 30 && (
-					(player.facing == 'left' && (player.x-projectile.x > 130) && (player.x-projectile.x < 280)) ||
-					(player.facing == 'right' && (projectile.x-player.x > 130) && (projectile.x-player.x < 280))
+					(player.facing == 'left' && (player.x-projectile.x > 90) && (player.x-projectile.x < 250)) ||
+					(player.facing == 'right' && (projectile.x-player.x > 90) && (projectile.x-player.x < 250))
 			)){
 				projectile.scale.x *= -1;
 				projectile.body.velocity.x *= -1;

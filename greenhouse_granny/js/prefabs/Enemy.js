@@ -100,6 +100,7 @@ Enemy.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, stroke: '#000000', strokeThickness: 3, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 3;
+		this.player.heal(2);
 		Enemy.AUDIO.enemyDeath.play();
 		this.destroy(); // maybe replace with kill?
 	}
