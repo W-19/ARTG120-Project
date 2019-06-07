@@ -77,9 +77,6 @@ Granny.prototype.constructor = Granny;
 
 //Update function for granny
 Granny.prototype.update = function() {
-
-	console.log("X:" + this.x + " Y: " + this.y);
-
 	if(this.x <= 26 && this.y >= 3000) {
     	this.reset(30, 790);
     }
