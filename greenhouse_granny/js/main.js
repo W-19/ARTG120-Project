@@ -180,6 +180,7 @@ Play.prototype = {
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
 		game.load.image('top bar', 'assets/img/UI_Bar.png');
+		game.load.image('farBackground', 'assets/img/FarBackground.jpg');
 		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
