@@ -467,7 +467,7 @@ Play.prototype = {
 
 	//Function for when a plant projectile contacts player
 	bulletContact: function(player, bullet) {
-		if(bullet.owner != player){
+		if(bullet.owner != this.player){
 			this.player.takeDamage(8, bullet);
 			bullet.kill();
 		}
