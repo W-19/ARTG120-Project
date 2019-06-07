@@ -313,7 +313,7 @@ Play.prototype = {
 		++this.spawnCounter;
 
 		//Randomly spawning enemies based on time
-		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 80) {
+		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 50) {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(0, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);

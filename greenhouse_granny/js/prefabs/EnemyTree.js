@@ -59,7 +59,7 @@ EnemyTree.prototype.update = function() {
 				this.burstShooting = true;
 				this.burstCooldown = 22;
 			}
-			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0 && this.enemies.length < 80) {
+			if (this.acornCooldown == 0 && this.acornSpawnDelay == 0 && this.enemies.length < 50) {
 				this.enemies.add(new EnemyJumper(game, this.x, this.y - 50, this.player, 545, 1050, 'left', this.enemyHurt, this.enemyDeath));
 				this.enemies.add(new EnemyJumper(game, this.x + 50, this.y - 50, this.player, 545, 1050, 'right', EnemyJumper.AUDIO));
 				this.acornCooldown = 500;
