@@ -289,11 +289,6 @@ Play.prototype = {
 
 		// Set up the enemies
 		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
-		this.enemies.add(new Enemy(game, 910, 530, this.player, this.enemyProjectiles, 910, 1443, this.audio));
-		this.enemies.add(new Enemy(game, 1322, 1170, this.player, this.enemyProjectiles, 999, 1322, this.audio));
-		this.enemies.add(new Enemy(game, 1101, 1490, this.player, this.enemyProjectiles, 1101, 1300, this.audio));
-		this.enemies.add(new Enemy(game, 1045, 1875, this.player, this.enemyProjectiles, 1045, 1154, this.audio));
-		this.enemies.add(new Enemy(game, 1028, 2770, this.player, this.enemyProjectiles, 1028, 1151, this.audio));
 		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.audio));
 
 		//Black Screen
