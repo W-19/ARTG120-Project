@@ -258,7 +258,7 @@ Granny.prototype.takeDamage = function(amount, source){
 
 Granny.prototype.heal = function(amount){
 	this.health = Math.min(this.health + amount, Granny.MAX_HEALTH);
-	game.add.text(new PopupText(game, this.x, this.y, Math.min(this.health + amount, Granny.MAX_HEALTH), {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#aaffaa'}, false));
+	game.add.text(new PopupText(game, this.x, this.y, Math.min(amount, Granny.MAX_HEALTH-amount), {font: 'Palatino', fontSize: 15, stroke: '#000000', strokeThickness: 3, fill: '#aaffaa'}, false));
 	this.tint = 0x44ff44;
 }
 

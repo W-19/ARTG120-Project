@@ -10,6 +10,7 @@ EnemyJumper = function(game, x, y, player, leftxFlag, rightxFlag, facing, audio)
 	this.body.collideWorldBounds = true;
 	EnemyJumper.SCALE = 0.45;
 	this.body.gravity.y = 1000;
+	this.body.maxVelocity.y = 1000;
 	this.body.velocity.x = -20;
 	this.body.immovable = true;
 	this.jumpCooldown = 0;

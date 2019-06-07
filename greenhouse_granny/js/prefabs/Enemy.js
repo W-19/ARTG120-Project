@@ -10,6 +10,7 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, au
 	this.body.collideWorldBounds = true;
 	this.scale.setTo(-0.5, 0.5);
 	this.body.gravity.y = 1000;
+	this.body.maxVelocity.y = 1000;
 	this.body.velocity.x = -50;
 	this.body.immovable = true;
 	
@@ -107,6 +108,7 @@ Enemy.prototype.takeDamage = function(amount){
 	game.add.text(new PopupText(game, this.x, this.y-50, amount, {font: 'Palatino', fontSize: 20, stroke: '#000000', strokeThickness: 3, fill: '#ff8800'}, false));
 	if(this.health <= 0) {
 		Granny.score += 3;
+		this.player.heal(2);
 		Enemy.AUDIO.enemyDeath.play();
 		this.destroy(); // maybe replace with kill?
 	}
