@@ -303,6 +303,9 @@ Play.prototype = {
     	this.blockCooldownText.fixedToCamera = true;
     	this.blockCooldownText.cameraOffset.setTo(game.width/2 + 0.5, game.height - 39.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
     	this.blockCooldownText.alpha = 0.0;
+
+    	//Key for attacking
+    	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.C);
 	},
 
 	update: function(){
@@ -344,6 +347,7 @@ Play.prototype = {
 		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
+		//game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactTwo, null, this);
 
 		// ------------------------------------- HUD --------------------------------------
 
@@ -464,6 +468,13 @@ Play.prototype = {
 	bulletContact: function(player, bullet) {
 		if(bullet.owner != this.player){
 			this.player.takeDamage(8, bullet);
+			bullet.kill();
+		}
+	},
+
+	bulletContactTwo: function(enemy, bullet) {
+		if(bullet.owner == this.player) {
+			enemy.takeDamage(8, bullet);
 			bullet.kill();
 		}
 	},

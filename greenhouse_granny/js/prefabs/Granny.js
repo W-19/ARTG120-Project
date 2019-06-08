@@ -78,10 +78,12 @@ Granny.prototype.constructor = Granny;
 //Update function for granny
 Granny.prototype.update = function() {
 	if(this.x <= 26 && this.y >= 3000) {
-    	this.reset(30, 790);
+    	this.x = 30;
+    	this.y = 790;
     }
     if(this.x >= 2275 && this.y >= 3000) {
-    	this.reset(2275, 790);
+    	this.x = 2275;
+    	this.y = 790;
     }
 
 	blockKeyDown = this.keyBlock.isDown;
