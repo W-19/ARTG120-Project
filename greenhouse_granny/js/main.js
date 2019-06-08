@@ -17,6 +17,7 @@ var game = new Phaser.Game(config);
 var money = 0;
 var moneyCounter = 0;
 var GrannyDAMAGE = 0;
+var grannyHEALTH = 0;
 
 var currentTrack = null; // allows us to stop the game audio when we enter the GameOver state
 
@@ -489,7 +490,7 @@ Play.prototype = {
 
 	enemyContact: function(player, enemy) {
 		if(enemy.MELEE_DAMAGE != null){
-			this.player.takeDamage(enemy.MELEE_DAMAGE, enemy);
+			this.player.takeDamage(enemy.MELEE_DAMAGE - grannyHEALTH, enemy);
 		}
 	},
 
@@ -528,10 +529,13 @@ GameOver.prototype = {
 		this.select.alpha = .75;
 
 		//text to upgrade weapon
-		this.upgrade = game.add.text(400, -350, 'Upgrade Weapon', {font: '26px Sabon', fill: '#fffff'});
+		this.upgrade = game.add.text(590, -350, 'Upgrade Weapon', {font: '26px Sabon', fill: '#fffff'});
 		this.upgrade.anchor.set(.5);
-		
 
+		//text to upgrade health
+		this.upgradeHealth = game.add.text(200, -350, 'Upgrade Health', {font: '26px Sabon', fill: '#fffff'});
+		this.upgradeHealth.anchor.set(.5);
+		
 		//text to play again
 		this.playAgain = game.add.text(400, -60, 'Continue', {font: '26px Sabon', fill: '#fffff'});
 		this.playAgain.anchor.set(.5);
@@ -573,6 +577,7 @@ GameOver.prototype = {
 		if(this.hubBack.y < game.height/2){
 			this.hubBack.y += 5;
 			this.upgrade.y += 5;
+			this.upgradeHealth.y += 5;
 			this.playAgain.y += 5;
 			this.scoreText.y += 5;
 			this.scoreText2.y += 5;
@@ -595,9 +600,24 @@ GameOver.prototype = {
 		}
 		if(this.SELECT == 1 && this.hubBack.y >= game.height/2){
 			this.select.y = 150;
+			this.select.x = 590;
 		}
 		else if(this.SELECT == 2 && this.hubBack.y >= game.height/2){
 			this.select.y = 440;
+			this.select.x = 400;
+		}
+		else if(this.SELECT == 3 && this.hubBack.y >= game.height/2){
+			this.select.y = 150;
+			this.select.x = 200;
+		}
+		if(this.SELECT == 1 && game.input.keyboard.downDuration(Phaser.Keyboard.LEFT)){
+			this.SELECT = 3;
+		}
+		if(this.SELECT == 3 && game.input.keyboard.downDuration(Phaser.Keyboard.RIGHT)){
+			this.SELECT = 1;
+		}
+		if(this.SELECT == 3 && game.input.keyboard.downDuration(Phaser.Keyboard.DOWN)){
+			this.SELECT = 2;
 		}
 
 		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
@@ -609,6 +629,10 @@ GameOver.prototype = {
 			else if(this.SELECT == 2){
 				this.SCREENFLAG = true;
 			}
+			else if(this.SELECT == 3 && money >= 1000){
+				money -= 1000;
+				++grannyHEALTH;
+			}
 		}
 	}
 }
@@ -619,4 +643,3 @@ game.state.add("Play", Play);
 game.state.add("GameOver", GameOver);
 //game.state.add("UpgradeMenu", UpgradeMenu);
 game.state.start("MainMenu");
-

@@ -44,10 +44,12 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = function() {
 
 	if(this.x <= 40 && this.y >= 3000) {
-    	this.reset(30, 790);
+    	this.x = 30;
+    	this.y = 780;
     }
     if(this.x >= 2274 && this.y >= 3000) {
-    	this.reset(2275, 790);
+    	this.x = 2275;
+    	this.y = 780;
     }
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
