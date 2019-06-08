@@ -180,6 +180,7 @@ Play.prototype = {
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
 		game.load.image('top bar', 'assets/img/UI_Bar.png');
+		game.load.image('farBackground', 'assets/img/FarBackground.jpg');
 		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
@@ -211,10 +212,14 @@ Play.prototype = {
 		this.map.setCollisionByExclusion([]);
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
+		
+		//Far Background creation
+		this.farStage = game.add.sprite(0, 0, 'farBackground');
 
 		//Add background to game
 		this.stage = game.add.sprite(0, 3200, 'stage');
 		this.stage.anchor.y = 1;
+		
 		// Draw the background
 		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
 		game.stage.setBackgroundColor('#87CEEB');
@@ -317,7 +322,7 @@ Play.prototype = {
 		++this.spawnCounter;
 
 		//Randomly spawning enemies based on time
-		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 80) {
+		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 50) {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(0, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);

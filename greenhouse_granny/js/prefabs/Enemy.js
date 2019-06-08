@@ -7,11 +7,12 @@ Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, au
 	//Setting some attributes for the enemy
 	this.anchor.set(0.5);
 	game.physics.enable(this);
+	this.speed = game.rnd.integerInRange(40, 60);
 	this.body.collideWorldBounds = true;
 	this.scale.setTo(-0.5, 0.5);
 	this.body.gravity.y = 1000;
 	this.body.maxVelocity.y = 1000;
-	this.body.velocity.x = -50;
+	this.body.velocity.x = -this.speed;
 	this.body.immovable = true;
 	
 	this.health = 30;
@@ -76,7 +77,7 @@ Enemy.prototype.update = function() {
 		}
 		// If the player's not in range, keep patrolling
 		else {
-			if(this.inWindbox == 0) this.body.velocity.x = this.facing == 'left' ? -50 : 50;
+			if(this.inWindbox == 0) this.body.velocity.x = this.facing == 'left' ? -this.speed : this.speed;
 			this.animations.play('moving');
 		}
 
