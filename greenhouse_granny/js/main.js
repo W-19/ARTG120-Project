@@ -222,7 +222,7 @@ Play.prototype = {
 		// A bar at the top so health and score are more visible
 		this.HUDBar = game.add.sprite(0, 0, 'top bar');
 		this.HUDBar.scale.setTo(2.0, 1.2); // 400x50 -> 800x60
-		this.HUDBar.alpha = 0.8;
+		this.HUDBar.alpha = 0.3;
 		this.HUDBar.fixedToCamera = true;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ Play.prototype = {
 		this.enemies = game.add.group();
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
-
+		
 		// Set up the player
 		this.player = new Granny(game, 90, 1800, this.enemies, this.enemyProjectiles, this.audio, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
@@ -280,9 +280,7 @@ Play.prototype = {
     	this.scoreText.fixedToCamera = true;
     	this.scoreText.cameraOffset.setTo(700.5, 30.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
 
-    	this.equippedWeaponImage = game.add.sprite(game.width/2, 30.5, this.player.currentWeapon.path);
-    	this.equippedWeaponImage.anchor.set(0.5);
-    	this.equippedWeaponImage.scale.set(this.player.currentWeapon.scale);
+    	// The shovel image is taken care of in Granny
 
 		//Setting up spawn points
 		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
@@ -353,6 +351,7 @@ Play.prototype = {
 
 		game.world.bringToTop(this.HUDBar);
 		game.world.bringToTop(this.healthBar);
+		game.world.bringToTop(this.player.currentWeaponImage);
 		game.world.bringToTop(this.scoreText);
 
 		// Flash the health bar when the player takes damage
