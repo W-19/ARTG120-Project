@@ -180,6 +180,7 @@ Play.prototype = {
 		game.load.image('spitter plant', 'assets/img/Spitter_Plant.png');
 		game.load.image('stage', 'assets/img/Final-Stage.png');
 		game.load.image('top bar', 'assets/img/UI_Bar.png');
+		game.load.image('farBackground', 'assets/img/FarBackground.jpg');
 		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
@@ -211,10 +212,14 @@ Play.prototype = {
 		this.map.setCollisionByExclusion([]);
 		this.mapLayer = this.map.createLayer('Tile Layer 1');
 		this.mapLayer.resizeWorld();
+		
+		//Far Background creation
+		this.farStage = game.add.sprite(0, 0, 'farBackground');
 
 		//Add background to game
 		this.stage = game.add.sprite(0, 3200, 'stage');
 		this.stage.anchor.y = 1;
+		
 		// Draw the background
 		//this.background = game.add.tileSprite(0, 0, game.width, game.height, "background");
 		game.stage.setBackgroundColor('#87CEEB');
@@ -222,7 +227,7 @@ Play.prototype = {
 		// A bar at the top so health and score are more visible
 		this.HUDBar = game.add.sprite(0, 0, 'top bar');
 		this.HUDBar.scale.setTo(2.0, 1.2); // 400x50 -> 800x60
-		this.HUDBar.alpha = 0.8;
+		this.HUDBar.alpha = 0.3;
 		this.HUDBar.fixedToCamera = true;
 
 		// -------------------------------------------------------------------------------------------------------------
@@ -256,7 +261,7 @@ Play.prototype = {
 		this.enemies = game.add.group();
 		this.enemyProjectiles = game.add.group();
 		this.enemyProjectiles.enableBody = true;
-
+		
 		// Set up the player
 		this.player = new Granny(game, 90, 1800, this.enemies, this.enemyProjectiles, this.audio, GrannyDAMAGE);
 		this.player.switchWeapon(shovel);
@@ -279,6 +284,8 @@ Play.prototype = {
     	this.scoreText.anchor.setTo(0.5);
     	this.scoreText.fixedToCamera = true;
     	this.scoreText.cameraOffset.setTo(700.5, 30.5); // .5s necessary for sharpness if we have a custom anchor :shrug:
+
+    	// The shovel image is taken care of in Granny
 
 		//Setting up spawn points
 		this.spawnPoints = [[39, 3090], [2275, 3090], [39, 2835], [2275, 2835], [39, 2325], [2275, 2325], [39, 1815], [2275, 1815],
@@ -353,6 +360,7 @@ Play.prototype = {
 
 		game.world.bringToTop(this.HUDBar);
 		game.world.bringToTop(this.healthBar);
+		game.world.bringToTop(this.player.currentWeaponImage);
 		game.world.bringToTop(this.scoreText);
 
 		// Flash the health bar when the player takes damage

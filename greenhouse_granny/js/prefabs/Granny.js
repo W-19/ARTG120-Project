@@ -41,6 +41,9 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 	this.immuneTo = []; // holds all the enemies that recently damaged the player and the number of ticks until they can do so again
 	this.enemiesDamagedThisAttack = []; // holds all the enemies she's damaged this attack
 
+	// The weapon displayed at the top of the screen
+	Granny.currentWeaponImage = game.add.sprite(game.width/2, 30.5, shovel.name);
+
 	//Adding input keys to game
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -270,4 +273,12 @@ Granny.prototype.switchWeapon = function(weapon){
 	this.currentWeaponObj.angle = weapon.defaultAngle;
 	this.currentWeaponObj.enableBody = true;
 	game.add.text(new PopupText(game, this.x, this.y, this.currentWeapon.name, {font: 'Palatino', fontSize: 13, stroke: '#000000', strokeThickness: 3, fill: '#7777ff'}, true));
+
+	if(this.currentWeaponImage != null) this.currentWeaponImage.destroy();
+	this.currentWeaponImage = game.add.sprite(game.width/2, 30.5, weapon.name);
+	this.currentWeaponImage.scale.set(weapon.scale/2);
+	this.currentWeaponImage.anchor.set(0.5);
+	this.currentWeaponImage.fixedToCamera = true;
+	this.currentWeaponImage.cameraOffset.setTo(game.width/2 + 0.5, 30.5);
+
 }
