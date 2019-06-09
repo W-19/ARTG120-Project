@@ -21,7 +21,7 @@ var grannyHEALTH = 0;
 var timer;
 var secondsAlive = 0;
 
-var currentTrack = null; // allows us to stop the game audio when we enter the GameOver state
+var currentTrack = null; // allows us to stop the game audio when we change states
 
 // Define states
 
@@ -362,10 +362,10 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
-		game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactTwo, null, this);
 		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
-		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
+		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContactPlayer, null, this);
+		game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactEnemy, null, this);
 		
 
 		// ------------------------------------- HUD --------------------------------------
@@ -486,17 +486,17 @@ Play.prototype = {
 	},
 
 	//Function for when a plant projectile contacts player
-	bulletContact: function(player, bullet) {
+	bulletContactPlayer: function(player, bullet) {
 		if(bullet.owner != this.player){
 			this.player.takeDamage(8, bullet);
-			bullet.kill();
+			bullet.destroy();
 		}
 	},
 
-	bulletContactTwo: function(enemy, bullet) {
+	bulletContactEnemy: function(enemy, bullet) {
 		if(bullet.owner == this.player) {
-			enemy.takeDamage(8, bullet);
-			bullet.kill();
+			enemy.takeDamage(3, bullet);
+			bullet.destroy();
 		}
 	},
 
@@ -650,7 +650,6 @@ GameOver.prototype = {
 		if(this.SELECT == 3 && game.input.keyboard.downDuration(Phaser.Keyboard.DOWN)){
 			this.SELECT = 2;
 		}
-		console.log(this.enterDown);
 		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
 			if(this.SELECT == 1 && money >= 1000 && this.enterDown == 0){
 				this.enterDown = 50;
