@@ -470,11 +470,11 @@ Play.prototype = {
 		);
 		*/
 
-		// The below code uses the arbitrary value of 65 but seems to work better, and it's much simpler	
+		// The below code uses the arbitrary value of 105 but seems to work better, and it's much simpler	
 		
 		/*
-		var shovelBladeX = this.player.x + 90*Math.cos(this.player.currentWeaponObj.rotation)*(this.player.facing == 'left' ? -1 : 1);
-		var shovelBladeY = this.player.y + 90*Math.sin(this.player.currentWeaponObj.rotation);
+		var shovelBladeX = this.player.x + 105*Math.cos(this.player.currentWeaponObj.rotation)*(this.player.facing == 'left' ? -1 : 1);
+		var shovelBladeY = this.player.y + 105*Math.sin(this.player.currentWeaponObj.rotation);
 		game.debug.pixel(shovelBladeX-this.camera.x-2, shovelBladeY-this.camera.y-2, '#ff00ff', 5);
 		game.debug.pixel(this.player.x-this.camera.x-2, this.player.y-this.camera.y-2, '#ff00ff', 5);
 		*/
