@@ -18,6 +18,8 @@ var money = 0;
 var moneyCounter = 0;
 var GrannyDAMAGE = 0;
 var grannyHEALTH = 0;
+var timer;
+var secondsAlive = 0;
 
 var currentTrack = null; // allows us to stop the game audio when we enter the GameOver state
 
@@ -230,6 +232,11 @@ Play.prototype = {
 		this.HUDBar.scale.setTo(2.0, 1.2); // 400x50 -> 800x60
 		this.HUDBar.alpha = 0.3;
 		this.HUDBar.fixedToCamera = true;
+		
+		//Create timer, loop it, and start
+		timer = game.time.create(false);
+		timer.loop(1000, Count, this);
+		timer.start();
 
 		// -------------------------------------------------------------------------------------------------------------
 
@@ -429,6 +436,7 @@ Play.prototype = {
 
 		// ------------------------------ SCREEN FADE ------------------------------------
 		if(this.player.health <= 0){
+			timer.stop();
 			this.SCREENFLAG = true;
 		}
 		if(this.SCREENFLAG == false && this.blackScreen.alpha >= 0){
@@ -531,6 +539,21 @@ GameOver.prototype = {
 		//text to upgrade weapon
 		this.upgrade = game.add.text(590, -350, 'Upgrade Weapon', {font: '26px Sabon', fill: '#fffff'});
 		this.upgrade.anchor.set(.5);
+		
+		//text saying how long you stayed alive for
+		this.secondsAlive = game.add.text(390, -350, 'Time Alive', {font: '26px Sabon', fill: '#fffff'});
+		this.secondsAlive.anchor.set(.5);
+
+		if(secondsAlive < 60){
+			this.lived = game.add.text(390, -310, secondsAlive + ' seconds', {font: '26px Sabon', fill: '#fffff'});
+			this.lived.anchor.set(.5);
+		}else if(secondsAlive >= 60){
+			let seconds = secondsAlive%60;
+			let minutes = Math.floor(secondsAlive/60);
+			this.lived = game.add.text(390, -310, minutes + 'm ' + seconds + 's', {font: '26px Sabon', fill: '#fffff'});
+			this.lived.anchor.set(.5);
+		}
+
 
 		//text to upgrade health
 		this.upgradeHealth = game.add.text(200, -350, 'Upgrade Health', {font: '26px Sabon', fill: '#fffff'});
@@ -579,6 +602,8 @@ GameOver.prototype = {
 			this.upgrade.y += 5;
 			this.upgradeHealth.y += 5;
 			this.playAgain.y += 5;
+			this.secondsAlive.y += 5;
+			this.lived.y += 5;
 			this.scoreText.y += 5;
 			this.scoreText2.y += 5;
 			this.scoreText3.y += 5;
