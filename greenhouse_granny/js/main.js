@@ -365,7 +365,11 @@ Play.prototype = {
 		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContactPlayer, null, this);
-		game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactEnemy, null, this);
+
+		this.enemies.forEachAlive(function(enemy){
+			if(enemy != null) game.physics.arcade.overlap(enemy, this.enemyProjectiles, this.bulletContactEnemy, null, this);
+		}, this, true);
+		//game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactEnemy, null, this);
 		
 
 		// ------------------------------------- HUD --------------------------------------
