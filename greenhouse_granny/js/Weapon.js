@@ -123,8 +123,8 @@ var leafblower = {
 			// The windbox touches the enemy if their hitboxes overlap in the y and the enemy's x is between 130 and 280 from the player's
 			// while the player is facing them
 			if(Math.abs(player.y - enemy.y) < player.height/2 + enemy.height/2 && (
-					(player.facing == 'left' && player.x-enemy.x > 130 && player.x-enemy.x < 280) ||
-					(player.facing == 'right' && enemy.x-player.x > 130 && enemy.x-player.x < 280)
+					(player.facing == 'left' && player.x-enemy.x > 85 && player.x-enemy.x < 280) ||
+					(player.facing == 'right' && enemy.x-player.x > 85 && enemy.x-player.x < 280)
 			)){
 				enemy.windbox((600 - Math.abs(player.x-enemy.x)*2) * (player.facing == 'left' ? -1 : 1), null);
 			}

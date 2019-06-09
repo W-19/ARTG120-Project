@@ -305,6 +305,8 @@ Play.prototype = {
 
 		// Set up the enemies
 		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
+		this.enemies.add(new Enemy(game, 2775, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
+		this.enemies.add(new Enemy(game, 1500, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
 		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.audio));
 
 		//Black Screen
@@ -334,7 +336,7 @@ Play.prototype = {
 		//Randomly spawning enemies based on time
 		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 50) {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
-				this.spawnPoint = game.rnd.integerInRange(0, 11);
+				this.spawnPoint = game.rnd.integerInRange(2, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);
 				var spawnedEnemy;
 				// Spawn an enemy at a random x and y from the list
@@ -360,10 +362,11 @@ Play.prototype = {
 
 		// The various collisions which cause the player to take damage
 		// this logic should probably be moved into the enemy prefab eventually
+		game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactTwo, null, this);
 		game.physics.arcade.collide(this.player.hitbox, this.enemies, this.enemyContact, null, this);
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContact, null, this);
-		//game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactTwo, null, this);
+		
 
 		// ------------------------------------- HUD --------------------------------------
 
@@ -581,6 +584,8 @@ GameOver.prototype = {
 
 		//Create blackscreen for fade
 		this.blackScreen = game.add.sprite(-50, -50, 'blackScreen');
+
+		this.enterDown = 50;
 	},
 	update: function(){
 
@@ -645,9 +650,10 @@ GameOver.prototype = {
 		if(this.SELECT == 3 && game.input.keyboard.downDuration(Phaser.Keyboard.DOWN)){
 			this.SELECT = 2;
 		}
-
+		console.log(this.enterDown);
 		if(game.input.keyboard.isDown(Phaser.Keyboard.ENTER)){
-			if(this.SELECT == 1 && money >= 1000){
+			if(this.SELECT == 1 && money >= 1000 && this.enterDown == 0){
+				this.enterDown = 50;
 				//upgrade weapon
 				money -= 1000;
 				++GrannyDAMAGE;
@@ -655,10 +661,14 @@ GameOver.prototype = {
 			else if(this.SELECT == 2){
 				this.SCREENFLAG = true;
 			}
-			else if(this.SELECT == 3 && money >= 1000){
+			else if(this.SELECT == 3 && money >= 1000 && this.enterDown == 0){
+				this.enterDown = 50;
 				money -= 1000;
 				++grannyHEALTH;
 			}
+		}
+		else {
+			if(this.enterDown > 0)--this.enterDown;
 		}
 	}
 }
