@@ -234,10 +234,14 @@ Play.prototype = {
 		this.HUDBar.fixedToCamera = true;
 		
 		//Create timer, loop it, and start
-		/*var Count;
+		var Count;
 		timer = game.time.create(false);
 		timer.loop(1000, Count, this);
-		timer.start();*/
+		timer.start();
+		
+		function Count(){
+			secondsAlive++;
+		}
 
 		// -------------------------------------------------------------------------------------------------------------
 
