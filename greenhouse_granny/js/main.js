@@ -234,9 +234,10 @@ Play.prototype = {
 		this.HUDBar.fixedToCamera = true;
 		
 		//Create timer, loop it, and start
+		/*var Count;
 		timer = game.time.create(false);
 		timer.loop(1000, Count, this);
-		timer.start();
+		timer.start();*/
 
 		// -------------------------------------------------------------------------------------------------------------
 
@@ -436,7 +437,7 @@ Play.prototype = {
 
 		// ------------------------------ SCREEN FADE ------------------------------------
 		if(this.player.health <= 0){
-			timer.stop();
+			//timer.stop();
 			this.SCREENFLAG = true;
 		}
 		if(this.SCREENFLAG == false && this.blackScreen.alpha >= 0){

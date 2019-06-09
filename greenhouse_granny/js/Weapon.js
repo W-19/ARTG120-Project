@@ -106,7 +106,7 @@ var leafblower = {
 	path: 'assets/img/Short Leafblower.png',
 	type: 'AOE',
 	damage: 0,
-	scale: 0.5,
+	scale: 1.5,
 	anchorX: 0.0,
 	anchorY: 0.0,
 	cooldown: 1,
