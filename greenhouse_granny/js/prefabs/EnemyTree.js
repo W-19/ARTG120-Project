@@ -1,5 +1,5 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
-// its projectiles will be created in
+// its projectiles will be created in, along with a reference to an object holding all the relevant audio (and more!)
 EnemyTree = function(game, x, y, player, enemies, enemyProjectiles, audio) {
 
 	Phaser.Sprite.call(this, game, x, y, 'tree');
@@ -54,7 +54,7 @@ EnemyTree.prototype.update = function() {
 			this.facing == 'right' && this.player.x - this.x < EnemyTree.AGGRO_RANGE && this.player.x - this.x > 0 && (this.player.y + 100) - this.y >= 0
 		)*/){
 			//Attack her
-			if (this.bulletCooldown == 0) {
+			if (this.bulletCooldown == 0 && Math.abs(this.player.x - this.x) < game.width && Math.abs(this.player.x - this.x) < this.height+this.player.height) {
 				this.bulletCooldown = EnemyTree.BULLET_COOLDOWN_BASE;
 				this.burstShooting = true;
 				this.burstCooldown = 22;

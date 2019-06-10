@@ -310,9 +310,9 @@ Play.prototype = {
 		this.tempVal = -1;
 
 		// Set up the enemies
-		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
-		this.enemies.add(new Enemy(game, 2775, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
-		this.enemies.add(new Enemy(game, 1500, 3090, this.player, this.enemyProjectiles, 39, 2275, this.audio));
+		this.enemies.add(new Enemy(game, 39, 3090, this.player, this.enemyProjectiles, -100, game.world.width+100, this.audio));
+		this.enemies.add(new Enemy(game, 2775, 3090, this.player, this.enemyProjectiles, -100, game.world.width+100, this.audio));
+		this.enemies.add(new Enemy(game, 1500, 3090, this.player, this.enemyProjectiles, -100, game.world.width+100, this.audio));
 		this.enemies.add(new EnemyTree(game, 2775, 0, this.player, this.enemies, this.enemyProjectiles, this.audio));
 
 		//Black Screen
@@ -352,7 +352,7 @@ Play.prototype = {
 				}
 				else { // Spitter
 					spawnedEnemy = this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][0],
-					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, 39, 2275, this.audio));
+					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, -100, game.world.width+100, this.audio));
 				}
 			}
 		}

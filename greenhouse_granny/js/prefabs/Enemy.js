@@ -1,5 +1,6 @@
 // Each enemy is created using paramaters for the game, its x and y position, the player object, and the group
-// its projectiles will be created in
+// its projectiles will be created in, along with optional flags for when to face left/right (deprecated) and
+// a reference to an object holding all the relevant audio (and more!)
 Enemy = function(game, x, y, player, enemyProjectiles, leftxFlag, rightxFlag, audio) {
 
 	Phaser.Sprite.call(this, game, x, y, 'plant');
@@ -43,13 +44,23 @@ Enemy.prototype.constructor = Enemy;
 //Update funtion for enemy
 Enemy.prototype.update = function() {
 
-	if(this.x <= 40 && this.y >= 3000) {
-    	this.x = 30;
-    	this.y = 780;
+	// If we're about to walk out of the world, turn off collideWorldBounds.
+	// It should be practically impossible for the player to push these enemies back into the world.
+	// This preserves the logic of "enemies can walk out of the world but can't be hit/blown out of it"
+    if((this.x < 40 && this.facing == 'left') || (this.x > game.world.width-40 && this.facing == 'right')){
+    	this.body.collideWorldBounds = false;
     }
-    if(this.x >= 2274 && this.y >= 3000) {
-    	this.x = 2275;
-    	this.y = 780;
+    // If we're fully outside the world (or are about to be and are out of camera view),
+    // either move this enemy to the other side/top of the world or just kill them (chances are 50/50).
+    if(this.body.collideWorldBounds == false && !this.inCamera){
+    	if(Math.random() < 0.5){
+    		this.destroy();
+    		return;
+    	}
+    	this.body.collideWorldBounds = true;
+    	this.x = (this.facing == 'left' ? game.world.width-40 : 40);
+    	this.y = 0;
+    	//this.tint = 0x0000ff; // I just used this for testing but man it looks wild
     }
 
 	if(this.hitStunDuration > 0) this.hitStunDuration--;
