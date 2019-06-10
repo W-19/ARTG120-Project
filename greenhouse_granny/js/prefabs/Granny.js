@@ -72,6 +72,9 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
     this.hitbox.drawRect(0, 0, 30, 63);
     this.hitbox.alpha = 0.0;
     game.physics.arcade.enable(this.hitbox);
+
+    this.jumpPad = game.add.sprite(955, 3090, 'jump leaf');
+	this.jumpPad.animations.add('pressed', [0, 1, 2, 3, 4], 20, false);
 }
 
 //Creating a prototype for granny
@@ -147,6 +150,7 @@ Granny.prototype.update = function() {
 		if (this.x < 1337 && this.x > 984 && this.y > 3000) {
 			this.body.maxVelocity.y = 10000;
 			this.body.velocity.y = -3000;
+			this.jumpPad.animations.play('pressed');
 		}
 		else {
 			this.body.velocity.y = -Granny.JUMP_HEIGHT;
