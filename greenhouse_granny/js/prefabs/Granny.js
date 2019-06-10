@@ -177,18 +177,26 @@ Granny.prototype.update = function() {
 			this.frame = 0;
 		}
 	}
-
+	
     //Double jumping logic
     if(this.onGround){
     	this.airJumps = Granny.MAX_AIR_JUMPS;
+    	this.body.maxVelocity.y = 1000;
     }
 	if (this.keyUp.justDown && (this.onGround || this.airJumps > 0)) {
-		this.body.velocity.y = -Granny.JUMP_HEIGHT;
+		if (this.x < 1337 && this.x > 984 && this.y > 3000) {
+			this.body.maxVelocity.y = 10000;
+			this.body.velocity.y = -3000;
+		}
+		else {
+			this.body.velocity.y = -Granny.JUMP_HEIGHT;
+		}
 		Granny.AUDIO.playerJump.play();
 		if(!this.onGround){
 			this.airJumps--;
 		}
 	}
+	
 
 	// ----------------------------------- BLOCKING ---------------------------------------
 
