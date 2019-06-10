@@ -144,6 +144,8 @@ var leafblower = {
 				// but it doesn't actually damage enemies now
 			}
 		}, this, true);
+
+		player.body.velocity.x += 100 * (player.facing == 'left' ? 1 : -1);
 		
 	},
 	rearm: function(player, leafblowerObj){

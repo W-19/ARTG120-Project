@@ -106,37 +106,6 @@ Granny.prototype.update = function() {
 		this.animations.stop();
 	}
 
-	// ------------------------------------ ATTACKING -------------------------------------
-	
-	// do whatever the weapon does passively when it's equipped
-	this.currentWeapon.update(this, this.currentWeaponObj);
-
-	if(this.attackCooldown == 0){
-		if(this.keyAttack.isDown && this.blockTime <= 0){
-			this.currentWeaponObj.alpha = 1.0;
-			this.attackCooldown = this.currentWeapon.cooldown;
-			this.currentWeapon.commenceAttack();
-		}
-		else{
-			if(this.keySwitchWeapon.justDown){
-				this.switchWeapon(this.currentWeapon == shovel ? leafblower : shovel);
-				Granny.AUDIO.switchWeapon.play();
-			}
-			this.currentWeaponObj.alpha = 0.0;
-		}
-	}
-	else{
-		this.attackCooldown--;
-		if(this.attackCooldown == 0){
-			this.currentWeapon.rearm(this, this.currentWeaponObj);
-		}
-	}
-
-	// Another statement down here so the attack will hit on the first tick but not on the last, rather than vice versa
-	if(this.attackCooldown > 0){
-		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies, this.enemyProjectiles);
-	}
-
 	// -------------------------------- MOVEMENT &  JUMPING--------------------------------
 	this.onGround = this.body.blocked.down;
 
@@ -186,6 +155,37 @@ Granny.prototype.update = function() {
 		if(!this.onGround){
 			this.airJumps--;
 		}
+	}
+
+	// ------------------------------------ ATTACKING -------------------------------------
+	
+	// do whatever the weapon does passively when it's equipped
+	this.currentWeapon.update(this, this.currentWeaponObj);
+
+	if(this.attackCooldown == 0){
+		if(this.keyAttack.isDown && this.blockTime <= 0){
+			this.currentWeaponObj.alpha = 1.0;
+			this.attackCooldown = this.currentWeapon.cooldown;
+			this.currentWeapon.commenceAttack();
+		}
+		else{
+			if(this.keySwitchWeapon.justDown){
+				this.switchWeapon(this.currentWeapon == shovel ? leafblower : shovel);
+				Granny.AUDIO.switchWeapon.play();
+			}
+			this.currentWeaponObj.alpha = 0.0;
+		}
+	}
+	else{
+		this.attackCooldown--;
+		if(this.attackCooldown == 0){
+			this.currentWeapon.rearm(this, this.currentWeaponObj);
+		}
+	}
+
+	// Another statement down here so the attack will hit on the first tick but not on the last, rather than vice versa
+	if(this.attackCooldown > 0){
+		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies, this.enemyProjectiles);
 	}
 	
 
