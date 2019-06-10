@@ -97,7 +97,7 @@ Enemy.prototype.update = function() {
 		
 	}
 	// If in hit stun and on the ground, stop all horizontal movement
-	else if (this.hitStunDuration < 58 && this.body.blocked.down){
+	else if (this.inWindbox == 0 && this.hitStunDuration < 58 && this.body.blocked.down){
 		this.body.velocity.x = 0;
 	}
 
