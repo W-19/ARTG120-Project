@@ -466,7 +466,7 @@ Play.prototype = {
 
 		// ------------------------------ SCREEN FADE ------------------------------------
 		if(this.player.health <= 0){
-			//timer.stop();
+			timer.stop();
 			this.SCREENFLAG = true;
 		}
 		if(this.SCREENFLAG == false && this.blackScreen.alpha >= 0){
