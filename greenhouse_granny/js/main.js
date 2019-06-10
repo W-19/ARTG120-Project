@@ -14,6 +14,8 @@ var config = {
 }
 var game = new Phaser.Game(config);
 
+var MAX_ENEMIES = 42;
+
 var money = 0;
 var moneyCounter = 0;
 var GrannyDAMAGE = 0;
@@ -334,7 +336,7 @@ Play.prototype = {
 		++this.spawnCounter;
 
 		//Randomly spawning enemies based on time
-		if ((this.spawnCounter % 500) == 0 && this.enemies.length < 50) {
+		if ((this.spawnCounter % 500) == 0 && this.enemies.length < MAX_ENEMIES) {
 			for (i = 0; i < (this.spawnCounter / 500); i++) {i
 				this.spawnPoint = game.rnd.integerInRange(2, 11);
 				this.tempVal = game.rnd.integerInRange(1, 10);
@@ -366,8 +368,21 @@ Play.prototype = {
 
 		game.physics.arcade.overlap(this.player.hitbox, this.enemyProjectiles, this.bulletContactPlayer, null, this);
 
-		this.enemies.forEachAlive(function(enemy){
-			if(enemy != null) game.physics.arcade.overlap(enemy, this.enemyProjectiles, this.bulletContactEnemy, null, this);
+		// For some reason reflected projectes sometimes crash the game when they kill an enemy so we have to work around that
+		this.enemies.forEach(function(enemy){
+			this.enemyProjectiles.forEach(function(projectile){
+				try{
+					//if(Phaser.Math.distance(enemy, projectile) < 127){ // Should save a few frames here and there
+						game.physics.arcade.overlap(enemy, projectile, this.bulletContactEnemy, null, this);
+					//}
+					
+				}
+				catch(te){ // TypeError
+					enemy.takeDamage(3);
+					projectile.destroy();
+				}
+			}, this, true);
+			
 		}, this, true);
 		//game.physics.arcade.overlap(this.enemies, this.enemyProjectiles, this.bulletContactEnemy, null, this);
 		

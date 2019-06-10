@@ -135,8 +135,10 @@ var leafblower = {
 					(player.facing == 'left' && (player.x-projectile.x > 90) && (player.x-projectile.x < 250)) ||
 					(player.facing == 'right' && (projectile.x-player.x > 90) && (projectile.x-player.x < 250))
 			)){
-				projectile.scale.x *= -1;
-				projectile.body.velocity.x *= -1;
+				if(player.facing != projectile.facing){
+					projectile.scale.x *= -1;
+					projectile.body.velocity.x *= -1;
+				}
 				projectile.owner = player;
 				projectile.tint = 0x0000ff;
 				// but it doesn't actually damage enemies now
