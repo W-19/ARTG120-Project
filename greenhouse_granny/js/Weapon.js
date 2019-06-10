@@ -112,7 +112,7 @@ var leafblower = {
 	cooldown: 1,
 	defaultAngle: 0,
 	update: function(player, leafblowerObj){ // called every tick. Less useful now that weapons are hidden when not firing
-		// Nothing special happens here
+		player.currentWeaponImage.tint = player.leafblowerTint;
 	},
 	commenceAttack: function(){
 		Granny.AUDIO.leafblower.play();
@@ -145,7 +145,18 @@ var leafblower = {
 			}
 		}, this, true);
 
-		player.body.velocity.x += 100 * (player.facing == 'left' ? 1 : -1);
+		// The leafblower pushes the player back
+		player.body.velocity.x += 80 * (player.facing == 'left' ? 1 : -1);
+
+		// Heat up the leafblower, or damage the player if it's already fully heated
+		if(player.leafblowerTint < 0xff0707){
+			player.takeDamage(1, player);
+			player.body.velocity.x = 0;
+		}
+		else{
+			player.leafblowerTint = Math.max(0xff0000, player.leafblowerTint - 0x000606);
+			leafblowerObj.tint = player.leafblowerTint;
+		}
 		
 	},
 	rearm: function(player, leafblowerObj){

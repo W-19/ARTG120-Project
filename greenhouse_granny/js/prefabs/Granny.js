@@ -19,6 +19,7 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 	this.anchor.set(0.5);
 	this.anchorScale = this.scale.x;
 	this.body.gravity.y = 1800;
+	this.body.maxVelocity.x = 1000;
 	this.body.maxVelocity.y = 1000;
 
 	Granny.MAX_HEALTH = 100;
@@ -42,7 +43,7 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 	this.enemiesDamagedThisAttack = []; // holds all the enemies she's damaged this attack
 
 	// The weapon displayed at the top of the screen
-	Granny.currentWeaponImage = game.add.sprite(game.width/2, 30.5, shovel.name);
+	this.currentWeaponImage = game.add.sprite(game.width/2, 30.5, shovel.name);
 
 	//Adding input keys to game
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
@@ -75,6 +76,9 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 
     this.jumpPad = game.add.sprite(955, 3090, 'jump leaf');
 	this.jumpPad.animations.add('pressed', [0, 1, 2, 3, 4], 20, false);
+
+	// Leafblower overheating
+	this.leafblowerTint = 0xffffff;
 }
 
 //Creating a prototype for granny
@@ -191,6 +195,11 @@ Granny.prototype.update = function() {
 	if(this.attackCooldown > 0){
 		this.currentWeapon.attack(game, this, this.currentWeaponObj, this.enemies, this.enemyProjectiles);
 	}
+
+	// Finally, update the leafblower tint
+	if(this.leafblowerTint < 0xffffff){
+		this.leafblowerTint = Math.min(0xffffff, this.leafblowerTint + 0x000202);
+	}
 	
 
 	// ----------------------------------- BLOCKING ---------------------------------------
@@ -232,9 +241,10 @@ Granny.prototype.takeDamage = function(amount, source){
 		source = source.owner;
 	}
 
-	// If we were recently damaged by this enemy, we take no damage; otherwise, add it to the list
+	// If we were recently damaged by this enemy, we take no damage; otherwise, add the enemy to the list,
+	// unless we're damaging ourselves with an overheated leafblower
 	if(this.immuneTo.some(elem => elem.enemyObj == source)) return;
-	else this.immuneTo.push(new EnemyCountdown(source, 30)); // We'll be immune to this object for 30 ticks
+	else if(source != this) this.immuneTo.push(new EnemyCountdown(source, 30)); // We'll be immune to this object for 30 ticks
 
 	if(this.blockTime <= 0){ // no block
 		this.health -= amount;
