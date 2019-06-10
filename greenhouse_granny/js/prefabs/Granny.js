@@ -49,9 +49,9 @@ Granny = function(game, x, y, enemies, enemyProjectiles, audio, damage) {
 	this.keyRight = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 	this.keyLeft = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
 	this.keyUp = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.C);
-	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.X);
-	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+	this.keyAttack = game.input.keyboard.addKey(Phaser.Keyboard.E);
+	this.keyBlock = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+	this.keySwitchWeapon = game.input.keyboard.addKey(Phaser.Keyboard.W);
 
 	//Adding animations and setting current frame to idle
 	/* old spritesheet

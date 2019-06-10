@@ -54,7 +54,7 @@ MainMenu.prototype = {
 		this.title.anchor.set(.5);
 
 		//Version
-		var title = game.add.text(game.width/2, 220, "v1.0b", { fontSize: '32px', fill: '#000' })
+		var title = game.add.text(game.width/2, 220, "v1.0", { fontSize: '32px', fill: '#000' })
 
 		//background and text for play, controls, and credits
 		var back = game.add.sprite(60, 300, 'buttonbackground');
@@ -70,10 +70,10 @@ MainMenu.prototype = {
 							{font: '30px Sabon', fill: '#fffff'});
 
 		//Instructions for player input
-		this.controlAttack = game.add.text(400, 350, "Press C to attack", {font: '30px Sabon', fill: '#fffff'});
-		this.controlBlock = game.add.text(400, 400, "Hold X to block", {font: '30px Sabon', fill: '#fffff'});
+		this.controlAttack = game.add.text(400, 350, "Press E to attack", {font: '30px Sabon', fill: '#fffff'});
+		this.controlBlock = game.add.text(400, 400, "Hold Q to block", {font: '30px Sabon', fill: '#fffff'});
 		this.controlMovement = game.add.text(400, 450, "Use arrow keys to run and jump", {font: '30px Sabon', fill: '#fffff'});
-		this.controlSwitchWeapon = game.add.text(400, 500, "Press Z to toggle shovel/leafblower", {font: '30px Sabon', fill: '#fffff'});
+		this.controlSwitchWeapon = game.add.text(400, 500, "Press W to toggle shovel/leafblower", {font: '30px Sabon', fill: '#fffff'});
 
 		//Make these intructions invisable
 		this.controlAttack.alpha = 0.0;
