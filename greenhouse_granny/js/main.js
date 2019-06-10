@@ -186,11 +186,11 @@ Play.prototype = {
 		game.load.image('stage', 'assets/img/Final-Stage.png');
 		game.load.image('top bar', 'assets/img/UI_Bar.png');
 		game.load.image('farBackground', 'assets/img/FarBackground.jpg');
-		//game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_SpriteSheet.png', 113, 148);
 		game.load.spritesheet('granny', 'assets/img/SpriteSheets/Gardener_NEW_SpriteSheet.png', 102, 148);
 		game.load.spritesheet('plant', 'assets/img/SpriteSheets/Plant_Spitter_SpriteSheet.png', 104, 128);
 		game.load.spritesheet('acorn', 'assets/img/SpriteSheets/Acorn_SpriteSheet.png', 61, 80);
 		game.load.spritesheet('tree', 'assets/img/SpriteSheets/Tree_SpriteSheet.png', 357, 250);
+		game.load.spritesheet('jump leaf', 'assets/img/SpriteSheets/Jump_Leaf_SpriteSheet.png', 441, 115);
 
 		//Load in tilemap and spritesheet
 		game.load.tilemap('level', 'assets/tilemaps/FinalTilemap2.json', null, Phaser.Tilemap.TILED_JSON);
