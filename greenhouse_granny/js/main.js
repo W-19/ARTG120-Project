@@ -356,6 +356,8 @@ Play.prototype = {
 				else { // Spitter
 					spawnedEnemy = this.enemies.add(new Enemy(game, this.spawnPoints[this.spawnPoint][0],
 					this.spawnPoints[this.spawnPoint][1], this.player, this.enemyProjectiles, -100, game.world.width+100, this.audio));
+					spawnedEnemy.facing = (Math.random() < 0.5 ? 'left' : 'right');
+					spawnedEnemy.scale.x = (spawnedEnemy.facing == 'left' ? -0.5 : 0.5);
 				}
 			}
 		}

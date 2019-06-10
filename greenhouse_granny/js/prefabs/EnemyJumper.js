@@ -50,9 +50,9 @@ EnemyJumper.prototype.update = function() {
     	this.body.collideWorldBounds = false;
     }
     // If we're fully outside the world (or are about to be and are out of camera view),
-    // either move this enemy to the other side/top of the world or just kill them (chances are 50/50).
+    // either move this enemy to the other side/top of the world or just kill them (chances are 100/0).
     if(this.body.collideWorldBounds == false && !this.inCamera){
-    	if(Math.random() < 0.5){
+    	if(Math.random() < 0.0){
     		this.destroy();
     		return;
     	}
