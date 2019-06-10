@@ -80,15 +80,6 @@ Granny.prototype.constructor = Granny;
 
 //Update function for granny
 Granny.prototype.update = function() {
-	if(this.x <= 26 && this.y >= 3000) {
-    	this.x = 30;
-    	this.y = 790;
-    }
-    if(this.x >= 2275 && this.y >= 3000) {
-    	this.x = 2275;
-    	this.y = 790;
-    }
-
 	blockKeyDown = this.keyBlock.isDown;
 
 	// Update Granny's hitbox with her position. We need to take velocity into account otherwise it'll lag behind her.
