@@ -54,7 +54,7 @@ MainMenu.prototype = {
 		this.title.anchor.set(.5);
 
 		//Version
-		var title = game.add.text(game.width/2, 220, "v1.0a", { fontSize: '32px', fill: '#000' })
+		var title = game.add.text(game.width/2, 220, "v1.0b", { fontSize: '32px', fill: '#000' })
 
 		//background and text for play, controls, and credits
 		var back = game.add.sprite(60, 300, 'buttonbackground');
