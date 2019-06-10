@@ -205,6 +205,7 @@ Play.prototype = {
 		game.load.audio('leafblower', 'assets/audio/Leafblower.ogg');
 		// Altered from the original by user Timbre: https://freesound.org/s/103218/. License: https://creativecommons.org/licenses/by-nc/3.0/.
 		game.load.audio('block', 'assets/audio/Clang.ogg');
+		game.load.audio('switch weapon', 'assets/audio/Switch Weapon.ogg');
 	},
 	create: function(){
 		// We're going to be using physics, so enable the Arcade Physics system
@@ -255,7 +256,8 @@ Play.prototype = {
 			enemyDeath: game.add.audio('enemy death'),
 			weaponSwing: game.add.audio('weapon swing'),
 			leafblower: game.add.audio('leafblower'),
-			block: game.add.audio('block')
+			block: game.add.audio('block'),
+			switchWeapon: game.add.audio('switch weapon')
 		};
 
 		this.audio.playerJump.volume = 0.1;
@@ -265,6 +267,7 @@ Play.prototype = {
 		this.audio.weaponSwing.volume = 0.1;
 		this.audio.block.volume = 0.1;
 		this.audio.leafblower.volume = 0.45;
+		this.audio.switchWeapon.volume = 0.3;
 
 		if(currentTrack.isPlaying){
 			currentTrack.stop();

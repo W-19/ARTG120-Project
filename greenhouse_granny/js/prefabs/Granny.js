@@ -91,7 +91,6 @@ Granny.prototype.update = function() {
 
 	// ----------------------------------- ANIMATIONS -------------------------------------
 
-	
 	// It's simplest if we do all the animation logic right here
 	if(blockKeyDown && this.blockTime > 0){
 		if(this.animations.name != 'blocking' || this.animations.isPlaying == false){
@@ -124,6 +123,7 @@ Granny.prototype.update = function() {
 		else{
 			if(this.keySwitchWeapon.justDown){
 				this.switchWeapon(this.currentWeapon == shovel ? leafblower : shovel);
+				Granny.AUDIO.switchWeapon.play();
 			}
 			this.currentWeaponObj.alpha = 0.0;
 		}
